@@ -12,6 +12,12 @@
 		4A176DBF241BE262005C3C27 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A176DBE241BE262005C3C27 /* Assets.xcassets */; };
 		4A176DC2241BE262005C3C27 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A176DC1241BE262005C3C27 /* Preview Assets.xcassets */; };
 		4A176DC5241BE262005C3C27 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A176DC3241BE262005C3C27 /* Main.storyboard */; };
+		4A176DCF241BFF85005C3C27 /* SchoologyClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DCE241BFF85005C3C27 /* SchoologyClient.swift */; };
+		4A176DD3241BFFDA005C3C27 /* CombineExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DD2241BFFDA005C3C27 /* CombineExtensions.swift */; };
+		4A176DD7241C0D44005C3C27 /* SchoologyCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DD6241C0D44005C3C27 /* SchoologyCredentials.swift */; };
+		4A176DD9241C0DD2005C3C27 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DD8241C0DD2005C3C27 /* Errors.swift */; };
+		4A176DDB241C17AB005C3C27 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DDA241C17AB005C3C27 /* AuthView.swift */; };
+		4A176DDD241C1C01005C3C27 /* AuthContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DDC241C1C01005C3C27 /* AuthContext.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +29,12 @@
 		4A176DC4241BE262005C3C27 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		4A176DC6241BE262005C3C27 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4A176DC7241BE262005C3C27 /* BetterSchoology.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BetterSchoology.entitlements; sourceTree = "<group>"; };
+		4A176DCE241BFF85005C3C27 /* SchoologyClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoologyClient.swift; sourceTree = "<group>"; };
+		4A176DD2241BFFDA005C3C27 /* CombineExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineExtensions.swift; sourceTree = "<group>"; };
+		4A176DD6241C0D44005C3C27 /* SchoologyCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoologyCredentials.swift; sourceTree = "<group>"; };
+		4A176DD8241C0DD2005C3C27 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		4A176DDA241C17AB005C3C27 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
+		4A176DDC241C1C01005C3C27 /* AuthContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthContext.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +51,7 @@
 		4A176DAE241BE25F005C3C27 = {
 			isa = PBXGroup;
 			children = (
+				4A176DCD241BFE7F005C3C27 /* SchoologyAPI */,
 				4A176DB9241BE25F005C3C27 /* BetterSchoology */,
 				4A176DB8241BE25F005C3C27 /* Products */,
 			);
@@ -57,6 +70,8 @@
 			children = (
 				4A176DBA241BE25F005C3C27 /* AppDelegate.swift */,
 				4A176DBC241BE25F005C3C27 /* ContentView.swift */,
+				4A176DDC241C1C01005C3C27 /* AuthContext.swift */,
+				4A176DDA241C17AB005C3C27 /* AuthView.swift */,
 				4A176DBE241BE262005C3C27 /* Assets.xcassets */,
 				4A176DC3241BE262005C3C27 /* Main.storyboard */,
 				4A176DC6241BE262005C3C27 /* Info.plist */,
@@ -72,6 +87,17 @@
 				4A176DC1241BE262005C3C27 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		4A176DCD241BFE7F005C3C27 /* SchoologyAPI */ = {
+			isa = PBXGroup;
+			children = (
+				4A176DCE241BFF85005C3C27 /* SchoologyClient.swift */,
+				4A176DD8241C0DD2005C3C27 /* Errors.swift */,
+				4A176DD6241C0D44005C3C27 /* SchoologyCredentials.swift */,
+				4A176DD2241BFFDA005C3C27 /* CombineExtensions.swift */,
+			);
+			path = SchoologyAPI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -145,8 +171,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A176DDB241C17AB005C3C27 /* AuthView.swift in Sources */,
+				4A176DD3241BFFDA005C3C27 /* CombineExtensions.swift in Sources */,
 				4A176DBD241BE25F005C3C27 /* ContentView.swift in Sources */,
+				4A176DDD241C1C01005C3C27 /* AuthContext.swift in Sources */,
 				4A176DBB241BE25F005C3C27 /* AppDelegate.swift in Sources */,
+				4A176DCF241BFF85005C3C27 /* SchoologyClient.swift in Sources */,
+				4A176DD9241C0DD2005C3C27 /* Errors.swift in Sources */,
+				4A176DD7241C0D44005C3C27 /* SchoologyCredentials.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
