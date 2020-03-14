@@ -82,4 +82,67 @@ class SchoologyClient {
             .decode(type: CoursesResponse.self, decoder: decoder)
             .map { $0.data.courses }
     }
+    
+    func materials(courseId: Int, folderId: String?) -> Publishers.TryMap<URLSession.DataTaskPublisher, [Material]> {
+        var components = URLComponents(string: "\(prefix)/course/\(courseId)")!
+        if let f = folderId {
+            components.queryItems = [URLQueryItem(name: "f", value: f)]
+        }
+        
+        return session.dataTaskPublisher(for: components.url!)
+            .tryMap { result in
+                guard let string = String(data: result.data, encoding: .utf8) else {
+                    throw SchoologyParseError.badEncoding
+                }
+                
+                let document = try SwiftSoup.parse(string)
+                let rows = try document.select("table#folder-contents-table tr")
+                
+                return try rows.map { row in
+                    let id = row.id()
+                    let a = try row.select(".item-info a")
+                    
+                    let kind: Material.Kind
+                    let meta: String?
+                    if row.hasClass("material-row-folder") {
+                        kind = .folder
+                        meta = try row.select(".inline-icon").first()?.className()
+                    } else if row.hasClass("type-document") {
+                        let icon = try row.select(".inline-icon")
+                        if icon.hasClass("link-icon") {
+                            kind = .link
+                            meta = nil
+                        } else {
+                            kind = .file
+                            meta = try icon.first()?.className()
+                        }
+                    } else if row.hasClass("type-discussion") {
+                        kind = .discussion
+                        meta = nil
+                    } else if row.hasClass("type-page") {
+                        kind = .page
+                        meta = nil
+                    } else if row.hasClass("type-quiz") {
+                        kind = .quiz
+                        meta = nil
+                    } else if row.hasClass("type-assignment") {
+                        kind = .assignment
+                        meta = nil
+                    } else {
+                        kind = .other
+                        meta = nil
+                    }
+                    
+                    return Material(
+                        id: String(id.suffix(from: id.index(id.startIndex, offsetBy: 2))),
+                        name: try a.text(),
+                        kind: kind,
+                        available: nil,
+                        due: nil,
+                        meta: meta,
+                        urlSuffix: try a.attr("href")
+                    )
+                }
+            }
+    }
 }

@@ -16,11 +16,11 @@ struct CourseListView: View {
     var body: some View {
         store.requestCourses()
         
-        if let result = store.courses {
+        if case .some(.done(let result)) = store.courses {
             switch result {
             case .success(let courses):
                 return AnyView(List(courses) { course in
-                    NavigationLink(destination: Text(course.courseTitle).padding().frame(maxWidth: .infinity, maxHeight: .infinity)) {
+                    NavigationLink(destination: CourseDetailView(course: course, materialsStore: self.store.courseMaterialsStore(for: course.id)).environmentObject(self.store)) {
                         CourseListItemView(course: course)
                     }
                 })

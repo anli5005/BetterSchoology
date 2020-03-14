@@ -6,6 +6,8 @@
 //  Copyright © 2020 Anthony Li. All rights reserved.
 //
 
+import Foundation
+
 struct Course: Codable, Identifiable {
     var nid: Int
     var courseTitle: String
@@ -37,4 +39,25 @@ struct User: Codable, Identifiable {
     var profilePictureUrl: String
     
     var id: Int { uid }
+}
+
+struct Material: Identifiable {
+    var id: String
+    var name: String
+    var kind: Kind
+    var available: Date?
+    var due: Date?
+    var meta: String?
+    var urlSuffix: String
+    
+    enum Kind {
+        case file
+        case folder
+        case assignment
+        case quiz
+        case page
+        case link
+        case discussion
+        case other
+    }
 }
