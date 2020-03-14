@@ -13,16 +13,10 @@ struct CourseDetailView: View {
     @ObservedObject var materialsStore: CourseMaterialsStore
     
     var body: some View {
-        let theMaterials = materialsStore.materials(in: nil)
-        
-        return VStack(alignment: .leading) {
-            Text(course.courseTitle).font(.largeTitle).fontWeight(.bold)
-            (try? theMaterials?.get()).map({ materials in
-                List(materials) { material in
-                    Text(material.name)
-                }
-            })
-        }.padding()
+        return ScrollView {
+            Text(course.courseTitle).font(.largeTitle).fontWeight(.bold).padding()
+            MaterialsOutlineView(store: materialsStore).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }

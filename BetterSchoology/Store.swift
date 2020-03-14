@@ -59,6 +59,8 @@ class CourseMaterialsStore: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     @Published private(set) var materials = [String?: Loadable<Result<[Material], Error>>]()
+    private(set) var materialsById = [String: Material]()
+    let reloadPublisher = PassthroughSubject<Void, Never>()
     
     init(client: SchoologyClient, courseId: Int) {
         self.client = client
@@ -76,7 +78,15 @@ class CourseMaterialsStore: ObservableObject {
                 }
             }, receiveValue: { materials in
                 DispatchQueue.main.async {
-                    self.materials[id] = .done(.success(materials))
+                    for material in materials {
+                        self.materialsById[material.id] = material
+                    }
+                    
+                    var newMaterials = self.materials
+                    newMaterials[id] = .done(.success(materials))
+                    self.materials = newMaterials
+                    
+                    self.reloadPublisher.send()
                 }
             }))
         }

@@ -84,7 +84,7 @@ class SchoologyClient {
     }
     
     func materials(courseId: Int, folderId: String?) -> Publishers.TryMap<URLSession.DataTaskPublisher, [Material]> {
-        var components = URLComponents(string: "\(prefix)/course/\(courseId)")!
+        var components = URLComponents(string: "\(prefix)/course/\(courseId)/materials")!
         if let f = folderId {
             components.queryItems = [URLQueryItem(name: "f", value: f)]
         }
@@ -100,7 +100,7 @@ class SchoologyClient {
                 
                 return try rows.map { row in
                     let id = row.id()
-                    let a = try row.select(".item-info a")
+                    let a = try row.select(".item-info a").first()!
                     
                     let kind: Material.Kind
                     let meta: String?
