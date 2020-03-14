@@ -1,0 +1,40 @@
+//
+//  Models.swift
+//  BetterSchoology
+//
+//  Created by Anthony Li on 3/13/20.
+//  Copyright © 2020 Anthony Li. All rights reserved.
+//
+
+struct Course: Codable, Identifiable {
+    var nid: Int
+    var courseTitle: String
+    var sectionTitle: String
+    var buildingTitle: String
+    var logoImgSrc: String
+    var courseNid: Int
+    var weight: Int
+    var isCsl: Bool
+    var adminType: String
+    
+    var id: Int { nid }
+}
+
+struct SiteNavigationUiProps: Decodable {
+    var props: Props
+    
+    struct Props: Decodable {
+        var user: User
+    }
+}
+
+struct User: Codable, Identifiable {
+    var language: String
+    var languageNameNative: String
+    var logoutToken: String
+    var uid: Int
+    var name: String
+    var profilePictureUrl: String
+    
+    var id: Int { uid }
+}

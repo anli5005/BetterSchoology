@@ -27,6 +27,7 @@ private extension Error {
 
 struct AuthView: View {
     @EnvironmentObject var authContext: AuthContext
+    @EnvironmentObject var client: SchoologyClient
     
     @State var username = ""
     @State var password = ""
@@ -43,31 +44,45 @@ struct AuthView: View {
             Text("BetterSchoology").font(.title).fontWeight(.bold)
             Text("Please enter your Schoology credentials.").padding(.vertical)
             error.map { Text($0.authDescription).fontWeight(.bold).foregroundColor(.red) }
-            TextField("Username", text: $username).disabled(signingIn != nil)
-            SecureField("Password", text: $password).disabled(signingIn != nil)
-            Button("Sign In", action: {
-                print("Signing in with username \(self.username)")
-                let credentials = SchoologyCredentials(username: self.username, password: self.password)
-                let client = SchoologyClient(session: .shared, prefix: "https://bca.schoology.com", schoolId: "11897239")
-                self.signingIn = client.authenticate(credentials: credentials).sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .failure(let error):
-                        print("Sign in error.")
-                        DispatchQueue.main.async {
-                            self.error = error
-                            self.signingIn = nil
+            Group {
+                TextField("Username", text: $username)
+                SecureField("Password", text: $password)
+            }.disabled(signingIn != nil)
+            if signingIn == nil {
+                Button("Sign In", action: {
+                    print("Signing in with username \(self.username)")
+                    let credentials = SchoologyCredentials(username: self.username, password: self.password)
+                    self.signingIn = self.client.authenticate(credentials: credentials).sink(receiveCompletion: { completion in
+                        switch completion {
+                        case .failure(let error):
+                            print("Sign in error.")
+                            DispatchQueue.main.async {
+                                self.error = error
+                                self.signingIn = nil
+                            }
+                        case .finished:
+                            print("Sign in complete.")
                         }
-                    case .finished:
-                        print("Sign in complete.")
-                    }
-                }, receiveValue: { value in
-                    print("Sign in successful!")
-                    DispatchQueue.main.async {
-                        self.authContext.username = self.username
-                    }
+                    }, receiveValue: { value in
+                        print("Sign in successful!")
+                        DispatchQueue.main.async {
+                            self.signingIn = self.client.siteNavigationUiProps().sink(receiveCompletion: { completion in
+                                if case .failure(let error) = completion {
+                                    self.error = error
+                                    self.signingIn = nil
+                                }
+                            }, receiveValue: { props in
+                                DispatchQueue.main.async {
+                                    self.authContext.status = .authenticated(user: props.props.user, store: SchoologyStore(client: self.client))
+                                }
+                            })
+                        }
+                    })
+                    self.error = nil
                 })
-                self.error = nil
-            }).disabled(!valid || signingIn != nil)
+            } else {
+                Button("Signing in...", action: {}).disabled(true)
+            }
         }.frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

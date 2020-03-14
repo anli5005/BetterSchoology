@@ -10,3 +10,8 @@ enum SchoologyAuthenticationError: Error {
     case percentEncodingError
     case unrecognizedCredentials
 }
+
+enum SchoologyParseError: Error {
+    case badEncoding
+    case unexpectedHtmlError
+}

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,11 +13,16 @@
 		4A176DC2241BE262005C3C27 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A176DC1241BE262005C3C27 /* Preview Assets.xcassets */; };
 		4A176DC5241BE262005C3C27 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A176DC3241BE262005C3C27 /* Main.storyboard */; };
 		4A176DCF241BFF85005C3C27 /* SchoologyClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DCE241BFF85005C3C27 /* SchoologyClient.swift */; };
-		4A176DD3241BFFDA005C3C27 /* CombineExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DD2241BFFDA005C3C27 /* CombineExtensions.swift */; };
 		4A176DD7241C0D44005C3C27 /* SchoologyCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DD6241C0D44005C3C27 /* SchoologyCredentials.swift */; };
 		4A176DD9241C0DD2005C3C27 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DD8241C0DD2005C3C27 /* Errors.swift */; };
 		4A176DDB241C17AB005C3C27 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DDA241C17AB005C3C27 /* AuthView.swift */; };
-		4A176DDD241C1C01005C3C27 /* AuthContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DDC241C1C01005C3C27 /* AuthContext.swift */; };
+		4A176DDF241C24D7005C3C27 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DDE241C24D7005C3C27 /* Models.swift */; };
+		4A176DE0241C28EA005C3C27 /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DDC241C1C01005C3C27 /* Context.swift */; };
+		4A176DE4241C32A9005C3C27 /* CourseListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DE3241C32A9005C3C27 /* CourseListView.swift */; };
+		4A2AA11E241C3F1E005C3C27 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2AA11D241C3F1E005C3C27 /* Store.swift */; };
+		4A2AA121241C4123005C3C27 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 4A2AA120241C4123005C3C27 /* SwiftSoup */; };
+		4A2AA123241C4DB5005C3C27 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2AA122241C4DB5005C3C27 /* MainView.swift */; };
+		4A2AA125241C4F11005C3C27 /* CourseListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2AA124241C4F11005C3C27 /* CourseListItemView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,11 +35,15 @@
 		4A176DC6241BE262005C3C27 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4A176DC7241BE262005C3C27 /* BetterSchoology.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BetterSchoology.entitlements; sourceTree = "<group>"; };
 		4A176DCE241BFF85005C3C27 /* SchoologyClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoologyClient.swift; sourceTree = "<group>"; };
-		4A176DD2241BFFDA005C3C27 /* CombineExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineExtensions.swift; sourceTree = "<group>"; };
 		4A176DD6241C0D44005C3C27 /* SchoologyCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoologyCredentials.swift; sourceTree = "<group>"; };
 		4A176DD8241C0DD2005C3C27 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		4A176DDA241C17AB005C3C27 /* AuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthView.swift; sourceTree = "<group>"; };
-		4A176DDC241C1C01005C3C27 /* AuthContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthContext.swift; sourceTree = "<group>"; };
+		4A176DDC241C1C01005C3C27 /* Context.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
+		4A176DDE241C24D7005C3C27 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		4A176DE3241C32A9005C3C27 /* CourseListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseListView.swift; sourceTree = "<group>"; };
+		4A2AA11D241C3F1E005C3C27 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
+		4A2AA122241C4DB5005C3C27 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		4A2AA124241C4F11005C3C27 /* CourseListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseListItemView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A2AA121241C4123005C3C27 /* SwiftSoup in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,7 +80,11 @@
 			children = (
 				4A176DBA241BE25F005C3C27 /* AppDelegate.swift */,
 				4A176DBC241BE25F005C3C27 /* ContentView.swift */,
-				4A176DDC241C1C01005C3C27 /* AuthContext.swift */,
+				4A2AA122241C4DB5005C3C27 /* MainView.swift */,
+				4A176DE3241C32A9005C3C27 /* CourseListView.swift */,
+				4A2AA124241C4F11005C3C27 /* CourseListItemView.swift */,
+				4A176DDC241C1C01005C3C27 /* Context.swift */,
+				4A2AA11D241C3F1E005C3C27 /* Store.swift */,
 				4A176DDA241C17AB005C3C27 /* AuthView.swift */,
 				4A176DBE241BE262005C3C27 /* Assets.xcassets */,
 				4A176DC3241BE262005C3C27 /* Main.storyboard */,
@@ -94,8 +108,8 @@
 			children = (
 				4A176DCE241BFF85005C3C27 /* SchoologyClient.swift */,
 				4A176DD8241C0DD2005C3C27 /* Errors.swift */,
+				4A176DDE241C24D7005C3C27 /* Models.swift */,
 				4A176DD6241C0D44005C3C27 /* SchoologyCredentials.swift */,
-				4A176DD2241BFFDA005C3C27 /* CombineExtensions.swift */,
 			);
 			path = SchoologyAPI;
 			sourceTree = "<group>";
@@ -116,6 +130,9 @@
 			dependencies = (
 			);
 			name = BetterSchoology;
+			packageProductDependencies = (
+				4A2AA120241C4123005C3C27 /* SwiftSoup */,
+			);
 			productName = BetterSchoology;
 			productReference = 4A176DB7241BE25F005C3C27 /* BetterSchoology.app */;
 			productType = "com.apple.product-type.application";
@@ -144,6 +161,9 @@
 				Base,
 			);
 			mainGroup = 4A176DAE241BE25F005C3C27;
+			packageReferences = (
+				4A2AA11F241C4123005C3C27 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
+			);
 			productRefGroup = 4A176DB8241BE25F005C3C27 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -172,11 +192,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A176DDB241C17AB005C3C27 /* AuthView.swift in Sources */,
-				4A176DD3241BFFDA005C3C27 /* CombineExtensions.swift in Sources */,
 				4A176DBD241BE25F005C3C27 /* ContentView.swift in Sources */,
-				4A176DDD241C1C01005C3C27 /* AuthContext.swift in Sources */,
 				4A176DBB241BE25F005C3C27 /* AppDelegate.swift in Sources */,
 				4A176DCF241BFF85005C3C27 /* SchoologyClient.swift in Sources */,
+				4A176DDF241C24D7005C3C27 /* Models.swift in Sources */,
+				4A2AA11E241C3F1E005C3C27 /* Store.swift in Sources */,
+				4A2AA125241C4F11005C3C27 /* CourseListItemView.swift in Sources */,
+				4A176DE0241C28EA005C3C27 /* Context.swift in Sources */,
+				4A2AA123241C4DB5005C3C27 /* MainView.swift in Sources */,
+				4A176DE4241C32A9005C3C27 /* CourseListView.swift in Sources */,
 				4A176DD9241C0DD2005C3C27 /* Errors.swift in Sources */,
 				4A176DD7241C0D44005C3C27 /* SchoologyCredentials.swift in Sources */,
 			);
@@ -377,6 +401,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4A2AA11F241C4123005C3C27 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/scinfu/SwiftSoup.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4A2AA120241C4123005C3C27 /* SwiftSoup */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4A2AA11F241C4123005C3C27 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
+			productName = SwiftSoup;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4A176DAF241BE25F005C3C27 /* Project object */;
 }
