@@ -348,8 +348,9 @@
 				CODE_SIGN_ENTITLEMENTS = BetterSchoology/BetterSchoology.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1.2;
 				DEVELOPMENT_ASSET_PATHS = "\"BetterSchoology/Preview Content\"";
-				DEVELOPMENT_TEAM = 9G475R3MEF;
+				DEVELOPMENT_TEAM = 9DDM72ZZ79;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = BetterSchoology/Info.plist;
@@ -372,8 +373,9 @@
 				CODE_SIGN_ENTITLEMENTS = BetterSchoology/BetterSchoology.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1.2;
 				DEVELOPMENT_ASSET_PATHS = "\"BetterSchoology/Preview Content\"";
-				DEVELOPMENT_TEAM = 9G475R3MEF;
+				DEVELOPMENT_TEAM = 9DDM72ZZ79;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = BetterSchoology/Info.plist;

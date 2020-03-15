@@ -21,9 +21,19 @@ struct CourseListView: View {
             case .success(let courses):
                 return AnyView(List(courses) { course in
                     NavigationLink(destination: CourseDetailView(course: course, materialsStore: self.store.courseMaterialsStore(for: course.id)).environmentObject(self.store)) {
-                        CourseListItemView(course: course)
+                        CourseListItemView(course: course).padding(.vertical, 8)
+                    }.contextMenu {
+                        Button(action: {
+                            NSWorkspace.shared.open(URL(string: "\(self.store.client.prefix)/course/\(course.nid)")!)
+                        }) {
+                            Text("Open in Web Browser")
+                            #if os(iOS)
+                            Image(systemName: "safari")
+                            #endif
+                        }
                     }
-                })
+                }
+                .listStyle(SidebarListStyle()))
             case .failure(_):
                 return AnyView(Text("Error loading courses."))
             }

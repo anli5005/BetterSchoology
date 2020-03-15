@@ -11,7 +11,7 @@ import SwiftUI
 struct MainView: View {
     var body: some View {
         NavigationView {
-            CourseListView().frame(minWidth: 200, maxWidth: 800, maxHeight: .infinity)
+            CourseListView().frame(minWidth: 200, maxWidth: 400, maxHeight: .infinity)
             Text("Select a course to get started.").padding().frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
