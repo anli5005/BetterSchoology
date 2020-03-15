@@ -15,8 +15,8 @@
             filePath = "BetterSchoology/MaterialsOutlineView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "67"
-            endingLineNumber = "67"
+            startingLineNumber = "91"
+            endingLineNumber = "91"
             landmarkName = "outlineView(_:child:ofItem:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -41,7 +41,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "3047BAE7-6D86-439C-B81C-9A3A56A9220D"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "Yes"
             filePath = "BetterSchoology/Store.swift"
@@ -66,7 +66,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "A55D8AC3-5BA5-4B54-B8E9-4EF6C9B9ED13"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "Yes"
             filePath = "BetterSchoology/CourseDetailView.swift"
@@ -88,7 +88,7 @@
             <Locations>
                <Location
                   uuid = "A55D8AC3-5BA5-4B54-B8E9-4EF6C9B9ED13 - 1e03ab070d636040"
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "BetterSchoology.CourseDetailView.body.getter : some"
@@ -99,11 +99,11 @@
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "16"
                   endingLineNumber = "16"
-                  offsetFromSymbolStart = "644">
+                  offsetFromSymbolStart = "656">
                </Location>
                <Location
                   uuid = "A55D8AC3-5BA5-4B54-B8E9-4EF6C9B9ED13 - bcfa6ac9542ed87f"
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "closure #1 () -&gt; SwiftUI.TupleView&lt;(&lt;&lt;opaque return type of (extension in SwiftUI):SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0, &lt;&lt;opaque return type of (extension in SwiftUI):SwiftUI.View.frame(minWidth: Swift.Optional&lt;CoreGraphics.CGFloat&gt;, idealWidth: Swift.Optional&lt;CoreGraphics.CGFloat&gt;, maxWidth: Swift.Optional&lt;CoreGraphics.CGFloat&gt;, minHeight: Swift.Optional&lt;CoreGraphics.CGFloat&gt;, idealHeight: Swift.Optional&lt;CoreGraphics.CGFloat&gt;, maxHeight: Swift.Optional&lt;CoreGraphics.CGFloat&gt;, alignment: SwiftUI.Alignment) -&gt; some&gt;&gt;.0)&gt; in BetterSchoology.CourseDetailView.body.getter : some"
@@ -123,14 +123,14 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "7EC53686-4087-420C-A033-1366A1DFB78C"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "Yes"
             filePath = "BetterSchoology/MaterialsOutlineView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "25"
-            endingLineNumber = "25"
+            startingLineNumber = "37"
+            endingLineNumber = "37"
             landmarkName = "makeNSView(context:)"
             landmarkType = "7">
             <Actions>
@@ -148,14 +148,14 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "7AA6B212-BA86-42BE-92E5-3A8210E07EA8"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "Yes"
             filePath = "BetterSchoology/MaterialsOutlineView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "34"
-            endingLineNumber = "34"
+            startingLineNumber = "54"
+            endingLineNumber = "54"
             landmarkName = "makeNSView(context:)"
             landmarkType = "7">
             <Actions>
@@ -173,14 +173,14 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "6F31A83C-F199-47D9-82F7-0C8B2291043A"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "Yes"
             filePath = "BetterSchoology/MaterialsOutlineView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "54"
-            endingLineNumber = "54"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
             landmarkName = "outlineView(_:numberOfChildrenOfItem:)"
             landmarkType = "7">
             <Actions>

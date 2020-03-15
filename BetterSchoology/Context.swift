@@ -7,9 +7,12 @@
 //
 
 import SwiftUI
+import Combine
 
 class AuthContext: ObservableObject {
     @Published var status = Status.unknown
+    
+    let persistCredentials = PassthroughSubject<SchoologyCredentials, Never>()
     
     enum Status {
         case unknown
@@ -20,4 +23,4 @@ class AuthContext: ObservableObject {
 
 extension SchoologyClient: ObservableObject {}
 
-let sharedClient = SchoologyClient(session: .shared, prefix: "https://bca.schoology.com", schoolId: "11897239")
+let sharedClient = SchoologyClient(session: URLSession(configuration: .default), prefix: "https://bca.schoology.com", schoolId: "11897239")

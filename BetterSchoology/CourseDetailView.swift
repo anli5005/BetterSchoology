@@ -13,7 +13,7 @@ struct CourseDetailView: View {
     @ObservedObject var materialsStore: CourseMaterialsStore
     
     var body: some View {
-        return ScrollView {
+        return VStack {
             Text(course.courseTitle).font(.largeTitle).fontWeight(.bold).padding()
             MaterialsOutlineView(store: materialsStore).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }

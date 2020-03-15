@@ -100,7 +100,19 @@ class SchoologyClient {
                 
                 return try rows.map { row in
                     let id = row.id()
-                    let a = try row.select(".item-info a").first()!
+                    guard let a = try row.select(".item-info a").first() else {
+                        throw SchoologyParseError.unexpectedHtmlError
+                    }
+                    
+                    let name: String
+                    if let infotip = try row.select(".infotip").first() {
+                        guard let textNode = infotip.textNodes().first else {
+                            throw SchoologyParseError.unexpectedHtmlError
+                        }
+                        name = textNode.text()
+                    } else {
+                        name = try a.text()
+                    }
                     
                     let kind: Material.Kind
                     let meta: String?
@@ -135,7 +147,7 @@ class SchoologyClient {
                     
                     return Material(
                         id: String(id.suffix(from: id.index(id.startIndex, offsetBy: 2))),
-                        name: try a.text(),
+                        name: try Entities.unescape(name),
                         kind: kind,
                         available: nil,
                         due: nil,

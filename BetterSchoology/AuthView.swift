@@ -72,6 +72,7 @@ struct AuthView: View {
                                     self.signingIn = nil
                                 }
                             }, receiveValue: { props in
+                                self.authContext.persistCredentials.send(credentials)
                                 DispatchQueue.main.async {
                                     self.authContext.status = .authenticated(user: props.props.user, store: SchoologyStore(client: self.client))
                                 }

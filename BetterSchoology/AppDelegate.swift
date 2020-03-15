@@ -10,25 +10,87 @@ import Cocoa
 import SwiftUI
 import Combine
 
+fileprivate let keychainQuery: [String: Any] = [
+    kSecClass as String: kSecClassGenericPassword,
+    kSecAttrService as String: "dev.anli.BetterSchoology.bca"
+]
+
+private extension Dictionary {
+    func mergingToCFDictionary(_ other: Dictionary<Key, Value>) -> CFDictionary {
+        merging(other, uniquingKeysWith: { _, b in b }) as CFDictionary
+    }
+}
+
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     var window: NSWindow!
 
-    var initialAuthCancellable: AnyCancellable?
+    private var initialAuthCancellable: AnyCancellable?
+    private var persistAuthCancellable: AnyCancellable?
+    
+    private var didFindKeychainItem = false
+    
+    func getCredentialsFromKeychain() -> SchoologyCredentials? {
+        var passwordData: CFTypeRef?
+        let status = SecItemCopyMatching(keychainQuery.mergingToCFDictionary([
+            kSecReturnData as String: true as CFBoolean
+        ]), &passwordData)
+        
+        if status == errSecSuccess, let data = passwordData as? Data, let password = String(data: data, encoding: .utf8) {
+            var dictData: CFTypeRef?
+            let attributesStatus = SecItemCopyMatching(keychainQuery.mergingToCFDictionary([
+                kSecReturnAttributes as String: true as CFBoolean
+            ]), &dictData)
+            if attributesStatus == errSecSuccess, let dict = dictData as? [String: Any], let username = dict[kSecAttrAccount as String] as? String {
+                didFindKeychainItem = true
+                return SchoologyCredentials(username: username, password: password)
+            }
+        }
+        
+        return nil
+    }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         let context = AuthContext()
-        initialAuthCancellable = sharedClient.siteNavigationUiProps().sink(receiveCompletion: { completion in
-            if case .failure(let error) = completion {
-                print("Error: \(error)")
-                DispatchQueue.main.async {
-                    context.status = .unauthenticated
+        
+        if let creds = getCredentialsFromKeychain() {
+            print("Found credentials")
+            initialAuthCancellable = sharedClient.authenticate(credentials: creds).flatMap {
+                sharedClient.siteNavigationUiProps()
+            }.sink(receiveCompletion: { completion in
+                if case .failure(let error) = completion {
+                    print("Authentication error: \(error)")
+                    DispatchQueue.main.async {
+                        context.status = .unauthenticated
+                    }
                 }
-            }
-        }, receiveValue: { props in
-            DispatchQueue.main.async {
-                context.status = .authenticated(user: props.props.user, store: SchoologyStore(client: sharedClient))
+            }, receiveValue: { props in
+                DispatchQueue.main.async {
+                    context.status = .authenticated(user: props.props.user, store: SchoologyStore(client: sharedClient))
+                }
+            })
+        } else {
+            print("Could not find credentials")
+            context.status = .unauthenticated
+        }
+                
+        persistAuthCancellable = context.persistCredentials.sink(receiveValue: { credentials in
+            DispatchQueue.global(qos: .utility).async {
+                let attributes: [String: Any] = [
+                    kSecAttrAccount as String: credentials.username,
+                    kSecValueData as String: Data(credentials.password.utf8),
+                    kSecAttrLabel as String: "BetterSchoology BCA Password"
+                ]
+                let status: OSStatus
+                if self.didFindKeychainItem {
+                    status = SecItemUpdate(keychainQuery as CFDictionary, attributes as CFDictionary)
+                    print("Updated keychain, status \(status)")
+                } else {
+                    status = SecItemAdd(keychainQuery.mergingToCFDictionary(attributes), nil)
+                    print("Added to keychain, status \(status)")
+                }
+                self.didFindKeychainItem = true
             }
         })
         
