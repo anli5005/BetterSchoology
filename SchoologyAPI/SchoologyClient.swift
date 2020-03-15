@@ -106,7 +106,7 @@ class SchoologyClient {
                     
                     let name: String
                     if let infotip = try row.select(".infotip").first() {
-                        guard let textNode = infotip.textNodes().first else {
+                        guard let textNode = try? infotip.textNodes().first ?? row.select(".infotip-content").first()?.textNodes().first else {
                             throw SchoologyParseError.unexpectedHtmlError
                         }
                         name = textNode.text()
