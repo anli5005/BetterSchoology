@@ -14,12 +14,14 @@ class SchoologyClient {
     let session: URLSession
     let prefix: String
     let schoolId: String
+    var materialDetailFetchers: [MaterialDetailFetcher]
     let decoder = JSONDecoder()
         
-    init(session: URLSession, prefix: String, schoolId: String) {
+    init(session: URLSession, prefix: String, schoolId: String, materialDetailFetchers: [MaterialDetailFetcher] = []) {
         self.session = session
         self.prefix = prefix
         self.schoolId = schoolId
+        self.materialDetailFetchers = materialDetailFetchers
     }
     
     func authenticate(credentials: SchoologyCredentials) -> Future<Void, Error> {
@@ -156,5 +158,20 @@ class SchoologyClient {
                     )
                 }
             }
+    }
+    
+    func detailFetcher(for material: Material) -> MaterialDetailFetcher? {
+        materialDetailFetchers.first(where: { $0.canFetch(material: material) })
+    }
+    
+    func fetchDetails(for material: Material) -> AnyPublisher<MaterialDetail, Error> {
+        if let fetcher = detailFetcher(for: material) {
+            return fetcher.fetch(material: material, using: self).map {
+                precondition(type(of: $0) == fetcher.type(for: material))
+                return $0
+            }.eraseToAnyPublisher()
+        } else {
+            return Future { $0(.success(OtherMaterialDetail(material: material) as MaterialDetail)) }.eraseToAnyPublisher()
+        }
     }
 }

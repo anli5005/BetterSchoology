@@ -61,3 +61,19 @@ struct Material: Identifiable {
         case other
     }
 }
+
+protocol MaterialDetail {
+    var material: Material { get }
+    var fullName: String { get }
+}
+
+struct LinkMaterialDetail: MaterialDetail {
+    var material: Material
+    var fullName: String
+    var url: URL?
+}
+
+struct OtherMaterialDetail: MaterialDetail {
+    var material: Material
+    var fullName: String { material.name }
+}

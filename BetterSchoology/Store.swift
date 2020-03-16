@@ -58,8 +58,10 @@ class CourseMaterialsStore: ObservableObject {
     
     private var cancellables = Set<AnyCancellable>()
     
-    @Published private(set) var materials = [String?: Loadable<Result<[Material], Error>>]()
-    private(set) var materialsById = [String: Material]()
+    @Published var materials = [String?: Loadable<Result<[Material], Error>>]()
+    var materialsById = [String: Material]()
+    @Published var materialDetails = [String: Loadable<Result<MaterialDetail, Error>>]()
+    var materialDetailsPublishers = [String: AnyPublisher<MaterialDetail, Error>]()
     let reloadPublisher = PassthroughSubject<Void, Never>()
     
     init(client: SchoologyClient, courseId: Int) {
@@ -89,6 +91,29 @@ class CourseMaterialsStore: ObservableObject {
                     self.reloadPublisher.send()
                 }
             }))
+        }
+    }
+    
+    func requestMaterialDetails(material: Material, force: Bool = false) {
+        if force || materialDetails[material.id] == nil {
+            materialDetails[material.id] = .loading
+            let publisher = client.fetchDetails(for: material)
+            
+            cancellables.insert(publisher.sink(receiveCompletion: { completion in
+                DispatchQueue.main.async {
+                    if case .failure(let error) = completion {
+                        self.materialDetails[material.id] = .done(.failure(error))
+                        self.materialDetailsPublishers[material.id] = nil
+                    }
+                }
+            }, receiveValue: { detail in
+                DispatchQueue.main.async {
+                    self.materialDetails[material.id] = .done(.success(detail))
+                    self.materialDetailsPublishers[material.id] = nil
+                }
+            }))
+            
+            self.materialDetailsPublishers[material.id] = publisher
         }
     }
 }

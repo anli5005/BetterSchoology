@@ -15,25 +15,9 @@
             filePath = "BetterSchoology/MaterialsOutlineView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "91"
-            endingLineNumber = "91"
-            landmarkName = "outlineView(_:child:ofItem:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "2A2A21E8-82B3-4618-8DEC-435E2A51C12A"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BetterSchoology/Store.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "98"
-            endingLineNumber = "98"
-            landmarkName = "materials(in:)"
+            startingLineNumber = "96"
+            endingLineNumber = "96"
+            landmarkName = "outlineView(_:numberOfChildrenOfItem:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -47,8 +31,8 @@
             filePath = "BetterSchoology/Store.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "85"
-            endingLineNumber = "85"
+            startingLineNumber = "87"
+            endingLineNumber = "87"
             landmarkName = "requestFolder(id:force:)"
             landmarkType = "7">
             <Actions>
@@ -72,8 +56,8 @@
             filePath = "BetterSchoology/CourseDetailView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "26"
-            endingLineNumber = "26"
+            startingLineNumber = "48"
+            endingLineNumber = "48"
             landmarkName = "body"
             landmarkType = "24">
             <Actions>
@@ -179,9 +163,9 @@
             filePath = "BetterSchoology/MaterialsOutlineView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "78"
-            endingLineNumber = "78"
-            landmarkName = "outlineView(_:numberOfChildrenOfItem:)"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
+            landmarkName = "init(_:)"
             landmarkType = "7">
             <Actions>
                <BreakpointActionProxy
@@ -204,8 +188,8 @@
             filePath = "BetterSchoology/Store.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "76"
-            endingLineNumber = "76"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
             landmarkName = "requestFolder(id:force:)"
             landmarkType = "7">
          </BreakpointContent>

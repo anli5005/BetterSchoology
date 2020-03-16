@@ -14,4 +14,5 @@ enum SchoologyAuthenticationError: Error {
 enum SchoologyParseError: Error {
     case badEncoding
     case unexpectedHtmlError
+    case badUrl
 }

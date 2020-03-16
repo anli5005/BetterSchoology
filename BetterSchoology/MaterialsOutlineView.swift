@@ -28,6 +28,7 @@ struct MaterialsOutlineView: NSViewRepresentable {
     
     @EnvironmentObject var globalStore: SchoologyStore
     var store: CourseMaterialsStore
+    @Binding var selectedMaterial: Material?
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -69,13 +70,23 @@ struct MaterialsOutlineView: NSViewRepresentable {
         let parent: MaterialsOutlineView
         
         var listenCancellable: AnyCancellable?
+        var selectSubject = PassthroughSubject<Material?, Never>()
+        var selectCancellable: AnyCancellable?
+        var doubleClickCancellables = [String: AnyCancellable]()
         
         init(_ parent: MaterialsOutlineView) {
             self.parent = parent
+            self.selectCancellable = selectSubject.debounce(for: 0.15, scheduler: DispatchQueue.main).sink(receiveValue: { material in
+                parent.selectedMaterial = material
+            })
         }
         
         func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
-            if let result = parent.store.materials[item as? String] {
+            let id = item as? String
+            
+            parent.store.requestFolder(id: id)
+            
+            if let result = parent.store.materials[id] {
                 if case .done(.success(let materials)) = result {
                     return materials.count
                 }
@@ -104,23 +115,54 @@ struct MaterialsOutlineView: NSViewRepresentable {
             }
         }
         
-        func outlineViewItemDidExpand(_ notification: Notification) {
+        /* func outlineViewItemDidExpand(_ notification: Notification) {
             if let id = notification.userInfo?["NSObject"] as? String {
                 parent.store.requestFolder(id: id)
             }
-        }
+        } */
         
         func outlineView(_ outlineView: NSOutlineView, shouldEdit tableColumn: NSTableColumn?, item: Any) -> Bool {
             return false
         }
         
+        func outlineViewSelectionDidChange(_ notification: Notification) {
+            if let sender = notification.object as? NSOutlineView {
+                if let id = sender.item(atRow: sender.selectedRow) as? String {
+                    selectSubject.send(parent.store.materialsById[id]!)
+                } else {
+                    selectSubject.send(nil)
+                }
+            }
+        }
+        
+        func doubleClick(material: Material, with clickable: DoubleClickable? = nil) {
+            if clickable?.acceptsDoubleClick == true {
+                clickable!.handleDoubleClick()
+            } else if let url = URL(string: parent.globalStore.client.prefix + material.urlSuffix) {
+                NSWorkspace.shared.open(url)
+            } else {
+                print("Unable to open \(material.urlSuffix)")
+            }
+        }
+        
         @objc func doubleClick(sender: NSOutlineView) {
             if let id = sender.item(atRow: sender.clickedRow) as? String {
                 let material = parent.store.materialsById[id]!
-                if let url = URL(string: parent.globalStore.client.prefix + material.urlSuffix) {
-                    NSWorkspace.shared.open(url)
+                if let type = parent.globalStore.client.detailFetcher(for: material)?.type(for: material), type is DoubleClickable.Type {
+                    if doubleClickCancellables[id] == nil {
+                        let loadable = parent.store.materialDetails[id]
+                        if case .some(.done(.success(let detail))) = loadable {
+                            doubleClick(material: material, with: (detail as! DoubleClickable))
+                        } else {
+                            parent.store.requestMaterialDetails(material: material)
+                            doubleClickCancellables[id] = parent.store.materialDetailsPublishers[id]!.sink(receiveCompletion: { _ in }, receiveValue: { detail in
+                                self.doubleClick(material: material, with: (detail as! DoubleClickable))
+                                self.doubleClickCancellables[id] = nil
+                            })
+                        }
+                    }
                 } else {
-                    print("Unable to open \(material.urlSuffix)")
+                    doubleClick(material: material)
                 }
             }
         }
