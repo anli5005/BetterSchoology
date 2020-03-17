@@ -28,6 +28,7 @@
 		4A2AA125241C4F11005C3C27 /* CourseListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2AA124241C4F11005C3C27 /* CourseListItemView.swift */; };
 		4A2AA127241C7A25005C3C27 /* CourseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2AA126241C7A25005C3C27 /* CourseDetailView.swift */; };
 		4A2AA129241D3444005C3C27 /* MaterialsOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */; };
+		4A53FE4924213E74005C3C27 /* PageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A53FE4824213E74005C3C27 /* PageContentView.swift */; };
 		4ADF57A5241EAA03005C3C27 /* MaterialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +56,7 @@
 		4A2AA124241C4F11005C3C27 /* CourseListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseListItemView.swift; sourceTree = "<group>"; };
 		4A2AA126241C7A25005C3C27 /* CourseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDetailView.swift; sourceTree = "<group>"; };
 		4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialsOutlineView.swift; sourceTree = "<group>"; };
+		4A53FE4824213E74005C3C27 /* PageContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageContentView.swift; sourceTree = "<group>"; };
 		4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -98,6 +100,7 @@
 				4A176DDC241C1C01005C3C27 /* Context.swift */,
 				4A2AA126241C7A25005C3C27 /* CourseDetailView.swift */,
 				4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */,
+				4A53FE4824213E74005C3C27 /* PageContentView.swift */,
 				4A2AA11D241C3F1E005C3C27 /* Store.swift */,
 				4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */,
 				4A1A931524200992005C3C27 /* WebView.swift */,
@@ -216,6 +219,7 @@
 				4A176DBB241BE25F005C3C27 /* AppDelegate.swift in Sources */,
 				4A1A931424200273005C3C27 /* DoubleClick.swift in Sources */,
 				4A176DCF241BFF85005C3C27 /* SchoologyClient.swift in Sources */,
+				4A53FE4924213E74005C3C27 /* PageContentView.swift in Sources */,
 				4A176DDF241C24D7005C3C27 /* Models.swift in Sources */,
 				4A2AA11E241C3F1E005C3C27 /* Store.swift in Sources */,
 				4A2AA125241C4F11005C3C27 /* CourseListItemView.swift in Sources */,

@@ -92,3 +92,20 @@ struct PageLinkFetcher: MaterialDetailFetcher {
         })
     }
 }
+
+struct PageFetcher: MaterialDetailFetcher {
+    func type(for material: Material) -> MaterialDetail.Type? {
+        return material.kind == .page ? PageMaterialDetail.self : nil
+    }
+    
+    func fetch(material: Material, using client: SchoologyClient) -> AnyPublisher<MaterialDetail, Error> {
+        return material.urlPublisher(prefix: client.prefix).flatMap { client.session.dataTaskPublisher(for: $0).castingToError() }.toString(encoding: .utf8).tryMap { str in
+            let document = try SwiftSoup.parse(str)
+            return PageMaterialDetail(
+                material: material,
+                fullName: try document.select(".s-page-title").text(),
+                content: try document.select(".s-page-content-full").html()
+            ) as MaterialDetail
+        }.eraseToAnyPublisher()
+    }
+}

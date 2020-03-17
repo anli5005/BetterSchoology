@@ -73,6 +73,12 @@ struct LinkMaterialDetail: MaterialDetail {
     var url: URL?
 }
 
+struct PageMaterialDetail: MaterialDetail {
+    var material: Material
+    var fullName: String
+    var content: String
+}
+
 struct OtherMaterialDetail: MaterialDetail {
     var material: Material
     var fullName: String { material.name }

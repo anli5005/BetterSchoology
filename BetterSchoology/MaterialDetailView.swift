@@ -59,3 +59,9 @@ extension LinkMaterialDetail: MaterialDetailViewRepresentable {
         })
     }
 }
+
+extension PageMaterialDetail: MaterialDetailViewRepresentable {
+    func makeView() -> AnyView {
+        return AnyView(PageContentView(content))
+    }
+}

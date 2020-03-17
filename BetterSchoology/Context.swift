@@ -25,5 +25,6 @@ extension SchoologyClient: ObservableObject {}
 
 let sharedClient = SchoologyClient(session: URLSession(configuration: .default), prefix: "https://bca.schoology.com", schoolId: "11897239", materialDetailFetchers: [
     SimpleLinkFetcher(),
-    PageLinkFetcher()
+    PageLinkFetcher(),
+    PageFetcher()
 ])
