@@ -24,10 +24,10 @@ struct MaterialDetailView: View {
             }) {
                 Text("Open in Schoology")
             }.buttonStyle(LinkButtonStyle()).disabled(url == nil).padding([.horizontal, .bottom])
-            Divider()
             if materialDetail is MaterialDetailViewRepresentable {
                 (materialDetail as! MaterialDetailViewRepresentable).makeView()
             } else {
+                Divider()
                 Text("No details available.").padding()
             }
         }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -41,6 +41,7 @@ protocol MaterialDetailViewRepresentable {
 extension LinkMaterialDetail: MaterialDetailViewRepresentable {
     func makeView() -> AnyView {
         return AnyView(VStack(alignment: .leading, spacing: 0) {
+            Divider()
             VStack(alignment: .leading) {
                 Text(url?.absoluteString ?? "Invalid URL").multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
                 Button(action: {
@@ -62,6 +63,9 @@ extension LinkMaterialDetail: MaterialDetailViewRepresentable {
 
 extension PageMaterialDetail: MaterialDetailViewRepresentable {
     func makeView() -> AnyView {
-        return AnyView(PageContentView(content))
+        return AnyView(VStack(spacing: 0) {
+            Divider()
+            PageContentView(content)
+        })
     }
 }

@@ -12,7 +12,7 @@ import WebKit
 struct PageContentView: View {
     let contentString: NSAttributedString?
     init(_ content: String) {
-        if let str = NSMutableAttributedString(html: Data(("<span style='font-family: system-ui;'>" + content + "</style>").utf8), options: [:], documentAttributes: nil) {
+        if let str = NSMutableAttributedString(html: Data(("<span style='font-family: system-ui;'>" + content + "</style>").utf8), options: [.characterEncoding: String.Encoding.utf8.rawValue], documentAttributes: nil) {
             str.addAttribute(.foregroundColor, value: NSColor.textColor, range: NSMakeRange(0, str.length))
             // str.addAttribute(.font, value: NSFont( ), range: NSMakeRange(0, str.length))
             contentString = str
