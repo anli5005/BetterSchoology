@@ -79,6 +79,19 @@ struct PageMaterialDetail: MaterialDetail {
     var content: String
 }
 
+struct FileMaterialDetail: MaterialDetail {
+    var material: Material
+    var fullName: String
+    var url: URL?
+    var size: String?
+    var iconClass: String?
+    var typeDescription: String?
+    
+    var id: String? {
+        url?.lastPathComponent
+    }
+}
+
 struct OtherMaterialDetail: MaterialDetail {
     var material: Material
     var fullName: String { material.name }

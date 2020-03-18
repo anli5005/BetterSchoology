@@ -29,6 +29,8 @@
 		4A2AA127241C7A25005C3C27 /* CourseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2AA126241C7A25005C3C27 /* CourseDetailView.swift */; };
 		4A2AA129241D3444005C3C27 /* MaterialsOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */; };
 		4A53FE4924213E74005C3C27 /* PageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A53FE4824213E74005C3C27 /* PageContentView.swift */; };
+		4A84ECD524229F81005C3C27 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 4A84ECD424229F81005C3C27 /* SQLite */; };
+		4A84ECD72422A02B005C3C27 /* FilesDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */; };
 		4ADF57A5241EAA03005C3C27 /* MaterialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +59,7 @@
 		4A2AA126241C7A25005C3C27 /* CourseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDetailView.swift; sourceTree = "<group>"; };
 		4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialsOutlineView.swift; sourceTree = "<group>"; };
 		4A53FE4824213E74005C3C27 /* PageContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageContentView.swift; sourceTree = "<group>"; };
+		4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesDatabase.swift; sourceTree = "<group>"; };
 		4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -65,6 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A84ECD524229F81005C3C27 /* SQLite in Frameworks */,
 				4A2AA121241C4123005C3C27 /* SwiftSoup in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -102,6 +106,7 @@
 				4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */,
 				4A53FE4824213E74005C3C27 /* PageContentView.swift */,
 				4A2AA11D241C3F1E005C3C27 /* Store.swift */,
+				4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */,
 				4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */,
 				4A1A931524200992005C3C27 /* WebView.swift */,
 				4A1A931324200273005C3C27 /* DoubleClick.swift */,
@@ -153,6 +158,7 @@
 			name = BetterSchoology;
 			packageProductDependencies = (
 				4A2AA120241C4123005C3C27 /* SwiftSoup */,
+				4A84ECD424229F81005C3C27 /* SQLite */,
 			);
 			productName = BetterSchoology;
 			productReference = 4A176DB7241BE25F005C3C27 /* BetterSchoology.app */;
@@ -184,6 +190,7 @@
 			mainGroup = 4A176DAE241BE25F005C3C27;
 			packageReferences = (
 				4A2AA11F241C4123005C3C27 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
+				4A84ECD324229F81005C3C27 /* XCRemoteSwiftPackageReference "SQLite.swift" */,
 			);
 			productRefGroup = 4A176DB8241BE25F005C3C27 /* Products */;
 			projectDirPath = "";
@@ -230,6 +237,7 @@
 				4A176DE4241C32A9005C3C27 /* CourseListView.swift in Sources */,
 				4A1A931624200992005C3C27 /* WebView.swift in Sources */,
 				4A176DD9241C0DD2005C3C27 /* Errors.swift in Sources */,
+				4A84ECD72422A02B005C3C27 /* FilesDatabase.swift in Sources */,
 				4A176DD7241C0D44005C3C27 /* SchoologyCredentials.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -368,7 +376,7 @@
 				CODE_SIGN_ENTITLEMENTS = BetterSchoology/BetterSchoology.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "\"BetterSchoology/Preview Content\"";
 				DEVELOPMENT_TEAM = 9DDM72ZZ79;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -379,7 +387,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 0.3;
+				MARKETING_VERSION = 0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.anli.BetterSchoology;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -393,7 +401,7 @@
 				CODE_SIGN_ENTITLEMENTS = BetterSchoology/BetterSchoology.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "\"BetterSchoology/Preview Content\"";
 				DEVELOPMENT_TEAM = 9DDM72ZZ79;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -404,7 +412,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 0.3;
+				MARKETING_VERSION = 0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.anli.BetterSchoology;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -443,6 +451,14 @@
 				minimumVersion = 2.3.0;
 			};
 		};
+		4A84ECD324229F81005C3C27 /* XCRemoteSwiftPackageReference "SQLite.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stephencelis/SQLite.swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.12.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -450,6 +466,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4A2AA11F241C4123005C3C27 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
 			productName = SwiftSoup;
+		};
+		4A84ECD424229F81005C3C27 /* SQLite */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4A84ECD324229F81005C3C27 /* XCRemoteSwiftPackageReference "SQLite.swift" */;
+			productName = SQLite;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

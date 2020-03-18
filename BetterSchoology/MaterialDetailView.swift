@@ -69,3 +69,18 @@ extension PageMaterialDetail: MaterialDetailViewRepresentable {
         })
     }
 }
+
+extension FileMaterialDetail: MaterialDetailViewRepresentable {
+    func makeView() -> AnyView {
+        return AnyView(VStack(alignment: .leading, spacing: 0) {
+            Divider()
+            VStack(alignment: .leading) {
+                Text("ID: \(id ?? "No ID")")
+                Text("URL: \(url?.absoluteString ?? "No URL")")
+                Text("Icon Class: \(iconClass ?? "No Icon Class")")
+                Text("Size: \(size ?? "No Size")")
+                Text("Type: \(typeDescription ?? "No Type Description")")
+            }.padding()
+        })
+    }
+}

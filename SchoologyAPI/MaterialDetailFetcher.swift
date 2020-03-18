@@ -109,3 +109,38 @@ struct PageFetcher: MaterialDetailFetcher {
         }.eraseToAnyPublisher()
     }
 }
+
+struct FileFetcher: MaterialDetailFetcher {
+    func type(for material: Material) -> MaterialDetail.Type? {
+        return material.kind == .file ? FileMaterialDetail.self : nil
+    }
+    
+    func fetch(material: Material, using client: SchoologyClient) -> AnyPublisher<MaterialDetail, Error> {
+        return material.urlPublisher(prefix: client.prefix).flatMap { client.session.dataTaskPublisher(for: $0).castingToError() }.toString(encoding: .utf8).tryMap { str in
+            let document = try SwiftSoup.parse(str)
+            let fullName = try document.select(".page-title").text()
+            let contentWrapper = try document.select("#content-wrapper")
+            
+            if let attachment = try contentWrapper.select(".attachments-file").first() {
+                let icon = try attachment.select(".inline-icon")
+                return FileMaterialDetail(
+                    material: material,
+                    fullName: fullName,
+                    url: URL(string: try attachment.select(".attachments-file-name > a").not(".view-file-popup").attr("href")),
+                    size: try attachment.select(".attachments-file-size").first()?.text(),
+                    iconClass: try icon.first()?.className(),
+                    typeDescription: try icon.select(".visually-hidden").first()?.text()
+                )
+            } else {
+                return FileMaterialDetail(
+                    material: material,
+                    fullName: fullName,
+                    url: URL(string: try contentWrapper.select("img").attr("src")),
+                    size: nil,
+                    iconClass: nil,
+                    typeDescription: nil
+                ) as MaterialDetail
+            }
+        }.eraseToAnyPublisher()
+    }
+}
