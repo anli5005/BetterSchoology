@@ -10,8 +10,14 @@ import SwiftUI
 import WebKit
 
 struct PageContentView: View {
-    let contentString: NSAttributedString?
+    var content: String
+    
     init(_ content: String) {
+        self.content = content
+    }
+    
+    var body: some View {
+        let contentString: NSAttributedString?
         if let str = NSMutableAttributedString(html: Data(("<span style='font-family: system-ui;'>" + content + "</style>").utf8), options: [.characterEncoding: String.Encoding.utf8.rawValue], documentAttributes: nil) {
             str.addAttribute(.foregroundColor, value: NSColor.textColor, range: NSMakeRange(0, str.length))
             // str.addAttribute(.font, value: NSFont( ), range: NSMakeRange(0, str.length))
@@ -19,9 +25,7 @@ struct PageContentView: View {
         } else {
             contentString = nil
         }
-    }
-    
-    var body: some View {
+        
         if contentString == nil {
             return AnyView(Text("Unable to parse data"))
         } else {
