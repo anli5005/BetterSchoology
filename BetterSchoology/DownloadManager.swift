@@ -10,6 +10,11 @@ import Foundation
 import Combine
 import AppKit
 
+enum DownloadError: Error {
+    case fileNotFound
+    case unauthorizedBySandbox
+}
+
 class DownloadManager: ObservableObject {
     let database: FilesDatabase
     let client: SchoologyClient
@@ -22,6 +27,7 @@ class DownloadManager: ObservableObject {
         var downloadStatus: DownloadStatus? = nil
         var diskStatus: DiskFileStatus? = nil
         var downloadPublisher: AnyPublisher<FileStatus, Error>? = nil
+        var diskPublisher: AnyPublisher<DiskFileStatus, Never>? = nil
     }
     
     enum DownloadStatus {
@@ -95,7 +101,7 @@ class DownloadManager: ObservableObject {
                 }
                 
                 do {
-                    let bookmark = try result!.bookmarkData()
+                    let bookmark = try result!.bookmarkData(options: .withSecurityScope)
                     let download = FileDownload(id: file.id!, bookmark: bookmark, userVisible: true)
                     try self.database.upsertFile(download)
                     let status = FileStatus(downloadStatus: nil, diskStatus: .onDisk(download), downloadPublisher: nil)
@@ -128,45 +134,143 @@ class DownloadManager: ObservableObject {
         
         task.resume()
         let publisher = subject.eraseToAnyPublisher()
-        if fileStatuses[file.id!] == nil {
-            fileStatuses[file.id!] = FileStatus(downloadStatus: .downloading(task.progress), diskStatus: nil, downloadPublisher: publisher)
-        } else {
-            fileStatuses[file.id!]!.downloadStatus = .downloading(task.progress)
-            fileStatuses[file.id!]!.downloadPublisher = publisher
+        DispatchQueue.main.async {
+            if self.fileStatuses[file.id!] == nil {
+                self.fileStatuses[file.id!] = FileStatus(downloadStatus: .downloading(task.progress), downloadPublisher: publisher)
+            } else {
+                self.fileStatuses[file.id!]!.downloadStatus = .downloading(task.progress)
+                self.fileStatuses[file.id!]!.downloadPublisher = publisher
+            }
         }
         return publisher
     }
     
-    func open(download: FileDownload, in workspace: NSWorkspace = .shared) throws {
+    @discardableResult func diskStatus(id: String, queue: DispatchQueue = .global(qos: .userInitiated), force: Bool = false) -> AnyPublisher<DiskFileStatus, Never> {
+        if let publisher = fileStatuses[id]?.diskPublisher {
+            return publisher
+        }
+        
+        if !force && fileStatuses[id]?.diskStatus != nil {
+            return Just(fileStatuses[id]!.diskStatus!).eraseToAnyPublisher()
+        }
+        
+        let subject = PassthroughSubject<DiskFileStatus, Never>()
+        
+        queue.async {
+            let status: DiskFileStatus
+            do {
+                if var download = try self.database.file(id: id) {
+                    do {
+                        var isStale = false
+                        let url = try URL(resolvingBookmarkData: download.bookmark, options: [.withoutUI, .withSecurityScope], bookmarkDataIsStale: &isStale)
+                        _ = url.startAccessingSecurityScopedResource()
+                        
+                        if isStale {
+                            do {
+                                let data = try url.bookmarkData(options: .withSecurityScope)
+                                download.bookmark = data
+                                try self.database.upsertFile(download)
+                            } catch let e {
+                                print("Error regenerating stale bookmark data: \(e)")
+                            }
+                        }
+                        
+                        if !self.fileManager.fileExists(atPath: url.path) {
+                            url.stopAccessingSecurityScopedResource()
+                            throw DownloadError.fileNotFound
+                        }
+                        
+                        url.stopAccessingSecurityScopedResource()
+                        status = .onDisk(download)
+                    } catch let e {
+                        status = .fileError(download, e)
+                    }
+                } else {
+                    status = .notOnDisk
+                }
+            } catch let e {
+                status = .fetchError(e)
+            }
+            
+            DispatchQueue.main.async {
+                self.fileStatuses[id]?.diskStatus = status
+                self.fileStatuses[id]?.diskPublisher = nil
+            }
+            subject.send(status)
+            subject.send(completion: .finished)
+        }
+        
+        let publisher = subject.eraseToAnyPublisher()
+        DispatchQueue.main.async {
+            if self.fileStatuses[id] == nil {
+                self.fileStatuses[id] = FileStatus(diskPublisher: publisher)
+            } else {
+                self.fileStatuses[id]!.diskPublisher = publisher
+            }
+        }
+        return publisher
+    }
+    
+    func withURL(of download: FileDownload, _ run: (URL, @escaping () -> Void) throws -> Void) throws {
         var isStale = false
         let url: URL
         do {
-            url = try URL(resolvingBookmarkData: download.bookmark, options: .withoutUI, bookmarkDataIsStale: &isStale)
-            workspace.open(url)
+            url = try URL(resolvingBookmarkData: download.bookmark, options: [.withoutUI, .withSecurityScope], bookmarkDataIsStale: &isStale)
+            if !url.startAccessingSecurityScopedResource() {
+                throw DownloadError.unauthorizedBySandbox
+            }
         } catch let e {
             self.fileStatuses[download.id]?.diskStatus = .fileError(download, e)
             throw e
         }
         
-        if isStale {
-            DispatchQueue.global(qos: .utility).async {
-                do {
-                    let data = try url.bookmarkData()
-                    var newDownload = download
-                    newDownload.bookmark = data
-                    try self.database.upsertFile(newDownload)
-                } catch let e {
-                    print("Error regenerating stale bookmark data: \(e)")
-                }
+        try run(url) {
+            url.stopAccessingSecurityScopedResource()
+        }
+    }
+}
+
+extension DownloadManager {
+    func open(download: FileDownload, in workspace: NSWorkspace = .shared) throws {
+        try withURL(of: download) { (url, done) in
+            workspace.open(url, configuration: NSWorkspace.OpenConfiguration()) { _, _ in
+                done()
             }
         }
     }
     
-    func downloadAndOpen(_ file: SchoologyFile) {
-        sharedDownloadManager.download(file: file).sink(receiveCompletion: { _ in }, receiveValue: { status in
-            if case .some(.onDisk(let download)) = status.diskStatus {
-                try? sharedDownloadManager.open(download: download)
+    func revealInFinder(download: FileDownload, in workspace: NSWorkspace = .shared) throws {
+        try withURL(of: download, { (url, done) in
+            workspace.activateFileViewerSelecting([url])
+            done()
+        })
+    }
+    
+    @discardableResult func downloadAndOpen(_ file: SchoologyFile, in workspace: NSWorkspace = .shared) -> AnyPublisher<Void, Error> {
+        let subject = PassthroughSubject<Void, Error>()
+        diskStatus(id: file.id!, force: true).mapError { $0 as Error }.flatMap { status -> AnyPublisher<FileDownload, Error> in
+            switch status {
+            case .notOnDisk, .fileError(_, _), .fetchError(_):
+                return self.download(file: file).map { status in
+                    guard case .some(.onDisk(let download)) = status.diskStatus else {
+                        return nil
+                    }
+                    
+                    return download
+                }.filter { $0 != nil }.map{ $0! }.eraseToAnyPublisher()
+            case .onDisk(let download):
+                return Just(download).mapError { $0 as Error }.eraseToAnyPublisher()
             }
-        }).store(in: &cancellables)
+        }.tryMap { download in
+            try self.open(download: download, in: workspace)
+        }.sink(receiveCompletion: { completion in
+            if case .failure(let e) = completion {
+                subject.send(completion: .failure(e))
+            }
+        }, receiveValue: { _ in
+            subject.send()
+            subject.send(completion: .finished)
+        }).store(in: &self.cancellables)
+        return subject.eraseToAnyPublisher()
     }
 }
