@@ -97,7 +97,7 @@ extension AssignmentMaterialDetail: MaterialDetailViewRepresentable {
                 if content.isEmpty {
                     filesList
                 } else {
-                    filesList.frame(height: 120)
+                    filesList.frame(height: 160)
                 }
             }
             Divider()

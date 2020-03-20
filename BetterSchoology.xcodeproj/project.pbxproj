@@ -408,7 +408,7 @@
 				CODE_SIGN_ENTITLEMENTS = BetterSchoology/BetterSchoology.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"BetterSchoology/Preview Content\"";
 				DEVELOPMENT_TEAM = 9DDM72ZZ79;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -433,7 +433,7 @@
 				CODE_SIGN_ENTITLEMENTS = BetterSchoology/BetterSchoology.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"BetterSchoology/Preview Content\"";
 				DEVELOPMENT_TEAM = 9DDM72ZZ79;
 				ENABLE_HARDENED_RUNTIME = YES;
