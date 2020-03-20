@@ -47,7 +47,7 @@ struct CourseDetailView: View {
         
         return HStack(spacing: 0) {
             VStack(spacing: 0) {
-                Text(course.courseTitle).font(.largeTitle).fontWeight(.bold).padding()
+                Text(course.courseTitle).font(.largeTitle).fontWeight(.bold).padding().multilineTextAlignment(.center)
                 Button(action: {
                     self.materialsStore.materials = [:]
                     self.materialsStore.materialDetails = [:]

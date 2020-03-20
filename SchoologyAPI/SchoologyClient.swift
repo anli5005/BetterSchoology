@@ -140,7 +140,11 @@ class SchoologyClient {
                         kind = .quiz
                         meta = nil
                     } else if row.hasClass("type-assignment") {
-                        kind = .assignment
+                        if try row.select(".assessment-icon").count > 0 {
+                            kind = .quiz
+                        } else {
+                            kind = .assignment
+                        }
                         meta = nil
                     } else {
                         kind = .other

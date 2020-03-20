@@ -97,6 +97,13 @@ struct FileMaterialDetail: MaterialDetail {
     var file: SchoologyFile
 }
 
+struct AssignmentMaterialDetail: MaterialDetail {
+    var material: Material
+    var fullName: String
+    var content: String
+    var files: [SchoologyFile]
+}
+
 struct OtherMaterialDetail: MaterialDetail {
     var material: Material
     var fullName: String { material.name }

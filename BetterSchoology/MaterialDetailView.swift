@@ -25,7 +25,7 @@ struct MaterialDetailView: View {
                 Text("Open in Schoology")
             }.buttonStyle(LinkButtonStyle()).disabled(url == nil).padding([.horizontal, .bottom])
             if materialDetail is MaterialDetailViewRepresentable {
-                (materialDetail as! MaterialDetailViewRepresentable).makeView()
+                (materialDetail as! MaterialDetailViewRepresentable).makeView(url: self.url)
             } else {
                 Divider()
                 Text("No details available.").padding()
@@ -35,11 +35,11 @@ struct MaterialDetailView: View {
 }
 
 protocol MaterialDetailViewRepresentable {
-    func makeView() -> AnyView
+    func makeView(url: URL?) -> AnyView
 }
 
 extension LinkMaterialDetail: MaterialDetailViewRepresentable {
-    func makeView() -> AnyView {
+    func makeView(url: URL?) -> AnyView {
         return AnyView(VStack(alignment: .leading, spacing: 0) {
             Divider()
             VStack(alignment: .leading) {
@@ -62,7 +62,7 @@ extension LinkMaterialDetail: MaterialDetailViewRepresentable {
 }
 
 extension PageMaterialDetail: MaterialDetailViewRepresentable {
-    func makeView() -> AnyView {
+    func makeView(url: URL?) -> AnyView {
         return AnyView(VStack(spacing: 0) {
             Divider()
             PageContentView(content)
@@ -71,10 +71,44 @@ extension PageMaterialDetail: MaterialDetailViewRepresentable {
 }
 
 extension FileMaterialDetail: MaterialDetailViewRepresentable {
-    func makeView() -> AnyView {
+    func makeView(url: URL?) -> AnyView {
         return AnyView(VStack(alignment: .leading, spacing: 0) {
             Divider()
             FileView(file: file).padding()
+        })
+    }
+}
+
+extension AssignmentMaterialDetail: MaterialDetailViewRepresentable {
+    func makeView(url: URL?) -> AnyView {
+        let filesList = List(files.filter { $0.id != nil }, id: \.id) { file in
+            FileView(file: file)
+        }
+        
+        return AnyView(VStack(alignment: .leading, spacing: 0) {
+            Divider()
+            if !content.isEmpty || files.isEmpty {
+                PageContentView(content)
+                if !files.isEmpty {
+                    Divider()
+                }
+            }
+            if !files.isEmpty {
+                if content.isEmpty {
+                    filesList
+                } else {
+                    filesList.frame(height: 120)
+                }
+            }
+            Divider()
+            VStack {
+                Text("To submit or view more details, open this assignment in your web browser.").multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+                Button(action: {
+                    NSWorkspace.shared.open(url!)
+                }) {
+                    Text("Open in Web Browser")
+                }.disabled(url == nil)
+            }.frame(maxWidth: .infinity, alignment: .center).padding()
         })
     }
 }
