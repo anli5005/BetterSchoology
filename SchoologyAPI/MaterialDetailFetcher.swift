@@ -110,6 +110,17 @@ struct PageFetcher: MaterialDetailFetcher {
     }
 }
 
+func extractFile(from attachment: Element) throws -> SchoologyFile {
+    let icon = try attachment.select(".inline-icon")
+    return SchoologyFile(
+        name: try attachment.select(".infotip").first()?.textNodes().first?.text(),
+        url: URL(string: try attachment.select(".attachments-file-name > a").not(".view-file-popup").attr("href")),
+        size: try attachment.select(".attachments-file-size").first()?.text(),
+        iconClass: try icon.first()?.className(),
+        typeDescription: try icon.select(".visually-hidden").first()?.text()
+    )
+}
+
 struct FileFetcher: MaterialDetailFetcher {
     func type(for material: Material) -> MaterialDetail.Type? {
         return material.kind == .file ? FileMaterialDetail.self : nil
@@ -122,24 +133,23 @@ struct FileFetcher: MaterialDetailFetcher {
             let contentWrapper = try document.select("#content-wrapper")
             
             if let attachment = try contentWrapper.select(".attachments-file").first() {
-                let icon = try attachment.select(".inline-icon")
                 return FileMaterialDetail(
                     material: material,
                     fullName: fullName,
-                    url: URL(string: try attachment.select(".attachments-file-name > a").not(".view-file-popup").attr("href")),
-                    size: try attachment.select(".attachments-file-size").first()?.text(),
-                    iconClass: try icon.first()?.className(),
-                    typeDescription: try icon.select(".visually-hidden").first()?.text()
+                    file: try extractFile(from: attachment)
                 )
             } else {
                 return FileMaterialDetail(
                     material: material,
                     fullName: fullName,
-                    url: URL(string: try contentWrapper.select("img").attr("src")),
-                    size: nil,
-                    iconClass: nil,
-                    typeDescription: nil
-                ) as MaterialDetail
+                    file: SchoologyFile(
+                        name: fullName,
+                        url: URL(string: try contentWrapper.select("img").attr("src")),
+                        size: nil,
+                        iconClass: nil,
+                        typeDescription: nil
+                    )
+                )
             }
         }.eraseToAnyPublisher()
     }

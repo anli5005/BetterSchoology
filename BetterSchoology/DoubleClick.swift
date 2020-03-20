@@ -19,3 +19,10 @@ extension LinkMaterialDetail: DoubleClickable {
         NSWorkspace.shared.open(url!)
     }
 }
+
+extension FileMaterialDetail: DoubleClickable {
+    var acceptsDoubleClick: Bool { file.id != nil }
+    func handleDoubleClick() {
+        sharedDownloadManager.downloadAndOpen(file)
+    }
+}

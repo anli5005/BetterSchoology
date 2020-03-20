@@ -79,9 +79,8 @@ struct PageMaterialDetail: MaterialDetail {
     var content: String
 }
 
-struct FileMaterialDetail: MaterialDetail {
-    var material: Material
-    var fullName: String
+struct SchoologyFile {
+    var name: String?
     var url: URL?
     var size: String?
     var iconClass: String?
@@ -90,6 +89,12 @@ struct FileMaterialDetail: MaterialDetail {
     var id: String? {
         url?.lastPathComponent
     }
+}
+
+struct FileMaterialDetail: MaterialDetail {
+    var material: Material
+    var fullName: String
+    var file: SchoologyFile
 }
 
 struct OtherMaterialDetail: MaterialDetail {

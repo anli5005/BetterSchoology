@@ -31,6 +31,8 @@
 		4A53FE4924213E74005C3C27 /* PageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A53FE4824213E74005C3C27 /* PageContentView.swift */; };
 		4A84ECD524229F81005C3C27 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 4A84ECD424229F81005C3C27 /* SQLite */; };
 		4A84ECD72422A02B005C3C27 /* FilesDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */; };
+		4A84ECD92423D968005C3C27 /* FileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84ECD82423D968005C3C27 /* FileView.swift */; };
+		4A84ECDB24242101005C3C27 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84ECDA24242101005C3C27 /* DownloadManager.swift */; };
 		4ADF57A5241EAA03005C3C27 /* MaterialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */; };
 /* End PBXBuildFile section */
 
@@ -60,6 +62,8 @@
 		4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialsOutlineView.swift; sourceTree = "<group>"; };
 		4A53FE4824213E74005C3C27 /* PageContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageContentView.swift; sourceTree = "<group>"; };
 		4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesDatabase.swift; sourceTree = "<group>"; };
+		4A84ECD82423D968005C3C27 /* FileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileView.swift; sourceTree = "<group>"; };
+		4A84ECDA24242101005C3C27 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
 		4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -96,21 +100,9 @@
 		4A176DB9241BE25F005C3C27 /* BetterSchoology */ = {
 			isa = PBXGroup;
 			children = (
-				4A176DBA241BE25F005C3C27 /* AppDelegate.swift */,
-				4A176DBC241BE25F005C3C27 /* ContentView.swift */,
-				4A2AA122241C4DB5005C3C27 /* MainView.swift */,
-				4A176DE3241C32A9005C3C27 /* CourseListView.swift */,
-				4A2AA124241C4F11005C3C27 /* CourseListItemView.swift */,
-				4A176DDC241C1C01005C3C27 /* Context.swift */,
-				4A2AA126241C7A25005C3C27 /* CourseDetailView.swift */,
-				4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */,
-				4A53FE4824213E74005C3C27 /* PageContentView.swift */,
-				4A2AA11D241C3F1E005C3C27 /* Store.swift */,
-				4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */,
-				4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */,
-				4A1A931524200992005C3C27 /* WebView.swift */,
-				4A1A931324200273005C3C27 /* DoubleClick.swift */,
-				4A176DDA241C17AB005C3C27 /* AuthView.swift */,
+				4A84ECDE242421A1005C3C27 /* Main Views */,
+				4A84ECE224242212005C3C27 /* Utility Views */,
+				4A84ECDF242421E3005C3C27 /* Stores & Managers */,
 				4A176DBE241BE262005C3C27 /* Assets.xcassets */,
 				4A176DC3241BE262005C3C27 /* Main.storyboard */,
 				4A176DC6241BE262005C3C27 /* Info.plist */,
@@ -138,6 +130,44 @@
 				4A176DD6241C0D44005C3C27 /* SchoologyCredentials.swift */,
 			);
 			path = SchoologyAPI;
+			sourceTree = "<group>";
+		};
+		4A84ECDE242421A1005C3C27 /* Main Views */ = {
+			isa = PBXGroup;
+			children = (
+				4A176DBC241BE25F005C3C27 /* ContentView.swift */,
+				4A176DDA241C17AB005C3C27 /* AuthView.swift */,
+				4A2AA122241C4DB5005C3C27 /* MainView.swift */,
+				4A176DE3241C32A9005C3C27 /* CourseListView.swift */,
+				4A2AA126241C7A25005C3C27 /* CourseDetailView.swift */,
+				4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */,
+			);
+			name = "Main Views";
+			sourceTree = "<group>";
+		};
+		4A84ECDF242421E3005C3C27 /* Stores & Managers */ = {
+			isa = PBXGroup;
+			children = (
+				4A176DBA241BE25F005C3C27 /* AppDelegate.swift */,
+				4A176DDC241C1C01005C3C27 /* Context.swift */,
+				4A2AA11D241C3F1E005C3C27 /* Store.swift */,
+				4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */,
+				4A84ECDA24242101005C3C27 /* DownloadManager.swift */,
+				4A1A931324200273005C3C27 /* DoubleClick.swift */,
+			);
+			name = "Stores & Managers";
+			sourceTree = "<group>";
+		};
+		4A84ECE224242212005C3C27 /* Utility Views */ = {
+			isa = PBXGroup;
+			children = (
+				4A2AA124241C4F11005C3C27 /* CourseListItemView.swift */,
+				4A84ECD82423D968005C3C27 /* FileView.swift */,
+				4A53FE4824213E74005C3C27 /* PageContentView.swift */,
+				4A1A931524200992005C3C27 /* WebView.swift */,
+				4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */,
+			);
+			name = "Utility Views";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -220,6 +250,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A2AA129241D3444005C3C27 /* MaterialsOutlineView.swift in Sources */,
+				4A84ECDB24242101005C3C27 /* DownloadManager.swift in Sources */,
 				4A176DDB241C17AB005C3C27 /* AuthView.swift in Sources */,
 				4ADF57A5241EAA03005C3C27 /* MaterialDetailView.swift in Sources */,
 				4A176DBD241BE25F005C3C27 /* ContentView.swift in Sources */,
@@ -237,6 +268,7 @@
 				4A176DE4241C32A9005C3C27 /* CourseListView.swift in Sources */,
 				4A1A931624200992005C3C27 /* WebView.swift in Sources */,
 				4A176DD9241C0DD2005C3C27 /* Errors.swift in Sources */,
+				4A84ECD92423D968005C3C27 /* FileView.swift in Sources */,
 				4A84ECD72422A02B005C3C27 /* FilesDatabase.swift in Sources */,
 				4A176DD7241C0D44005C3C27 /* SchoologyCredentials.swift in Sources */,
 			);

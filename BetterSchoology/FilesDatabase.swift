@@ -37,6 +37,10 @@ class FilesDatabase {
         self.init(try Connection(filename))
     }
     
+    convenience init() throws {
+        self.init(try Connection())
+    }
+    
     func setup() throws {
         try db.run(files.create(ifNotExists: true) { table in
             table.column(id, primaryKey: true)
@@ -45,6 +49,7 @@ class FilesDatabase {
             table.column(hash)
             table.column(hashAlg)
             table.column(meta)
+            table.column(userVisible)
         })
     }
     

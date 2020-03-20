@@ -94,6 +94,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         })
         
+        do {
+            let dir = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("dev.anli.BetterSchoology", isDirectory: true)
+            if !FileManager.default.fileExists(atPath: dir.path) {
+                try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: false, attributes: nil)
+            }
+            let path = dir.appendingPathComponent("downloads.db", isDirectory: false).path
+            let db = try FilesDatabase(path)
+            sharedDownloadManager = DownloadManager(database: db, client: sharedClient)
+        } catch let e {
+            print("Error with downloads database: \(e)")
+        }
+        
+        do {
+            try sharedDownloadManager.database.setup()
+        } catch let e {
+            print("Error setting up downloads database: \(e)")
+        }
+        
         // Create the SwiftUI view that provides the window contents.
         let contentView = ContentView()
             .environmentObject(context)
