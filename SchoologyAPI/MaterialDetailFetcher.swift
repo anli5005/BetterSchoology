@@ -10,6 +10,15 @@ import Combine
 import Foundation
 import SwiftSoup
 
+let messageDateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.timeZone = TimeZone(identifier: "America/New_York")
+    formatter.locale = Locale(identifier: "en-US")
+    formatter.calendar = Calendar(identifier: .gregorian)
+    formatter.dateFormat = "E MMM d, y 'at' h:mm a"
+    return formatter
+}()
+
 extension Material {
     func urlPublisher(prefix: String) -> Future<URL, Error> {
         Future { promise in
@@ -169,6 +178,95 @@ struct AssignmentFetcher: MaterialDetailFetcher {
                 fullName: try document.select(".page-title").text(),
                 content: try document.select(".info-body").html(),
                 files: try document.select(".attachments-file").map { try extractFile(from: $0) }
+            )
+        }.eraseToAnyPublisher()
+    }
+}
+
+func parseMessage(comment: Element, parent: String?) throws -> Message {
+    var content = ""
+    if let body = try comment.select(".comment-body-wrapper").first() {
+        try body.select(".hidden, .comment-more-toggle").forEach { child in
+            try body.removeChild(child)
+        }
+        content = try body.html()
+    }
+    
+    return Message(
+        id: comment.id().replacingOccurrences(of: "comment-", with: ""),
+        parent: parent,
+        children: [],
+        date: messageDateFormatter.date(from: try comment.select(".comment-time span").text()),
+        authorName: try comment.select(".comment-author a").text(),
+        content: content,
+        likes: Int(try comment.select(".s-like-comment-icon").text()) ?? 0,
+        liked: try comment.select(".like-btn .content").text().contains("Un"),
+        isAdmin: try comment.select(".comment_picture").hasClass("is-admin")
+    )
+}
+
+func parseMessageTree(in root: Element) throws -> ([String: Message], [String]) {
+    var result = [String: Message]()
+    var toExplore = [(String, Element)]()
+    
+    let rootElements = root.children().filter { $0.hasClass("discussion-card") }.map { $0.children() }
+    let rootMessages = try rootElements.map { children -> Message in
+        guard let comment = children.first() else {
+            throw SchoologyParseError.unexpectedHtmlError
+        }
+        
+        return try parseMessage(comment: comment, parent: nil)
+    }
+    
+    for (children, message) in zip(rootElements, rootMessages) {
+        result[message.id] = message
+        if let level = children.last(where: { $0.hasClass("s_comments_level") }) {
+            toExplore.append((message.id, level))
+        }
+    }
+    
+    while !toExplore.isEmpty {
+        let (parent, level) = toExplore.removeLast()
+        var children = [String]()
+        for child in level.children() {
+            if child.hasClass("comment") {
+                let message = try parseMessage(comment: child, parent: parent)
+                result[message.id] = message
+                children.append(message.id)
+            } else if child.hasClass("s_comments_level") {
+                if let id = children.last {
+                    toExplore.append((id, child))
+                } else {
+                    throw SchoologyParseError.unexpectedHtmlError
+                }
+            }
+        }
+        result[parent]!.children = children
+    }
+    
+    return (result, rootMessages.map { $0.id })
+}
+
+struct DiscussionFetcher: MaterialDetailFetcher {
+    func type(for material: Material) -> MaterialDetail.Type? {
+        return material.kind == .discussion ? DiscussionMaterialDetail.self : nil
+    }
+    
+    func fetch(material: Material, using client: SchoologyClient) -> AnyPublisher<MaterialDetail, Error> {
+        return material.urlPublisher(prefix: client.prefix).flatMap { client.session.dataTaskPublisher(for: $0).castingToError() }.toString(encoding: .utf8).tryMap { str in
+            let document = try SwiftSoup.parse(str)
+            var messages = [String: Message]()
+            var rootMessages = [String]()
+            if let comments = try document.select("#s_comments > .s_comments_level").first() {
+                (messages, rootMessages) = try parseMessageTree(in: comments)
+            }
+            return DiscussionMaterialDetail(
+                material: material,
+                fullName: try document.select(".page-title").text(),
+                content: try document.select(".discussion-prompt").html(),
+                files: try document.select(".discussion-attachments .attachments-file").map { try extractFile(from: $0) },
+                messages: messages,
+                rootMessages: rootMessages
             )
         }.eraseToAnyPublisher()
     }

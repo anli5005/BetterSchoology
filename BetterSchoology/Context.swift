@@ -28,7 +28,15 @@ let sharedClient = SchoologyClient(session: URLSession(configuration: .default),
     PageLinkFetcher(),
     PageFetcher(),
     FileFetcher(),
-    AssignmentFetcher()
+    AssignmentFetcher(),
+    DiscussionFetcher()
 ])
 
 var sharedDownloadManager = DownloadManager(database: try! FilesDatabase(), client: sharedClient)
+
+let userDateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateStyle = .short
+    formatter.timeStyle = .short
+    return formatter
+}()

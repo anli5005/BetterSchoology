@@ -104,6 +104,31 @@ struct AssignmentMaterialDetail: MaterialDetail {
     var files: [SchoologyFile]
 }
 
+struct Message: Identifiable {
+    var id: String
+    
+    var parent: String?
+    var children: [String]
+    
+    var date: Date?
+    var authorName: String
+    var content: String
+    var likes: Int
+    var liked: Bool
+    var isAdmin: Bool
+    
+    var replies: Int { children.count }
+}
+
+struct DiscussionMaterialDetail: MaterialDetail {
+    var material: Material
+    var fullName: String
+    var content: String
+    var files: [SchoologyFile]
+    var messages: [String: Message]
+    var rootMessages: [String]
+}
+
 struct OtherMaterialDetail: MaterialDetail {
     var material: Material
     var fullName: String { material.name }

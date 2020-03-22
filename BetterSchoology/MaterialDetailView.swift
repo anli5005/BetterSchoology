@@ -79,14 +79,23 @@ extension FileMaterialDetail: MaterialDetailViewRepresentable {
     }
 }
 
-extension AssignmentMaterialDetail: MaterialDetailViewRepresentable {
-    func makeView(url: URL?) -> AnyView {
+protocol HasContentAndFiles {
+    var content: String { get }
+    var files: [SchoologyFile] { get }
+}
+
+struct ContentAndFilesView: View {
+    var contentAndFiles: HasContentAndFiles
+    
+    var body: some View {
+        let content = contentAndFiles.content
+        let files = contentAndFiles.files
+        
         let filesList = List(files.filter { $0.id != nil }, id: \.id) { file in
             FileView(file: file)
         }
         
-        return AnyView(VStack(alignment: .leading, spacing: 0) {
-            Divider()
+        return VStack(spacing: 0) {
             if !content.isEmpty || files.isEmpty {
                 PageContentView(content)
                 if !files.isEmpty {
@@ -100,6 +109,15 @@ extension AssignmentMaterialDetail: MaterialDetailViewRepresentable {
                     filesList.frame(height: 160)
                 }
             }
+        }
+    }
+}
+
+extension AssignmentMaterialDetail: MaterialDetailViewRepresentable, HasContentAndFiles {
+    func makeView(url: URL?) -> AnyView {
+        return AnyView(VStack(alignment: .leading, spacing: 0) {
+            Divider()
+            ContentAndFilesView(contentAndFiles: self)
             Divider()
             VStack {
                 Text("To submit or view more details, open this assignment in your web browser.").multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
@@ -110,5 +128,60 @@ extension AssignmentMaterialDetail: MaterialDetailViewRepresentable {
                 }.disabled(url == nil)
             }.frame(maxWidth: .infinity, alignment: .center).padding()
         })
+    }
+}
+
+extension DiscussionMaterialDetail: MaterialDetailViewRepresentable, HasContentAndFiles {
+    func makeView(url: URL?) -> AnyView {
+        AnyView(DetailView(self))
+    }
+    
+    struct DetailView: View {
+        var detail: DiscussionMaterialDetail
+        
+        init(_ detail: DiscussionMaterialDetail) {
+            self.detail = detail
+        }
+        
+        enum DiscussionTab: CaseIterable {
+            case chat
+            case description
+            
+            var name: String {
+                switch self {
+                case .chat:
+                    return "Chat"
+                case .description:
+                    return "Description"
+                }
+            }
+            
+            func view(for detail: DiscussionMaterialDetail) -> AnyView {
+                switch self {
+                case .chat:
+                    return AnyView(DiscussionView(discussion: detail))
+                case .description:
+                    return AnyView(ContentAndFilesView(contentAndFiles: detail))
+                }
+            }
+        }
+        
+        @State var tab = DiscussionTab.allCases[0]
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack {
+                    ForEach(DiscussionTab.allCases, id: \.self) { tab in
+                        Button(action: {
+                            self.tab = tab
+                        }) {
+                            Text(tab.name).fontWeight(self.tab == tab ? .bold : .regular).opacity(self.tab == tab ? 1.0 : 0.5)
+                        }.buttonStyle(PlainButtonStyle())
+                    }
+                }.padding([.horizontal, .bottom])
+                Divider()
+                tab.view(for: detail)
+            }
+        }
     }
 }

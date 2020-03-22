@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner"/>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <tableCellView id="aQw-Xv-KPb" customClass="DiscussionTableCellView" customModule="BetterSchoology" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="475" height="209"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <customView translatesAutoresizingMaskIntoConstraints="NO" id="9Lo-2c-8ME">
+                    <rect key="frame" x="0.0" y="24" width="475" height="185"/>
+                </customView>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZkT-NL-sNG">
+                    <rect key="frame" x="8" y="8" width="48" height="16"/>
+                    <buttonCell key="cell" type="bevel" title="Like (1)" bezelStyle="rounded" alignment="left" imageScaling="proportionallyDown" inset="2" id="CIq-gQ-Eku">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="likeWithSender:" target="aQw-Xv-KPb" id="4Q5-HA-cBd"/>
+                    </connections>
+                </button>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Qrk-rp-KUQ">
+                    <rect key="frame" x="76" y="8" width="104" height="16"/>
+                    <buttonCell key="cell" type="bevel" title="Open in Browser" bezelStyle="rounded" alignment="left" imageScaling="proportionallyDown" inset="2" id="x1L-Vd-czl">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="openInSchoologyWithSender:" target="aQw-Xv-KPb" id="8L2-wV-4d3"/>
+                    </connections>
+                </button>
+            </subviews>
+            <constraints>
+                <constraint firstItem="9Lo-2c-8ME" firstAttribute="top" secondItem="aQw-Xv-KPb" secondAttribute="top" id="55q-JG-94Y"/>
+                <constraint firstItem="ZkT-NL-sNG" firstAttribute="leading" secondItem="aQw-Xv-KPb" secondAttribute="leading" constant="8" id="So4-NV-VB1"/>
+                <constraint firstItem="9Lo-2c-8ME" firstAttribute="leading" secondItem="aQw-Xv-KPb" secondAttribute="leading" id="bTV-7X-F0O"/>
+                <constraint firstItem="Qrk-rp-KUQ" firstAttribute="leading" secondItem="ZkT-NL-sNG" secondAttribute="trailing" constant="20" id="chN-UT-pB4"/>
+                <constraint firstAttribute="trailing" secondItem="9Lo-2c-8ME" secondAttribute="trailing" id="fcU-4V-koh"/>
+                <constraint firstAttribute="bottom" secondItem="Qrk-rp-KUQ" secondAttribute="bottom" constant="8" id="fsR-cq-dU2"/>
+                <constraint firstAttribute="bottom" secondItem="ZkT-NL-sNG" secondAttribute="bottom" constant="8" id="qLU-0d-rCH"/>
+                <constraint firstItem="ZkT-NL-sNG" firstAttribute="top" secondItem="9Lo-2c-8ME" secondAttribute="bottom" id="u2w-vO-xAz"/>
+                <constraint firstItem="Qrk-rp-KUQ" firstAttribute="top" secondItem="9Lo-2c-8ME" secondAttribute="bottom" id="wDT-Se-jmY"/>
+            </constraints>
+            <connections>
+                <outlet property="contentView" destination="9Lo-2c-8ME" id="fHl-P8-eys"/>
+                <outlet property="likeButton" destination="ZkT-NL-sNG" id="l2B-Rt-4h6"/>
+            </connections>
+            <point key="canvasLocation" x="244.5" y="216.5"/>
+        </tableCellView>
+    </objects>
+</document>

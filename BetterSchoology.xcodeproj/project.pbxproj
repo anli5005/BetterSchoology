@@ -29,6 +29,9 @@
 		4A2AA127241C7A25005C3C27 /* CourseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2AA126241C7A25005C3C27 /* CourseDetailView.swift */; };
 		4A2AA129241D3444005C3C27 /* MaterialsOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */; };
 		4A53FE4924213E74005C3C27 /* PageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A53FE4824213E74005C3C27 /* PageContentView.swift */; };
+		4A79E2BE24267457005C3C27 /* DiscussionTableCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A79E2BD24267457005C3C27 /* DiscussionTableCellView.xib */; };
+		4A79E2C024267504005C3C27 /* DiscussionTableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A79E2BF24267504005C3C27 /* DiscussionTableCellView.swift */; };
+		4A79E2C224267D44005C3C27 /* DiscussionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A79E2C124267D44005C3C27 /* DiscussionView.swift */; };
 		4A84ECD524229F81005C3C27 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 4A84ECD424229F81005C3C27 /* SQLite */; };
 		4A84ECD72422A02B005C3C27 /* FilesDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */; };
 		4A84ECD92423D968005C3C27 /* FileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84ECD82423D968005C3C27 /* FileView.swift */; };
@@ -61,6 +64,9 @@
 		4A2AA126241C7A25005C3C27 /* CourseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDetailView.swift; sourceTree = "<group>"; };
 		4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialsOutlineView.swift; sourceTree = "<group>"; };
 		4A53FE4824213E74005C3C27 /* PageContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageContentView.swift; sourceTree = "<group>"; };
+		4A79E2BD24267457005C3C27 /* DiscussionTableCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DiscussionTableCellView.xib; sourceTree = "<group>"; };
+		4A79E2BF24267504005C3C27 /* DiscussionTableCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscussionTableCellView.swift; sourceTree = "<group>"; };
+		4A79E2C124267D44005C3C27 /* DiscussionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscussionView.swift; sourceTree = "<group>"; };
 		4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesDatabase.swift; sourceTree = "<group>"; };
 		4A84ECD82423D968005C3C27 /* FileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileView.swift; sourceTree = "<group>"; };
 		4A84ECDA24242101005C3C27 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
@@ -166,6 +172,9 @@
 				4A53FE4824213E74005C3C27 /* PageContentView.swift */,
 				4A1A931524200992005C3C27 /* WebView.swift */,
 				4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */,
+				4A79E2C124267D44005C3C27 /* DiscussionView.swift */,
+				4A79E2BD24267457005C3C27 /* DiscussionTableCellView.xib */,
+				4A79E2BF24267504005C3C27 /* DiscussionTableCellView.swift */,
 			);
 			name = "Utility Views";
 			sourceTree = "<group>";
@@ -239,6 +248,7 @@
 				4A176DC5241BE262005C3C27 /* Main.storyboard in Resources */,
 				4A176DC2241BE262005C3C27 /* Preview Assets.xcassets in Resources */,
 				4A176DBF241BE262005C3C27 /* Assets.xcassets in Resources */,
+				4A79E2BE24267457005C3C27 /* DiscussionTableCellView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,11 +275,13 @@
 				4A2AA127241C7A25005C3C27 /* CourseDetailView.swift in Sources */,
 				4A176DE0241C28EA005C3C27 /* Context.swift in Sources */,
 				4A2AA123241C4DB5005C3C27 /* MainView.swift in Sources */,
+				4A79E2C024267504005C3C27 /* DiscussionTableCellView.swift in Sources */,
 				4A176DE4241C32A9005C3C27 /* CourseListView.swift in Sources */,
 				4A1A931624200992005C3C27 /* WebView.swift in Sources */,
 				4A176DD9241C0DD2005C3C27 /* Errors.swift in Sources */,
 				4A84ECD92423D968005C3C27 /* FileView.swift in Sources */,
 				4A84ECD72422A02B005C3C27 /* FilesDatabase.swift in Sources */,
+				4A79E2C224267D44005C3C27 /* DiscussionView.swift in Sources */,
 				4A176DD7241C0D44005C3C27 /* SchoologyCredentials.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

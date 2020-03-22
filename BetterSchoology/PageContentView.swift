@@ -9,6 +9,16 @@
 import SwiftUI
 import WebKit
 
+func attributedString(pageContent: String) -> NSAttributedString? {
+    if let str = NSMutableAttributedString(html: Data(("<span style='font-family: system-ui;'>" + pageContent + "</style>").utf8), options: [.characterEncoding: String.Encoding.utf8.rawValue], documentAttributes: nil) {
+        str.addAttribute(.foregroundColor, value: NSColor.textColor, range: NSMakeRange(0, str.length))
+        // str.addAttribute(.font, value: NSFont( ), range: NSMakeRange(0, str.length))
+        return str
+    } else {
+        return nil
+    }
+}
+
 struct PageContentView: View {
     var content: String
     
@@ -17,14 +27,7 @@ struct PageContentView: View {
     }
     
     var body: some View {
-        let contentString: NSAttributedString?
-        if let str = NSMutableAttributedString(html: Data(("<span style='font-family: system-ui;'>" + content + "</style>").utf8), options: [.characterEncoding: String.Encoding.utf8.rawValue], documentAttributes: nil) {
-            str.addAttribute(.foregroundColor, value: NSColor.textColor, range: NSMakeRange(0, str.length))
-            // str.addAttribute(.font, value: NSFont( ), range: NSMakeRange(0, str.length))
-            contentString = str
-        } else {
-            contentString = nil
-        }
+        let contentString = attributedString(pageContent: content)
         
         if contentString == nil {
             return AnyView(Text("Unable to parse data"))
