@@ -133,55 +133,24 @@ extension AssignmentMaterialDetail: MaterialDetailViewRepresentable, HasContentA
 
 extension DiscussionMaterialDetail: MaterialDetailViewRepresentable, HasContentAndFiles {
     func makeView(url: URL?) -> AnyView {
-        AnyView(DetailView(self))
+        AnyView(VStack(alignment: .leading, spacing: 0) {
+            Divider()
+            Button(action: {
+                self.openChatWindow()
+            }) {
+                Text("Open Chat Window")
+            }.padding()
+            Divider()
+            ContentAndFilesView(contentAndFiles: self)
+        })
     }
     
-    struct DetailView: View {
-        var detail: DiscussionMaterialDetail
-        
-        init(_ detail: DiscussionMaterialDetail) {
-            self.detail = detail
-        }
-        
-        enum DiscussionTab: CaseIterable {
-            case chat
-            case description
-            
-            var name: String {
-                switch self {
-                case .chat:
-                    return "Chat"
-                case .description:
-                    return "Description"
-                }
-            }
-            
-            func view(for detail: DiscussionMaterialDetail) -> AnyView {
-                switch self {
-                case .chat:
-                    return AnyView(DiscussionView(discussion: detail))
-                case .description:
-                    return AnyView(ContentAndFilesView(contentAndFiles: detail))
-                }
-            }
-        }
-        
-        @State var tab = DiscussionTab.allCases[0]
-        
-        var body: some View {
-            VStack(alignment: .leading, spacing: 0) {
-                HStack {
-                    ForEach(DiscussionTab.allCases, id: \.self) { tab in
-                        Button(action: {
-                            self.tab = tab
-                        }) {
-                            Text(tab.name).fontWeight(self.tab == tab ? .bold : .regular).opacity(self.tab == tab ? 1.0 : 0.5)
-                        }.buttonStyle(PlainButtonStyle())
-                    }
-                }.padding([.horizontal, .bottom])
-                Divider()
-                tab.view(for: detail)
-            }
-        }
+    func openChatWindow() {
+        let delegate = NSApp.delegate as! AppDelegate
+        let controller = NSStoryboard(name: "Main", bundle: Bundle.main).instantiateController(withIdentifier: "chatWindowController") as! NSWindowController
+        controller.window?.center()
+        controller.window?.makeKeyAndOrderFront(nil)
+        (controller.contentViewController as? ChatViewController)?.discussion = self
+        delegate.windowControllers.insert(controller)
     }
 }

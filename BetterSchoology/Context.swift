@@ -38,5 +38,6 @@ let userDateFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateStyle = .short
     formatter.timeStyle = .short
+    formatter.doesRelativeDateFormatting = true
     return formatter
 }()

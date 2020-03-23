@@ -26,3 +26,12 @@ extension FileMaterialDetail: DoubleClickable {
         sharedDownloadManager.downloadAndOpen(file)
     }
 }
+
+extension DiscussionMaterialDetail: DoubleClickable {
+    var acceptsDoubleClick: Bool { true }
+    func handleDoubleClick() {
+        DispatchQueue.main.async {
+            self.openChatWindow()
+        }
+    }
+}

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4A0DA97424286886005C3C27 /* ChatWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0DA97324286886005C3C27 /* ChatWindowController.swift */; };
+		4A0DA9772428F435005C3C27 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0DA9762428F435005C3C27 /* ChatViewController.swift */; };
 		4A176DBB241BE25F005C3C27 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DBA241BE25F005C3C27 /* AppDelegate.swift */; };
 		4A176DBD241BE25F005C3C27 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DBC241BE25F005C3C27 /* ContentView.swift */; };
 		4A176DBF241BE262005C3C27 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A176DBE241BE262005C3C27 /* Assets.xcassets */; };
@@ -31,7 +33,6 @@
 		4A53FE4924213E74005C3C27 /* PageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A53FE4824213E74005C3C27 /* PageContentView.swift */; };
 		4A79E2BE24267457005C3C27 /* DiscussionTableCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A79E2BD24267457005C3C27 /* DiscussionTableCellView.xib */; };
 		4A79E2C024267504005C3C27 /* DiscussionTableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A79E2BF24267504005C3C27 /* DiscussionTableCellView.swift */; };
-		4A79E2C224267D44005C3C27 /* DiscussionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A79E2C124267D44005C3C27 /* DiscussionView.swift */; };
 		4A84ECD524229F81005C3C27 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 4A84ECD424229F81005C3C27 /* SQLite */; };
 		4A84ECD72422A02B005C3C27 /* FilesDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */; };
 		4A84ECD92423D968005C3C27 /* FileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84ECD82423D968005C3C27 /* FileView.swift */; };
@@ -40,6 +41,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4A0DA97324286886005C3C27 /* ChatWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatWindowController.swift; sourceTree = "<group>"; };
+		4A0DA9762428F435005C3C27 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		4A176DB7241BE25F005C3C27 /* BetterSchoology.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BetterSchoology.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A176DBA241BE25F005C3C27 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4A176DBC241BE25F005C3C27 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -66,7 +69,6 @@
 		4A53FE4824213E74005C3C27 /* PageContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageContentView.swift; sourceTree = "<group>"; };
 		4A79E2BD24267457005C3C27 /* DiscussionTableCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DiscussionTableCellView.xib; sourceTree = "<group>"; };
 		4A79E2BF24267504005C3C27 /* DiscussionTableCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscussionTableCellView.swift; sourceTree = "<group>"; };
-		4A79E2C124267D44005C3C27 /* DiscussionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscussionView.swift; sourceTree = "<group>"; };
 		4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesDatabase.swift; sourceTree = "<group>"; };
 		4A84ECD82423D968005C3C27 /* FileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileView.swift; sourceTree = "<group>"; };
 		4A84ECDA24242101005C3C27 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
@@ -86,6 +88,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4A0DA9752428688D005C3C27 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				4A0DA97324286886005C3C27 /* ChatWindowController.swift */,
+				4A0DA9762428F435005C3C27 /* ChatViewController.swift */,
+			);
+			name = "View Controllers";
+			sourceTree = "<group>";
+		};
 		4A176DAE241BE25F005C3C27 = {
 			isa = PBXGroup;
 			children = (
@@ -109,6 +120,7 @@
 				4A84ECDE242421A1005C3C27 /* Main Views */,
 				4A84ECE224242212005C3C27 /* Utility Views */,
 				4A84ECDF242421E3005C3C27 /* Stores & Managers */,
+				4A0DA9752428688D005C3C27 /* View Controllers */,
 				4A176DBE241BE262005C3C27 /* Assets.xcassets */,
 				4A176DC3241BE262005C3C27 /* Main.storyboard */,
 				4A176DC6241BE262005C3C27 /* Info.plist */,
@@ -172,7 +184,6 @@
 				4A53FE4824213E74005C3C27 /* PageContentView.swift */,
 				4A1A931524200992005C3C27 /* WebView.swift */,
 				4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */,
-				4A79E2C124267D44005C3C27 /* DiscussionView.swift */,
 				4A79E2BD24267457005C3C27 /* DiscussionTableCellView.xib */,
 				4A79E2BF24267504005C3C27 /* DiscussionTableCellView.swift */,
 			);
@@ -260,6 +271,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A2AA129241D3444005C3C27 /* MaterialsOutlineView.swift in Sources */,
+				4A0DA97424286886005C3C27 /* ChatWindowController.swift in Sources */,
 				4A84ECDB24242101005C3C27 /* DownloadManager.swift in Sources */,
 				4A176DDB241C17AB005C3C27 /* AuthView.swift in Sources */,
 				4ADF57A5241EAA03005C3C27 /* MaterialDetailView.swift in Sources */,
@@ -280,8 +292,8 @@
 				4A1A931624200992005C3C27 /* WebView.swift in Sources */,
 				4A176DD9241C0DD2005C3C27 /* Errors.swift in Sources */,
 				4A84ECD92423D968005C3C27 /* FileView.swift in Sources */,
+				4A0DA9772428F435005C3C27 /* ChatViewController.swift in Sources */,
 				4A84ECD72422A02B005C3C27 /* FilesDatabase.swift in Sources */,
-				4A79E2C224267D44005C3C27 /* DiscussionView.swift in Sources */,
 				4A176DD7241C0D44005C3C27 /* SchoologyCredentials.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -25,6 +25,7 @@ private extension Dictionary {
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     var window: NSWindow!
+    var windowControllers = Set<NSWindowController>()
 
     private var initialAuthCancellable: AnyCancellable?
     private var persistAuthCancellable: AnyCancellable?

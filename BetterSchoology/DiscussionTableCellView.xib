@@ -9,11 +9,11 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <tableCellView id="aQw-Xv-KPb" customClass="DiscussionTableCellView" customModule="BetterSchoology" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="475" height="209"/>
+            <rect key="frame" x="0.0" y="0.0" width="479" height="347"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <customView translatesAutoresizingMaskIntoConstraints="NO" id="9Lo-2c-8ME">
-                    <rect key="frame" x="0.0" y="24" width="475" height="185"/>
+                <customView autoresizesSubviews="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Lo-2c-8ME">
+                    <rect key="frame" x="0.0" y="24" width="479" height="323"/>
                 </customView>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ZkT-NL-sNG">
                     <rect key="frame" x="8" y="8" width="48" height="16"/>
@@ -51,7 +51,7 @@
                 <outlet property="contentView" destination="9Lo-2c-8ME" id="fHl-P8-eys"/>
                 <outlet property="likeButton" destination="ZkT-NL-sNG" id="l2B-Rt-4h6"/>
             </connections>
-            <point key="canvasLocation" x="244.5" y="216.5"/>
+            <point key="canvasLocation" x="246.5" y="211.5"/>
         </tableCellView>
     </objects>
 </document>

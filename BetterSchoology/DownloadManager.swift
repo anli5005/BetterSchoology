@@ -117,7 +117,7 @@ class DownloadManager: ObservableObject {
                     }
                     subject.send(completion: .failure(e))
                 }
-            } else if error != nil {
+            } else if error == nil {
                 DispatchQueue.main.async {
                     self.fileStatuses[file.id!]?.downloadStatus = .error(SchoologyParseError.badStatusCode)
                     self.fileStatuses[file.id!]?.downloadPublisher = nil

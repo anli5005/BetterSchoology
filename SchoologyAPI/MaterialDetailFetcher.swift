@@ -19,6 +19,16 @@ let messageDateFormatter: DateFormatter = {
     return formatter
 }()
 
+let messageTodayFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.timeZone = TimeZone(identifier: "America/New_York")
+    formatter.locale = Locale(identifier: "en-US")
+    formatter.calendar = Calendar(identifier: .gregorian)
+    formatter.dateFormat = "'Today at' h:mm a"
+    formatter.defaultDate = Date()
+    return formatter
+}()
+
 extension Material {
     func urlPublisher(prefix: String) -> Future<URL, Error> {
         Future { promise in
@@ -192,11 +202,13 @@ func parseMessage(comment: Element, parent: String?) throws -> Message {
         content = try body.html()
     }
     
+    let dateStr = try comment.select(".comment-time span").last()?.text() ?? ""
+    
     return Message(
         id: comment.id().replacingOccurrences(of: "comment-", with: ""),
         parent: parent,
         children: [],
-        date: messageDateFormatter.date(from: try comment.select(".comment-time span").text()),
+        date: messageDateFormatter.date(from: dateStr) ?? messageTodayFormatter.date(from: dateStr),
         authorName: try comment.select(".comment-author a").text(),
         content: content,
         likes: Int(try comment.select(".s-like-comment-icon").text()) ?? 0,
