@@ -19,7 +19,12 @@ class ChatWindowController: NSWindowController, NSWindowDelegate {
     }
     
     func windowWillClose(_ notification: Notification) {
-        (NSApp.delegate as? AppDelegate)?.windowControllers.remove(self)
+        if let delegate = NSApp.delegate as? AppDelegate {
+            if let id = (contentViewController as? ChatViewController)?.discussion?.material.id {
+                delegate.chatWindows[id] = nil
+            }
+            delegate.windowControllers.remove(self)
+        }
     }
     
     func windowDidResize(_ notification: Notification) {

@@ -127,9 +127,28 @@ struct DiscussionMaterialDetail: MaterialDetail {
     var files: [SchoologyFile]
     var messages: [String: Message]
     var rootMessages: [String]
+    var csrf: CSRFDetails?
 }
 
 struct OtherMaterialDetail: MaterialDetail {
     var material: Material
     var fullName: String { material.name }
+}
+
+struct LikeResponse: Codable {
+    var c: Int
+    var h: String
+    
+    var liked: Bool {
+        h == "Unlike"
+    }
+}
+
+struct CSRFDetails: Codable {
+    var csrf_key: String
+    var csrf_token: String
+}
+
+struct DrupalSettings: Decodable {
+    var s_common: CSRFDetails
 }

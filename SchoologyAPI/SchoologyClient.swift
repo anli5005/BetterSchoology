@@ -178,4 +178,21 @@ class SchoologyClient {
             return Future { $0(.success(OtherMaterialDetail(material: material) as MaterialDetail)) }.eraseToAnyPublisher()
         }
     }
+    
+    func like(messageId: String, csrf: CSRFDetails? = nil) -> Publishers.Decode<Publishers.Map<URLSession.DataTaskPublisher, Data>, LikeResponse, JSONDecoder> {
+        var request = URLRequest(url: URL(string: "\(prefix)/like/c/\(messageId)")!)
+        request.httpMethod = "POST"
+        csrf?.apply(to: &request)
+        
+        return session.dataTaskPublisher(for: request).map {
+            return $0.data
+        }.decode(type: LikeResponse.self, decoder: decoder)
+    }
+}
+
+extension CSRFDetails {
+    func apply(to request: inout URLRequest) {
+        request.addValue(csrf_key, forHTTPHeaderField: "X-Csrf-Key")
+        request.addValue(csrf_token, forHTTPHeaderField: "X-Csrf-Token")
+    }
 }

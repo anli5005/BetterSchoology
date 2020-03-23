@@ -690,6 +690,7 @@
                         <rect key="contentRect" x="492" y="143" width="480" height="640"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1440" height="900"/>
                         <value key="minSize" type="size" width="360" height="270"/>
+                        <contentBorderThickness minY="36"/>
                         <connections>
                             <outlet property="delegate" destination="7Ab-xE-Rqe" id="MQz-pN-1QN"/>
                         </connections>
@@ -711,13 +712,13 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0wi-sk-kGw">
-                                <rect key="frame" x="0.0" y="0.0" width="480" height="640"/>
+                                <rect key="frame" x="0.0" y="36" width="480" height="604"/>
                                 <clipView key="contentView" id="9Kq-Xc-fzp">
-                                    <rect key="frame" x="0.0" y="0.0" width="480" height="640"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="480" height="604"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnSelection="YES" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="VN0-db-ix0">
-                                            <rect key="frame" x="0.0" y="0.0" width="480" height="640"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="480" height="604"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="3" height="2"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -770,21 +771,66 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                             </scrollView>
+                            <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Pri-5a-gR5">
+                                <rect key="frame" x="245" y="7" width="215" height="23"/>
+                                <popUpButtonCell key="cell" type="roundTextured" title="Auto-refresh every 20 seconds" bezelStyle="texturedRounded" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" selectedItem="9M8-eA-CXg" id="thj-xK-Qbu">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <menu key="menu" id="DCU-8E-TGC">
+                                        <items>
+                                            <menuItem title="Don't auto-refresh" id="ljh-aV-mc4"/>
+                                            <menuItem title="Auto-refresh every 5 seconds" id="IXa-c5-1vU">
+                                                <modifierMask key="keyEquivalentModifierMask"/>
+                                            </menuItem>
+                                            <menuItem title="Auto-refresh every 10 seconds" id="gxM-jP-sFo"/>
+                                            <menuItem title="Auto-refresh every 20 seconds" state="on" id="9M8-eA-CXg"/>
+                                            <menuItem title="Auto-refresh every minute" id="oSw-lr-Luf">
+                                                <modifierMask key="keyEquivalentModifierMask"/>
+                                            </menuItem>
+                                        </items>
+                                    </menu>
+                                </popUpButtonCell>
+                                <connections>
+                                    <action selector="changeAutoRefreshIntervalWithSender:" target="dLc-eC-WIl" id="Z17-ZB-z28"/>
+                                </connections>
+                            </popUpButton>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="OrU-Z3-OP5">
+                                <rect key="frame" x="19.5" y="7" width="34" height="23"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="33" id="33O-Av-HG0"/>
+                                </constraints>
+                                <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="NSRefreshTemplate" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="6Jy-uV-Xms">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="refreshWithSender:" target="dLc-eC-WIl" id="pSs-sG-q64"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
+                            <constraint firstItem="OrU-Z3-OP5" firstAttribute="leading" secondItem="Ndq-NU-CeJ" secondAttribute="leading" constant="20" id="8ya-BI-KAU"/>
+                            <constraint firstAttribute="bottom" secondItem="OrU-Z3-OP5" secondAttribute="bottom" constant="8" id="GRl-le-GrD"/>
+                            <constraint firstAttribute="bottom" secondItem="Pri-5a-gR5" secondAttribute="bottom" constant="8" id="Gzq-f6-Mc5"/>
                             <constraint firstAttribute="trailing" secondItem="0wi-sk-kGw" secondAttribute="trailing" id="NVa-iH-isu"/>
                             <constraint firstItem="0wi-sk-kGw" firstAttribute="leading" secondItem="Ndq-NU-CeJ" secondAttribute="leading" id="SUr-Ua-9qb"/>
-                            <constraint firstAttribute="bottom" secondItem="0wi-sk-kGw" secondAttribute="bottom" id="muc-Ay-bX4"/>
+                            <constraint firstAttribute="trailing" secondItem="Pri-5a-gR5" secondAttribute="trailing" constant="20" id="iDb-Qv-yYs"/>
+                            <constraint firstAttribute="bottom" secondItem="0wi-sk-kGw" secondAttribute="bottom" constant="36" id="muc-Ay-bX4"/>
                             <constraint firstItem="0wi-sk-kGw" firstAttribute="top" secondItem="Ndq-NU-CeJ" secondAttribute="top" id="yBZ-63-gLp"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="autoRefreshIntervalPicker" destination="Pri-5a-gR5" id="bYj-Zf-JgQ"/>
+                        <outlet property="refreshButton" destination="OrU-Z3-OP5" id="y4Z-B2-ZGw"/>
                         <outlet property="tableView" destination="VN0-db-ix0" id="ksp-24-3O5"/>
                     </connections>
                 </viewController>
                 <customObject id="W1P-Dr-I0n" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="950" y="247"/>
+            <point key="canvasLocation" x="549" y="420"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="NSRefreshTemplate" width="11" height="15"/>
+    </resources>
 </document>

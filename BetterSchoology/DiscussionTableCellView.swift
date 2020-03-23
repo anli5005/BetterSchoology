@@ -13,7 +13,7 @@ class DiscussionTableCellView: NSTableCellView, NSTextViewDelegate {
     @IBOutlet weak var contentView: NSView?
     @IBOutlet weak var likeButton: NSButton?
     
-    // weak var coordinator: DiscussionView.Coordinator?
+    weak var controller: ChatViewController?
     
     static let likedIndicator = "🥴"
     
@@ -101,7 +101,6 @@ class DiscussionTableCellView: NSTableCellView, NSTextViewDelegate {
                         buttonText += " (\(message.likes))"
                     }
                     button.title = buttonText
-                    button.isEnabled = false
                 }
             }
         }
@@ -114,17 +113,15 @@ class DiscussionTableCellView: NSTableCellView, NSTextViewDelegate {
     }
     
     @IBAction func openInSchoology(sender: NSButton?) {
-        /* if
-            let coordinator = coordinator,
-            let id = message?.id,
-            let url = URL(string: "\(coordinator.parent.store.client.prefix)/\(coordinator.parent.discussion.material.urlSuffix)#comment-\(id)")
-        {
-            NSWorkspace.shared.open(url)
-        } */
+        if let message = message {
+            controller?.openInSchoology(id: message.id)
+        }
     }
     
     @IBAction func like(sender: NSButton?) {
-        
+        if let message = message {
+            controller?.like(messageId: message.id)
+        }
     }
         
     func textDidEndEditing(_ notification: Notification) {

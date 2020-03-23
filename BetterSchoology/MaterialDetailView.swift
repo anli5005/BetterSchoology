@@ -132,25 +132,42 @@ extension AssignmentMaterialDetail: MaterialDetailViewRepresentable, HasContentA
 }
 
 extension DiscussionMaterialDetail: MaterialDetailViewRepresentable, HasContentAndFiles {
+    struct OpenChatButton: View {
+        var detail: DiscussionMaterialDetail
+        @EnvironmentObject var store: CourseMaterialsStore
+        
+        var body: some View {
+            Button(action: {
+                self.detail.openChatWindow(courseMaterialsStore: self.store)
+            }) {
+                Text("Open Chat Window")
+            }
+        }
+    }
+    
     func makeView(url: URL?) -> AnyView {
         AnyView(VStack(alignment: .leading, spacing: 0) {
             Divider()
-            Button(action: {
-                self.openChatWindow()
-            }) {
-                Text("Open Chat Window")
-            }.padding()
+            OpenChatButton(detail: self).padding()
             Divider()
             ContentAndFilesView(contentAndFiles: self)
         })
     }
     
-    func openChatWindow() {
+    func openChatWindow(courseMaterialsStore: CourseMaterialsStore) {
         let delegate = NSApp.delegate as! AppDelegate
-        let controller = NSStoryboard(name: "Main", bundle: Bundle.main).instantiateController(withIdentifier: "chatWindowController") as! NSWindowController
-        controller.window?.center()
-        controller.window?.makeKeyAndOrderFront(nil)
-        (controller.contentViewController as? ChatViewController)?.discussion = self
-        delegate.windowControllers.insert(controller)
+        if let window = delegate.chatWindows[AnyHashable(material.id)] {
+            window.makeKeyAndOrderFront(nil)
+        } else {
+            let controller = NSStoryboard(name: "Main", bundle: Bundle.main).instantiateController(withIdentifier: "chatWindowController") as! NSWindowController
+            controller.window?.center()
+            controller.window?.makeKeyAndOrderFront(nil)
+            delegate.chatWindows[AnyHashable(material.id)] = controller.window
+            if let chat = controller.contentViewController as? ChatViewController {
+                chat.discussion = self
+                chat.store = courseMaterialsStore
+            }
+            delegate.windowControllers.insert(controller)
+        }
     }
 }

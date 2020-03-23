@@ -68,7 +68,7 @@ struct CourseDetailView: View {
             Group {
                 if selectedMaterial != nil {
                     if detail != nil {
-                        MaterialDetailView(materialDetail: detail!)
+                        MaterialDetailView(materialDetail: detail!).environmentObject(self.materialsStore)
                     } else if detailError != nil {
                         Text("Error loading details").padding()
                     } else {

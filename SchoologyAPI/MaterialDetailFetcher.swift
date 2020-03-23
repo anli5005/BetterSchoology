@@ -259,6 +259,17 @@ func parseMessageTree(in root: Element) throws -> ([String: Message], [String]) 
     return (result, rootMessages.map { $0.id })
 }
 
+func extractCsrf<TDecoder: TopLevelDecoder>(document: Element, using decoder: TDecoder) throws -> CSRFDetails? where TDecoder.Input == Data {
+    let scripts = try document.select("#wrapper > script").map { $0.data() }
+    if let str = scripts.first(where: { $0.contains("jQuery.extend(Drupal.settings") }) {
+        if let begin = str.firstIndex(of: "{"), let end = str.lastIndex(of: "}"), begin < end {
+            return (try? decoder.decode(DrupalSettings.self, from: Data(str[begin...end].utf8)))?.s_common
+        }
+    }
+    
+    return nil
+}
+
 struct DiscussionFetcher: MaterialDetailFetcher {
     func type(for material: Material) -> MaterialDetail.Type? {
         return material.kind == .discussion ? DiscussionMaterialDetail.self : nil
@@ -278,7 +289,8 @@ struct DiscussionFetcher: MaterialDetailFetcher {
                 content: try document.select(".discussion-prompt").html(),
                 files: try document.select(".discussion-attachments .attachments-file").map { try extractFile(from: $0) },
                 messages: messages,
-                rootMessages: rootMessages
+                rootMessages: rootMessages,
+                csrf: try extractCsrf(document: document, using: client.decoder)
             )
         }.eraseToAnyPublisher()
     }

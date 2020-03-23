@@ -137,7 +137,7 @@ struct MaterialsOutlineView: NSViewRepresentable {
         
         func doubleClick(material: Material, with clickable: DoubleClickable? = nil) {
             if clickable?.acceptsDoubleClick == true {
-                clickable!.handleDoubleClick()
+                clickable!.handleDoubleClick(courseMaterialsStore: parent.store)
             } else if let url = URL(string: parent.globalStore.client.prefix + material.urlSuffix) {
                 NSWorkspace.shared.open(url)
             } else {

@@ -10,28 +10,28 @@ import Cocoa
 
 protocol DoubleClickable {
     var acceptsDoubleClick: Bool { get }
-    func handleDoubleClick()
+    func handleDoubleClick(courseMaterialsStore: CourseMaterialsStore)
 }
 
 extension LinkMaterialDetail: DoubleClickable {
     var acceptsDoubleClick: Bool { url != nil }
-    func handleDoubleClick() {
+    func handleDoubleClick(courseMaterialsStore: CourseMaterialsStore) {
         NSWorkspace.shared.open(url!)
     }
 }
 
 extension FileMaterialDetail: DoubleClickable {
     var acceptsDoubleClick: Bool { file.id != nil }
-    func handleDoubleClick() {
+    func handleDoubleClick(courseMaterialsStore: CourseMaterialsStore) {
         sharedDownloadManager.downloadAndOpen(file)
     }
 }
 
 extension DiscussionMaterialDetail: DoubleClickable {
     var acceptsDoubleClick: Bool { true }
-    func handleDoubleClick() {
+    func handleDoubleClick(courseMaterialsStore: CourseMaterialsStore) {
         DispatchQueue.main.async {
-            self.openChatWindow()
+            self.openChatWindow(courseMaterialsStore: courseMaterialsStore)
         }
     }
 }

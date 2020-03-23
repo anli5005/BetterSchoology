@@ -26,6 +26,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     var window: NSWindow!
     var windowControllers = Set<NSWindowController>()
+    var chatWindows = [AnyHashable: NSWindow]()
 
     private var initialAuthCancellable: AnyCancellable?
     private var persistAuthCancellable: AnyCancellable?
