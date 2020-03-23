@@ -92,7 +92,7 @@ class ChatViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     func updateWindow() {
         if isViewLoaded {
             var shouldScroll = false
-            if let table = tableView, let y = table.enclosingScrollView?.contentView.bounds.maxY, y >= table.frame.height - 240 {
+            if let table = tableView, let y = table.enclosingScrollView?.contentView.bounds.maxY, y >= table.frame.height - 50 {
                 shouldScroll = true
             }
             tableView?.reloadData()
