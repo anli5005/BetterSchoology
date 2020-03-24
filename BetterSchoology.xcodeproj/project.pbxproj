@@ -23,7 +23,6 @@
 		4A176DE4241C32A9005C3C27 /* CourseListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DE3241C32A9005C3C27 /* CourseListView.swift */; };
 		4A1A9312241F2277005C3C27 /* MaterialDetailFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1A9311241F2277005C3C27 /* MaterialDetailFetcher.swift */; };
 		4A1A931424200273005C3C27 /* DoubleClick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1A931324200273005C3C27 /* DoubleClick.swift */; };
-		4A1A931624200992005C3C27 /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1A931524200992005C3C27 /* WebView.swift */; };
 		4A2AA11E241C3F1E005C3C27 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2AA11D241C3F1E005C3C27 /* Store.swift */; };
 		4A2AA121241C4123005C3C27 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 4A2AA120241C4123005C3C27 /* SwiftSoup */; };
 		4A2AA123241C4DB5005C3C27 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2AA122241C4DB5005C3C27 /* MainView.swift */; };
@@ -60,7 +59,6 @@
 		4A176DE3241C32A9005C3C27 /* CourseListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseListView.swift; sourceTree = "<group>"; };
 		4A1A9311241F2277005C3C27 /* MaterialDetailFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDetailFetcher.swift; sourceTree = "<group>"; };
 		4A1A931324200273005C3C27 /* DoubleClick.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoubleClick.swift; sourceTree = "<group>"; };
-		4A1A931524200992005C3C27 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		4A2AA11D241C3F1E005C3C27 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		4A2AA122241C4DB5005C3C27 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		4A2AA124241C4F11005C3C27 /* CourseListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseListItemView.swift; sourceTree = "<group>"; };
@@ -182,7 +180,6 @@
 				4A2AA124241C4F11005C3C27 /* CourseListItemView.swift */,
 				4A84ECD82423D968005C3C27 /* FileView.swift */,
 				4A53FE4824213E74005C3C27 /* PageContentView.swift */,
-				4A1A931524200992005C3C27 /* WebView.swift */,
 				4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */,
 				4A79E2BD24267457005C3C27 /* DiscussionTableCellView.xib */,
 				4A79E2BF24267504005C3C27 /* DiscussionTableCellView.swift */,
@@ -289,7 +286,6 @@
 				4A2AA123241C4DB5005C3C27 /* MainView.swift in Sources */,
 				4A79E2C024267504005C3C27 /* DiscussionTableCellView.swift in Sources */,
 				4A176DE4241C32A9005C3C27 /* CourseListView.swift in Sources */,
-				4A1A931624200992005C3C27 /* WebView.swift in Sources */,
 				4A176DD9241C0DD2005C3C27 /* Errors.swift in Sources */,
 				4A84ECD92423D968005C3C27 /* FileView.swift in Sources */,
 				4A0DA9772428F435005C3C27 /* ChatViewController.swift in Sources */,
@@ -432,7 +428,7 @@
 				CODE_SIGN_ENTITLEMENTS = BetterSchoology/BetterSchoology.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_ASSET_PATHS = "\"BetterSchoology/Preview Content\"";
 				DEVELOPMENT_TEAM = 9DDM72ZZ79;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -443,7 +439,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 0.5.1;
+				MARKETING_VERSION = 0.5.2;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.anli.BetterSchoology;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -457,7 +453,7 @@
 				CODE_SIGN_ENTITLEMENTS = BetterSchoology/BetterSchoology.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_ASSET_PATHS = "\"BetterSchoology/Preview Content\"";
 				DEVELOPMENT_TEAM = 9DDM72ZZ79;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -468,7 +464,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 0.5.1;
+				MARKETING_VERSION = 0.5.2;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.anli.BetterSchoology;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

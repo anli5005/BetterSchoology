@@ -43,20 +43,13 @@ extension LinkMaterialDetail: MaterialDetailViewRepresentable {
         return AnyView(VStack(alignment: .leading, spacing: 0) {
             Divider()
             VStack(alignment: .leading) {
-                Text(url?.absoluteString ?? "Invalid URL").multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
+                Text(self.url?.absoluteString ?? "Invalid URL").multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
                 Button(action: {
                     NSWorkspace.shared.open(self.url!)
                 }) {
                     Text("Open Link")
-                }.disabled(url == nil)
+                }.disabled(self.url == nil)
             }.padding()
-            if url != nil {
-                GeometryReader { g in
-                    ScrollView(showsIndicators: false) {
-                        WebView(destination: .url(self.url!)).frame(width: g.size.width, height: g.size.height)
-                    }
-                }.frame(maxWidth: .infinity, maxHeight: .infinity)
-            }
         })
     }
 }
