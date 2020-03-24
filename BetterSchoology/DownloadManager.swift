@@ -56,9 +56,24 @@ class DownloadManager: ObservableObject {
         let task = client.session.downloadTask(with: file.url!) { (url, response, error) in
             if (response as? HTTPURLResponse)?.statusCode == 200 {
                 var result: URL?
-
+                
                 do {
                     let downloads = try self.fileManager.url(for: .downloadsDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+                    
+                    var useBetterSchoologyFolder = false
+                    var isDirectory: ObjCBool = false
+                    let betterSchoologyFolder = downloads.appendingPathComponent("BetterSchoology", isDirectory: true)
+                    if self.fileManager.fileExists(atPath: betterSchoologyFolder.path, isDirectory: &isDirectory) {
+                        useBetterSchoologyFolder = isDirectory.boolValue
+                    } else {
+                        do {
+                            try self.fileManager.createDirectory(at: betterSchoologyFolder, withIntermediateDirectories: false, attributes: nil)
+                            useBetterSchoologyFolder = true
+                        } catch let e {
+                            print("Error creating BetterSchoology folder: \(e)")
+                        }
+                    }
+                    
                     var numAttempts = 0
                     while result == nil {
                         do {
@@ -68,7 +83,12 @@ class DownloadManager: ObservableObject {
                             } else if numAttempts > 0 {
                                 suffix = " (\(numAttempts))"
                             }
-                            var destination = downloads.appendingPathComponent(file.id!, isDirectory: false)
+                            var destination: URL
+                            if numAttempts > 15 || !useBetterSchoologyFolder {
+                                destination = downloads.appendingPathComponent(file.id!, isDirectory: false)
+                            } else {
+                                destination = betterSchoologyFolder.appendingPathComponent(file.id!, isDirectory: false)
+                            }
                             if let suffix = suffix {
                                 let ext = destination.pathExtension
                                 let pathComponent: String
@@ -83,7 +103,7 @@ class DownloadManager: ObservableObject {
                             result = destination
                         } catch let e as NSError {
                             numAttempts += 1
-                            if e.domain == NSCocoaErrorDomain && e.code == NSFileWriteFileExistsError {
+                            if e.domain == NSCocoaErrorDomain {
                                 if numAttempts >= 20 {
                                     throw e
                                 }

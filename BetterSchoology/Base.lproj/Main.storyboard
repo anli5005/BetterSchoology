@@ -689,7 +689,7 @@
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="492" y="143" width="480" height="640"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1440" height="900"/>
-                        <value key="minSize" type="size" width="360" height="270"/>
+                        <value key="minSize" type="size" width="420" height="270"/>
                         <contentBorderThickness minY="36"/>
                         <connections>
                             <outlet property="delegate" destination="7Ab-xE-Rqe" id="MQz-pN-1QN"/>
@@ -795,7 +795,7 @@
                                 </connections>
                             </popUpButton>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="OrU-Z3-OP5">
-                                <rect key="frame" x="19.5" y="7" width="34" height="23"/>
+                                <rect key="frame" x="20" y="7" width="33" height="23"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="33" id="33O-Av-HG0"/>
                                 </constraints>
@@ -807,11 +807,23 @@
                                     <action selector="refreshWithSender:" target="dLc-eC-WIl" id="pSs-sG-q64"/>
                                 </connections>
                             </button>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hMr-ql-Y8Z">
+                                <rect key="frame" x="61" y="7" width="114" height="23"/>
+                                <buttonCell key="cell" type="roundTextured" title="Open in Browser" bezelStyle="texturedRounded" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Thk-Y9-0DG">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="openInBrowserWithSender:" target="dLc-eC-WIl" id="dKW-Jk-PyF"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
+                            <constraint firstAttribute="bottom" secondItem="hMr-ql-Y8Z" secondAttribute="bottom" constant="8" id="1HZ-g3-6rG"/>
                             <constraint firstItem="OrU-Z3-OP5" firstAttribute="leading" secondItem="Ndq-NU-CeJ" secondAttribute="leading" constant="20" id="8ya-BI-KAU"/>
                             <constraint firstAttribute="bottom" secondItem="OrU-Z3-OP5" secondAttribute="bottom" constant="8" id="GRl-le-GrD"/>
                             <constraint firstAttribute="bottom" secondItem="Pri-5a-gR5" secondAttribute="bottom" constant="8" id="Gzq-f6-Mc5"/>
+                            <constraint firstItem="hMr-ql-Y8Z" firstAttribute="leading" secondItem="OrU-Z3-OP5" secondAttribute="trailing" constant="8" id="N8p-0S-TK1"/>
                             <constraint firstAttribute="trailing" secondItem="0wi-sk-kGw" secondAttribute="trailing" id="NVa-iH-isu"/>
                             <constraint firstItem="0wi-sk-kGw" firstAttribute="leading" secondItem="Ndq-NU-CeJ" secondAttribute="leading" id="SUr-Ua-9qb"/>
                             <constraint firstAttribute="trailing" secondItem="Pri-5a-gR5" secondAttribute="trailing" constant="20" id="iDb-Qv-yYs"/>

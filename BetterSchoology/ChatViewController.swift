@@ -165,6 +165,12 @@ class ChatViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         refresh()
     }
     
+    @IBAction func openInBrowser(sender: NSButton?) {
+        if let prefix = store?.client.prefix, let suffix = discussion?.material.urlSuffix, let url = URL(string: "\(prefix)\(suffix)") {
+            NSWorkspace.shared.open(url)
+        }
+    }
+    
     func openInSchoology(id: String) {
         if let prefix = store?.client.prefix, let suffix = discussion?.material.urlSuffix, let url = URL(string: "\(prefix)\(suffix)#comment-\(id)") {
             NSWorkspace.shared.open(url)
