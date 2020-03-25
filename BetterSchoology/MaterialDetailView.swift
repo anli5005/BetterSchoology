@@ -157,10 +157,8 @@ extension DiscussionMaterialDetail: MaterialDetailViewRepresentable, HasContentA
             controller.window?.makeKeyAndOrderFront(nil)
             delegate.chatWindows[AnyHashable(material.id)] = controller.window
             if let chat = controller.contentViewController as? ChatViewController {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    chat.discussion = self
-                    chat.store = courseMaterialsStore
-                }
+                chat.discussion = self
+                chat.store = courseMaterialsStore
             }
             delegate.windowControllers.insert(controller)
         }

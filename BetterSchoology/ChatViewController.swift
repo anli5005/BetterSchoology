@@ -17,23 +17,33 @@ class ChatViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     private var cancellables = Set<AnyCancellable>()
     private var timerPublisher: AnyCancellable?
    
+    private var _discussion: DiscussionMaterialDetail?
     var discussion: DiscussionMaterialDetail? {
-        didSet {
-            if let discussion = discussion {
-                sortedMessages = discussion.messages.values.sorted { a, b in
-                    let aId = a.id
-                    let bId = b.id
-                    let countDiff = aId.count - bId.count
-                    if countDiff == 0 {
-                        return aId < bId
-                    } else {
-                        return countDiff < 0
-                    }
-                }.map { ($0, DiscussionTableCellView.content(for: $0, messages: discussion.messages)) }
-            } else {
-                sortedMessages = []
+        get {
+            _discussion
+        }
+        set {
+            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.2) {
+                var messages = [(Message, NSAttributedString)]()
+                if let discussion = newValue {
+                    messages = discussion.messages.values.sorted { a, b in
+                        let aId = a.id
+                        let bId = b.id
+                        let countDiff = aId.count - bId.count
+                        if countDiff == 0 {
+                            return aId < bId
+                        } else {
+                            return countDiff < 0
+                        }
+                    }.map { ($0, DiscussionTableCellView.content(for: $0, messages: discussion.messages)) }
+                }
+                
+                DispatchQueue.main.async {
+                    self._discussion = newValue
+                    self.sortedMessages = messages
+                    self.updateWindow()
+                }
             }
-            updateWindow()
         }
     }
     var sortedMessages = [(Message, NSAttributedString)]()
