@@ -96,7 +96,6 @@ class CourseMaterialsStore: ObservableObject {
     
     func requestMaterialDetails(material: Material, force: Bool = false) {
         if force || materialDetails[material.id] == nil {
-            materialDetails[material.id] = .loading
             let publisher = client.fetchDetails(for: material)
             
             cancellables.insert(publisher.sink(receiveCompletion: { completion in
@@ -114,6 +113,10 @@ class CourseMaterialsStore: ObservableObject {
             }))
             
             self.materialDetailsPublishers[material.id] = publisher
+        }
+        
+        if materialDetails[material.id] == nil {
+            materialDetails[material.id] = .loading
         }
     }
 }

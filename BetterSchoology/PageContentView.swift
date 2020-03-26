@@ -7,12 +7,11 @@
 //
 
 import SwiftUI
-import WebKit
 
 func attributedString(pageContent: String) -> NSAttributedString? {
     if let str = NSMutableAttributedString(html: Data(("<span style='font-family: system-ui;'>" + pageContent + "</style>").utf8), options: [.characterEncoding: String.Encoding.utf8.rawValue], documentAttributes: nil) {
         str.addAttribute(.foregroundColor, value: NSColor.textColor, range: NSMakeRange(0, str.length))
-        // str.addAttribute(.font, value: NSFont( ), range: NSMakeRange(0, str.length))
+        str.addAttribute(.backgroundColor, value: NSColor.clear, range: NSMakeRange(0, str.length))
         return str
     } else {
         return nil
@@ -27,21 +26,14 @@ struct PageContentView: View {
     }
     
     var body: some View {
-        let contentString = attributedString(pageContent: content)
-        
-        if contentString == nil {
-            return AnyView(Text("Unable to parse data"))
-        } else {
-            return AnyView(TextView(attributedString: contentString!).frame(maxWidth: .infinity, maxHeight: .infinity))
-        }
+        return AnyView(TextView(string: content).frame(maxWidth: .infinity, maxHeight: .infinity))
     }
     
     struct TextView: NSViewRepresentable {
-        let attributedString: NSAttributedString
+        let string: String
         
         func makeNSView(context: NSViewRepresentableContext<TextView>) -> NSScrollView {
             let textView = NSTextView(frame: .zero)
-            textView.textStorage!.setAttributedString(attributedString)
             textView.autoresizingMask = [.width]
             textView.isVerticallyResizable = true
             textView.isEditable = false
@@ -51,12 +43,40 @@ struct PageContentView: View {
             scrollView.documentView = textView
             scrollView.hasVerticalScroller = true
             
+            context.coordinator.string = string
+            configureEventually(textView: textView)
+            
             return scrollView
+        }
+        
+        func makeCoordinator() -> Coordinator {
+            Coordinator(string: string)
         }
         
         func updateNSView(_ nsView: NSScrollView, context: NSViewRepresentableContext<TextView>) {
             let textView = nsView.documentView as! NSTextView
-            textView.textStorage!.setAttributedString(attributedString)
+            if context.coordinator.string != string {
+                context.coordinator.string = string
+                textView.textStorage!.setAttributedString(NSAttributedString())
+                configureEventually(textView: textView)
+            }
+        }
+        
+        func configureEventually(textView: NSTextView) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak textView] in
+                if let content = attributedString(pageContent: self.string) {
+                    textView?.textStorage?.setAttributedString(content)
+                } else {
+                    textView?.textStorage?.setAttributedString(NSAttributedString(string: "Unable to parse"))
+                }
+            }
+        }
+        
+        class Coordinator {
+            var string: String
+            init(string: String) {
+                self.string = string
+            }
         }
     }
 }
