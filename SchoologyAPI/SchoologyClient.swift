@@ -198,6 +198,7 @@ class SchoologyClient {
     
     struct ReplyResponse: Codable {
         var status: Bool
+        var ajax_submit_output: String
     }
     
     func reply(discussion detail: DiscussionMaterialDetail, parent: String?, content: String) -> Publishers.Decode<Publishers.Map<URLSession.DataTaskPublisher, Data>, ReplyResponse, JSONDecoder> {
@@ -231,5 +232,11 @@ extension DiscussionMaterialDetail {
         replyDetails?.map { pair in
             URLQueryItem(name: pair.key, value: pair.value)
         } ?? []
+    }
+}
+
+extension SchoologyClient.ReplyResponse {
+    func message(parent: String?) throws -> Message {
+        try parseMessage(comment: try SwiftSoup.parse(ajax_submit_output), parent: parent)
     }
 }

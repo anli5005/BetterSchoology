@@ -373,14 +373,33 @@ class ChatViewController: NSViewController, NSTableViewDelegate, NSTableViewData
             }
             
             isPosting = true
-            client.reply(discussion: discussion, parent: replyId, content: content).receive(on: DispatchQueue.main).sink(receiveCompletion: { [weak self] completion in
+            let parent = replyId
+            client.reply(discussion: discussion, parent: parent, content: content).receive(on: DispatchQueue.main).sink(receiveCompletion: { [weak self] completion in
                 if case .failure(let e) = completion {
                     print("Error posting: \(e)")
                     self?.isPosting = false
                 }
-            }, receiveValue: { [weak self] _ in
+            }, receiveValue: { [weak self] response in
                 self?.isPosting = false
                 self?.replyTextView?.string = ""
+                if var newDiscussion = self?.discussion {
+                    let message: Message?
+                    do {
+                        message = try response.message(parent: parent)
+                    } catch let e {
+                        message = nil
+                        print("Error parsing new message: \(e)")
+                    }
+                    if let message = message {
+                        newDiscussion.messages[message.id] = message
+                        if let parent = parent {
+                            newDiscussion.messages[parent]?.children.append(message.id)
+                        } else {
+                            newDiscussion.rootMessages.append(message.id)
+                        }
+                        self!.discussion = newDiscussion
+                    }
+                }
             }).store(in: &cancellables)
         }
     }
