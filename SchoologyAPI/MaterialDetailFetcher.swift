@@ -270,6 +270,14 @@ func extractCsrf<TDecoder: TopLevelDecoder>(document: Element, using decoder: TD
     return nil
 }
 
+func extractReplyDetails(document: Element) throws -> [String: String] {
+    let keys = ["nid", "nid2", "node_realm", "node_realm2", "node_realm_id", "node_realm_id2", "form_id", "sid", "op", "form_token"]
+    
+    return [String: String](uniqueKeysWithValues: try keys.map {
+        ($0, try document.select("input[name='\($0)']").first()?.val())
+    }.filter { $0.1 != nil }.map { ($0.0, $0.1!) })
+}
+
 struct DiscussionFetcher: MaterialDetailFetcher {
     func type(for material: Material) -> MaterialDetail.Type? {
         return material.kind == .discussion ? DiscussionMaterialDetail.self : nil
@@ -290,7 +298,8 @@ struct DiscussionFetcher: MaterialDetailFetcher {
                 files: try document.select(".discussion-attachments .attachments-file").map { try extractFile(from: $0) },
                 messages: messages,
                 rootMessages: rootMessages,
-                csrf: try extractCsrf(document: document, using: client.decoder)
+                csrf: try extractCsrf(document: document, using: client.decoder),
+                replyDetails: try extractReplyDetails(document: document)
             )
         }.eraseToAnyPublisher()
     }

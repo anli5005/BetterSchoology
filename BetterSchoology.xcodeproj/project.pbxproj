@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4A0DA97424286886005C3C27 /* ChatWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0DA97324286886005C3C27 /* ChatWindowController.swift */; };
 		4A0DA9772428F435005C3C27 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A0DA9762428F435005C3C27 /* ChatViewController.swift */; };
+		4A14A841242E5F88005C3C27 /* Down in Frameworks */ = {isa = PBXBuildFile; productRef = 4A14A840242E5F88005C3C27 /* Down */; };
 		4A176DBB241BE25F005C3C27 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DBA241BE25F005C3C27 /* AppDelegate.swift */; };
 		4A176DBD241BE25F005C3C27 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DBC241BE25F005C3C27 /* ContentView.swift */; };
 		4A176DBF241BE262005C3C27 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A176DBE241BE262005C3C27 /* Assets.xcassets */; };
@@ -80,6 +81,7 @@
 			files = (
 				4A84ECD524229F81005C3C27 /* SQLite in Frameworks */,
 				4A2AA121241C4123005C3C27 /* SwiftSoup in Frameworks */,
+				4A14A841242E5F88005C3C27 /* Down in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,6 +208,7 @@
 			packageProductDependencies = (
 				4A2AA120241C4123005C3C27 /* SwiftSoup */,
 				4A84ECD424229F81005C3C27 /* SQLite */,
+				4A14A840242E5F88005C3C27 /* Down */,
 			);
 			productName = BetterSchoology;
 			productReference = 4A176DB7241BE25F005C3C27 /* BetterSchoology.app */;
@@ -238,6 +241,7 @@
 			packageReferences = (
 				4A2AA11F241C4123005C3C27 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
 				4A84ECD324229F81005C3C27 /* XCRemoteSwiftPackageReference "SQLite.swift" */,
+				4A14A83F242E5F88005C3C27 /* XCRemoteSwiftPackageReference "Down" */,
 			);
 			productRefGroup = 4A176DB8241BE25F005C3C27 /* Products */;
 			projectDirPath = "";
@@ -428,7 +432,7 @@
 				CODE_SIGN_ENTITLEMENTS = BetterSchoology/BetterSchoology.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 17;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_ASSET_PATHS = "\"BetterSchoology/Preview Content\"";
 				DEVELOPMENT_TEAM = 9DDM72ZZ79;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -439,7 +443,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 0.5.5;
+				MARKETING_VERSION = 0.6;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.anli.BetterSchoology;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -453,7 +457,7 @@
 				CODE_SIGN_ENTITLEMENTS = BetterSchoology/BetterSchoology.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 17;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_ASSET_PATHS = "\"BetterSchoology/Preview Content\"";
 				DEVELOPMENT_TEAM = 9DDM72ZZ79;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -464,7 +468,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 0.5.5;
+				MARKETING_VERSION = 0.6;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.anli.BetterSchoology;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -495,6 +499,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		4A14A83F242E5F88005C3C27 /* XCRemoteSwiftPackageReference "Down" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/iwasrobbed/Down";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.2;
+			};
+		};
 		4A2AA11F241C4123005C3C27 /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/scinfu/SwiftSoup.git";
@@ -514,6 +526,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		4A14A840242E5F88005C3C27 /* Down */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4A14A83F242E5F88005C3C27 /* XCRemoteSwiftPackageReference "Down" */;
+			productName = Down;
+		};
 		4A2AA120241C4123005C3C27 /* SwiftSoup */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4A2AA11F241C4123005C3C27 /* XCRemoteSwiftPackageReference "SwiftSoup" */;

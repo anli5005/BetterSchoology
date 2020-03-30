@@ -13,7 +13,7 @@ struct MaterialDetailView: View {
     var materialDetail: MaterialDetail
     
     var url: URL? {
-        URL(string: "\(store.client.prefix)/\(materialDetail.material.urlSuffix)")
+        URL(string: "\(store.client.prefix)\(materialDetail.material.urlSuffix)")
     }
     
     var body: some View {

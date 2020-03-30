@@ -128,20 +128,12 @@ struct DiscussionMaterialDetail: MaterialDetail {
     var messages: [String: Message]
     var rootMessages: [String]
     var csrf: CSRFDetails?
+    var replyDetails: [String: String]?
 }
 
 struct OtherMaterialDetail: MaterialDetail {
     var material: Material
     var fullName: String { material.name }
-}
-
-struct LikeResponse: Codable {
-    var c: Int
-    var h: String
-    
-    var liked: Bool {
-        h == "Unlike"
-    }
 }
 
 struct CSRFDetails: Codable {

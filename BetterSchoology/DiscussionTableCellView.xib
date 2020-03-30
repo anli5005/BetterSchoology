@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16096" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16096"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -26,7 +26,7 @@
                     </connections>
                 </button>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Qrk-rp-KUQ">
-                    <rect key="frame" x="76" y="8" width="104" height="16"/>
+                    <rect key="frame" x="153" y="8" width="104" height="16"/>
                     <buttonCell key="cell" type="bevel" title="Open in Browser" bezelStyle="rounded" alignment="left" imageScaling="proportionallyDown" inset="2" id="x1L-Vd-czl">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -35,21 +35,37 @@
                         <action selector="openInSchoologyWithSender:" target="aQw-Xv-KPb" id="8L2-wV-4d3"/>
                     </connections>
                 </button>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Yay-ow-kHj">
+                    <rect key="frame" x="76" y="8" width="57" height="16"/>
+                    <buttonCell key="cell" type="bevel" title="Reply (1)" bezelStyle="rounded" alignment="left" imageScaling="proportionallyDown" inset="2" id="CaI-O9-0sF">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="replyWithSender:" target="aQw-Xv-KPb" id="abr-i8-qE1"/>
+                    </connections>
+                </button>
             </subviews>
             <constraints>
                 <constraint firstItem="9Lo-2c-8ME" firstAttribute="top" secondItem="aQw-Xv-KPb" secondAttribute="top" id="55q-JG-94Y"/>
+                <constraint firstItem="Qrk-rp-KUQ" firstAttribute="leading" secondItem="aQw-Xv-KPb" secondAttribute="leading" constant="153" id="7R9-ku-4Qs"/>
+                <constraint firstAttribute="bottom" secondItem="Yay-ow-kHj" secondAttribute="bottom" constant="8" id="Bc0-Yz-AQu"/>
+                <constraint firstItem="Qrk-rp-KUQ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Yay-ow-kHj" secondAttribute="trailing" constant="4" id="LmT-qi-6oR"/>
+                <constraint firstItem="Yay-ow-kHj" firstAttribute="leading" secondItem="aQw-Xv-KPb" secondAttribute="leading" constant="76" id="NEF-9Z-awd"/>
                 <constraint firstItem="ZkT-NL-sNG" firstAttribute="leading" secondItem="aQw-Xv-KPb" secondAttribute="leading" constant="8" id="So4-NV-VB1"/>
                 <constraint firstItem="9Lo-2c-8ME" firstAttribute="leading" secondItem="aQw-Xv-KPb" secondAttribute="leading" id="bTV-7X-F0O"/>
-                <constraint firstItem="Qrk-rp-KUQ" firstAttribute="leading" secondItem="ZkT-NL-sNG" secondAttribute="trailing" constant="20" id="chN-UT-pB4"/>
                 <constraint firstAttribute="trailing" secondItem="9Lo-2c-8ME" secondAttribute="trailing" id="fcU-4V-koh"/>
                 <constraint firstAttribute="bottom" secondItem="Qrk-rp-KUQ" secondAttribute="bottom" constant="8" id="fsR-cq-dU2"/>
+                <constraint firstAttribute="bottom" secondItem="Qrk-rp-KUQ" secondAttribute="bottom" constant="8" id="jRb-T9-oOk"/>
                 <constraint firstAttribute="bottom" secondItem="ZkT-NL-sNG" secondAttribute="bottom" constant="8" id="qLU-0d-rCH"/>
                 <constraint firstItem="ZkT-NL-sNG" firstAttribute="top" secondItem="9Lo-2c-8ME" secondAttribute="bottom" id="u2w-vO-xAz"/>
+                <constraint firstItem="Yay-ow-kHj" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ZkT-NL-sNG" secondAttribute="trailing" constant="4" id="uif-Mp-3Dv"/>
                 <constraint firstItem="Qrk-rp-KUQ" firstAttribute="top" secondItem="9Lo-2c-8ME" secondAttribute="bottom" id="wDT-Se-jmY"/>
             </constraints>
             <connections>
                 <outlet property="contentView" destination="9Lo-2c-8ME" id="fHl-P8-eys"/>
                 <outlet property="likeButton" destination="ZkT-NL-sNG" id="l2B-Rt-4h6"/>
+                <outlet property="replyButton" destination="Yay-ow-kHj" id="9U8-9D-ueH"/>
             </connections>
             <point key="canvasLocation" x="246.5" y="211.5"/>
         </tableCellView>

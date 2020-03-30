@@ -12,6 +12,7 @@ import SwiftSoup
 class DiscussionTableCellView: NSTableCellView, NSTextViewDelegate {
     @IBOutlet weak var contentView: NSView?
     @IBOutlet weak var likeButton: NSButton?
+    @IBOutlet weak var replyButton: NSButton?
     
     weak var controller: ChatViewController?
     
@@ -97,10 +98,12 @@ class DiscussionTableCellView: NSTableCellView, NSTextViewDelegate {
             if let message = message, message.id != oldValue?.id {
                 if let button = likeButton {
                     var buttonText = message.liked ? DiscussionTableCellView.likedIndicator : "Like"
-                    if message.likes > 0 {
-                        buttonText += " (\(message.likes))"
-                    }
+                    buttonText += " (\(message.likes))"
                     button.title = buttonText
+                }
+                
+                if let button = replyButton {
+                    button.title = "Reply (\(message.replies))"
                 }
             }
         }
@@ -121,6 +124,12 @@ class DiscussionTableCellView: NSTableCellView, NSTextViewDelegate {
     @IBAction func like(sender: NSButton?) {
         if let message = message {
             controller?.like(messageId: message.id)
+        }
+    }
+    
+    @IBAction func reply(sender: NSButton?) {
+        if let message = message {
+            controller?.reply(messageId: message.id)
         }
     }
         

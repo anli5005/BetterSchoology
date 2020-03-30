@@ -179,14 +179,43 @@ class SchoologyClient {
         }
     }
     
+    struct LikeResponse: Codable {
+        var c: Int
+        var h: String
+        
+        var liked: Bool {
+            h == "Unlike"
+        }
+    }
+    
     func like(messageId: String, csrf: CSRFDetails? = nil) -> Publishers.Decode<Publishers.Map<URLSession.DataTaskPublisher, Data>, LikeResponse, JSONDecoder> {
         var request = URLRequest(url: URL(string: "\(prefix)/like/c/\(messageId)")!)
         request.httpMethod = "POST"
         csrf?.apply(to: &request)
         
-        return session.dataTaskPublisher(for: request).map {
-            return $0.data
-        }.decode(type: LikeResponse.self, decoder: decoder)
+        return session.dataTaskPublisher(for: request).map(\.data).decode(type: LikeResponse.self, decoder: decoder)
+    }
+    
+    struct ReplyResponse: Codable {
+        var status: Bool
+    }
+    
+    func reply(discussion detail: DiscussionMaterialDetail, parent: String?, content: String) -> Publishers.Decode<Publishers.Map<URLSession.DataTaskPublisher, Data>, ReplyResponse, JSONDecoder> {
+        var request = URLRequest(url: URL(string: prefix + detail.material.urlSuffix)!)
+        request.httpMethod = "POST"
+        request.addValue("application/x-www-form-urlencoded; charset=UTF-8", forHTTPHeaderField: "Content-Type")
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        
+        let items = detail.replyQueryItems + [
+            URLQueryItem(name: "pid", value: parent),
+            URLQueryItem(name: "comment", value: content),
+            URLQueryItem(name: "drupal_ajax", value: "1")
+        ]
+        var components = URLComponents()
+        components.queryItems = items
+        request.httpBody = components.query?.data(using: .utf8)
+            
+        return session.dataTaskPublisher(for: request).map(\.data).decode(type: ReplyResponse.self, decoder: decoder)
     }
 }
 
@@ -194,5 +223,13 @@ extension CSRFDetails {
     func apply(to request: inout URLRequest) {
         request.addValue(csrf_key, forHTTPHeaderField: "X-Csrf-Key")
         request.addValue(csrf_token, forHTTPHeaderField: "X-Csrf-Token")
+    }
+}
+
+extension DiscussionMaterialDetail {
+    var replyQueryItems: [URLQueryItem] {
+        replyDetails?.map { pair in
+            URLQueryItem(name: pair.key, value: pair.value)
+        } ?? []
     }
 }
