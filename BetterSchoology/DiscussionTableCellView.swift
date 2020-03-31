@@ -95,7 +95,7 @@ class DiscussionTableCellView: NSTableCellView, NSTextViewDelegate {
     
     var message: Message? {
         didSet {
-            if let message = message, message.id != oldValue?.id {
+            if let message = message {
                 if let button = likeButton {
                     var buttonText = message.liked ? DiscussionTableCellView.likedIndicator : "Like"
                     buttonText += " (\(message.likes))"
