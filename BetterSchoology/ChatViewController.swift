@@ -382,6 +382,7 @@ class ChatViewController: NSViewController, NSTableViewDelegate, NSTableViewData
             }, receiveValue: { [weak self] response in
                 self?.isPosting = false
                 self?.replyTextView?.string = ""
+                self?.replyId = nil
                 if var newDiscussion = self?.discussion {
                     let message: Message?
                     do {

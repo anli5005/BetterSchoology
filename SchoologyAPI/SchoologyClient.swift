@@ -10,6 +10,8 @@ import Foundation
 import Combine
 import SwiftSoup
 
+let schoologyAllowed = CharacterSet.urlQueryAllowed.subtracting(CharacterSet(charactersIn: "+?&"))
+
 class SchoologyClient {
     let session: URLSession
     let prefix: String
@@ -31,8 +33,8 @@ class SchoologyClient {
             request.httpMethod = "POST"
             
             guard
-                let mail = credentials.username.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-                let pass = credentials.password.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+                let mail = credentials.username.addingPercentEncoding(withAllowedCharacters: schoologyAllowed),
+                let pass = credentials.password.addingPercentEncoding(withAllowedCharacters: schoologyAllowed)
                 else {
                     promise(.failure(SchoologyAuthenticationError.percentEncodingError))
                     return
@@ -205,18 +207,24 @@ class SchoologyClient {
         var request = URLRequest(url: URL(string: prefix + detail.material.urlSuffix)!)
         request.httpMethod = "POST"
         request.addValue("application/x-www-form-urlencoded; charset=UTF-8", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
+        request.addValue("application/json, text/javascript, */*; q=0.01", forHTTPHeaderField: "Accept")
         
         let items = detail.replyQueryItems + [
             URLQueryItem(name: "pid", value: parent),
-            URLQueryItem(name: "comment", value: content),
+            URLQueryItem(name: "comment", value: content.addingPercentEncoding(withAllowedCharacters: schoologyAllowed)),
             URLQueryItem(name: "drupal_ajax", value: "1")
         ]
         var components = URLComponents()
         components.queryItems = items
         request.httpBody = components.query?.data(using: .utf8)
             
-        return session.dataTaskPublisher(for: request).map(\.data).decode(type: ReplyResponse.self, decoder: decoder)
+        return session.dataTaskPublisher(for: request).map { result in
+            if let str = String(data: result.data, encoding: .utf8), let begin = str.firstIndex(of: "{"), let end = str.lastIndex(of: "}"), begin < end {
+                return Data(str[begin...end].utf8)
+            }
+            
+            return result.data
+        }.decode(type: ReplyResponse.self, decoder: decoder)
     }
 }
 
@@ -237,6 +245,9 @@ extension DiscussionMaterialDetail {
 
 extension SchoologyClient.ReplyResponse {
     func message(parent: String?) throws -> Message {
-        try parseMessage(comment: try SwiftSoup.parse(ajax_submit_output), parent: parent)
+        guard let comment = try SwiftSoup.parse(ajax_submit_output).select(".comment").first() else {
+            throw SchoologyParseError.unexpectedHtmlError
+        }
+        return try parseMessage(comment: comment, parent: parent)
     }
 }
