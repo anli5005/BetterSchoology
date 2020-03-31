@@ -408,4 +408,10 @@ class ChatViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     @IBAction func post(sender: NSButton?) {
         post()
     }
+    
+    @IBAction func markdownReference(sender: NSButton?) {
+        if let url = URL(string: "https://commonmark.org/help/") {
+            NSWorkspace.shared.open(url)
+        }
+    }
 }

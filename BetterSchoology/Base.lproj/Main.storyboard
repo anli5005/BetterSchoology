@@ -846,11 +846,23 @@
                                                             <action selector="postWithSender:" target="dLc-eC-WIl" id="O4v-h4-zwc"/>
                                                         </connections>
                                                     </button>
+                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="wum-AB-aDG">
+                                                        <rect key="frame" x="345" y="14" width="115" height="14"/>
+                                                        <buttonCell key="cell" type="bevel" title="Markdown Reference" bezelStyle="rounded" alignment="center" imageScaling="proportionallyDown" inset="2" id="sOq-u5-mMy">
+                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="controlContent" size="11"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="markdownReferenceWithSender:" target="dLc-eC-WIl" id="892-pT-Wbd"/>
+                                                        </connections>
+                                                    </button>
                                                 </subviews>
                                                 <constraints>
                                                     <constraint firstItem="OZC-Yz-cvA" firstAttribute="leading" secondItem="QO3-Hj-j59" secondAttribute="leading" constant="20" symbolic="YES" id="Iht-Ce-A9L"/>
-                                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="OZC-Yz-cvA" secondAttribute="trailing" constant="20" symbolic="YES" id="Wu7-mQ-9Gg"/>
+                                                    <constraint firstItem="wum-AB-aDG" firstAttribute="centerY" secondItem="QO3-Hj-j59" secondAttribute="centerY" id="fIz-g4-6Ci"/>
+                                                    <constraint firstItem="wum-AB-aDG" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="OZC-Yz-cvA" secondAttribute="trailing" constant="8" symbolic="YES" id="gXK-fZ-SQS"/>
                                                     <constraint firstAttribute="bottom" secondItem="OZC-Yz-cvA" secondAttribute="bottom" constant="10" id="kua-Gc-nkF"/>
+                                                    <constraint firstAttribute="trailing" secondItem="wum-AB-aDG" secondAttribute="trailing" constant="20" symbolic="YES" id="pTa-9t-NnQ"/>
                                                     <constraint firstItem="OZC-Yz-cvA" firstAttribute="top" secondItem="QO3-Hj-j59" secondAttribute="top" constant="10" id="qfp-wH-0Vp"/>
                                                 </constraints>
                                             </customView>
