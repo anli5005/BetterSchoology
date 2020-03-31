@@ -211,7 +211,7 @@ class SchoologyClient {
         
         let items = detail.replyQueryItems + [
             URLQueryItem(name: "pid", value: parent),
-            URLQueryItem(name: "comment", value: content.addingPercentEncoding(withAllowedCharacters: schoologyAllowed)),
+            URLQueryItem(name: "comment", value: content.escapingEmoji().addingPercentEncoding(withAllowedCharacters: schoologyAllowed)),
             URLQueryItem(name: "drupal_ajax", value: "1")
         ]
         var components = URLComponents()
@@ -249,5 +249,19 @@ extension SchoologyClient.ReplyResponse {
             throw SchoologyParseError.unexpectedHtmlError
         }
         return try parseMessage(comment: comment, parent: parent)
+    }
+}
+
+extension String {
+    func escapingEmoji() -> String {
+        var newString = ""
+        forEach { char in
+            if char.unicodeScalars.first?.properties.isEmojiPresentation == true {
+                newString += char.unicodeScalars.map { "&#x\(String($0.value, radix: 16));" }.joined()
+            } else {
+                newString.append(char)
+            }
+        }
+        return newString
     }
 }
