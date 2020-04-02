@@ -364,12 +364,24 @@ class ChatViewController: NSViewController, NSTableViewDelegate, NSTableViewData
     
     func post() {
         if let client = store?.client, let discussion = discussion, !isPosting {
-            let content: String
+            var content: String
             do {
                 content = try Down(markdownString: replyTextView!.string).toHTML([.hardBreaks, .smartUnsafe])
             } catch let e {
-                print("Couldn't parse: \(e)")
+                print("Couldn't parse Markdown: \(e)")
                 return
+            }
+            
+            do {
+                let document = try SwiftSoup.parse(content)
+                try document.select("pre").forEach { pre in
+                    if !pre.hasAttr("style") {
+                        try pre.attr("style", "white-space: pre;")
+                    }
+                }
+                content = try document.body()?.html() ?? document.html()
+            } catch let e {
+                print("Couldn't parse HTML from Markdown: \(e)")
             }
             
             isPosting = true
