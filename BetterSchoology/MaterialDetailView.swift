@@ -164,3 +164,14 @@ extension DiscussionMaterialDetail: MaterialDetailViewRepresentable, HasContentA
         }
     }
 }
+
+extension FolderMaterialDetail: MaterialDetailViewRepresentable {
+    func makeView(url: URL?) -> AnyView {
+        AnyView(VStack(alignment: .leading, spacing: 0) {
+            Divider()
+            if description != nil {
+                PageContentView(description!)
+            }
+        })
+    }
+}

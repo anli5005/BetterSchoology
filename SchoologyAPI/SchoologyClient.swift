@@ -119,10 +119,10 @@ class SchoologyClient {
                     }
                     
                     let kind: Material.Kind
-                    let meta: String?
+                    let meta: Any?
                     if row.hasClass("material-row-folder") {
                         kind = .folder
-                        meta = try row.select(".inline-icon").first()?.className()
+                        meta = FolderMeta(description: try row.select(".folder-description").first()?.html(), iconClass: try row.select(".inline-icon").first()?.className())
                     } else if row.hasClass("type-document") {
                         let icon = try row.select(".inline-icon")
                         if icon.hasClass("link-icon") {

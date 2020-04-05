@@ -304,3 +304,17 @@ struct DiscussionFetcher: MaterialDetailFetcher {
         }.eraseToAnyPublisher()
     }
 }
+
+struct FolderFetcher: MaterialDetailFetcher {
+    func type(for material: Material) -> MaterialDetail.Type? {
+        return material.kind == .folder ? FolderMaterialDetail.self : nil
+    }
+    
+    func fetch(material: Material, using client: SchoologyClient) -> AnyPublisher<MaterialDetail, Error> {
+        guard let meta = material.meta as? FolderMeta else {
+            return Fail(error: SchoologyParseError.unexpectedHtmlError).eraseToAnyPublisher()
+        }
+        
+        return Just(FolderMaterialDetail(material: material, fullName: material.name, description: meta.description)).setFailureType(to: Error.self).eraseToAnyPublisher()
+    }
+}

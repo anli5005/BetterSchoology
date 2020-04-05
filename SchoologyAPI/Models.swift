@@ -47,7 +47,7 @@ struct Material: Identifiable {
     var kind: Kind
     var available: Date?
     var due: Date?
-    var meta: String?
+    var meta: Any?
     var urlSuffix: String
     
     enum Kind {
@@ -60,6 +60,11 @@ struct Material: Identifiable {
         case discussion
         case other
     }
+}
+
+struct FolderMeta {
+    var description: String?
+    var iconClass: String?
 }
 
 protocol MaterialDetail {
@@ -129,6 +134,12 @@ struct DiscussionMaterialDetail: MaterialDetail {
     var rootMessages: [String]
     var csrf: CSRFDetails?
     var replyDetails: [String: String]?
+}
+
+struct FolderMaterialDetail: MaterialDetail {
+    var material: Material
+    var fullName: String
+    var description: String?
 }
 
 struct OtherMaterialDetail: MaterialDetail {

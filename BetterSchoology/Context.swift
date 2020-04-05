@@ -29,7 +29,8 @@ let sharedClient = SchoologyClient(session: URLSession(configuration: .default),
     PageFetcher(),
     FileFetcher(),
     AssignmentFetcher(),
-    DiscussionFetcher()
+    DiscussionFetcher(),
+    FolderFetcher()
 ])
 
 var sharedDownloadManager = DownloadManager(database: try! FilesDatabase(), client: sharedClient)
