@@ -12,6 +12,16 @@ import SwiftSoup
 
 let schoologyAllowed = CharacterSet.urlQueryAllowed.subtracting(CharacterSet(charactersIn: "+?&"))
 
+let dueDateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.timeZone = TimeZone(identifier: "America/New_York")
+    formatter.locale = Locale(identifier: "en-US")
+    formatter.calendar = Calendar(identifier: .gregorian)
+    formatter.dateFormat = "EEEE, MMMM d, y 'at' h:mm a"
+    formatter.defaultDate = Date()
+    return formatter
+}()
+
 class SchoologyClient {
     let session: URLSession
     let prefix: String
@@ -100,7 +110,11 @@ class SchoologyClient {
                 }
                 
                 let document = try SwiftSoup.parse(string)
-                let rows = try document.select("table#folder-contents-table tr")
+                guard let table = try document.select("table#folder-contents-table").first() else {
+                    throw SchoologyParseError.unexpectedHtmlError
+                }
+                
+                let rows = try table.select("tr")
                 
                 return try rows.map { row in
                     let id = row.id()
@@ -153,12 +167,17 @@ class SchoologyClient {
                         meta = nil
                     }
                     
+                    var due: Date?
+                    if let text = try row.select(".item-subtitle > span").first()?.text(), text.starts(with: "Due ") {
+                        due = dueDateFormatter.date(from: String(text.suffix(text.count - 4)))
+                    }
+                    
                     return Material(
                         id: String(id.suffix(from: id.index(id.startIndex, offsetBy: 2))),
                         name: try Entities.unescape(name),
                         kind: kind,
                         available: nil,
-                        due: nil,
+                        due: due,
                         meta: meta,
                         urlSuffix: try a.attr("href")
                     )

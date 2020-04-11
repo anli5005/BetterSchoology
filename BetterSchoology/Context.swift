@@ -8,6 +8,7 @@
 
 import SwiftUI
 import Combine
+import Quartz
 
 class AuthContext: ObservableObject {
     @Published var status = Status.unknown
@@ -18,6 +19,33 @@ class AuthContext: ObservableObject {
         case unknown
         case unauthenticated
         case authenticated(user: User, store: SchoologyStore)
+    }
+}
+
+class QuickLookContext: NSObject, QLPreviewPanelDelegate, QLPreviewPanelDataSource {
+    let panel = QLPreviewPanel.shared()
+    
+    override init() {
+        super.init()
+        panel?.delegate = self
+        panel?.dataSource = self
+    }
+    
+    var current: (URL, (() -> Void)?)? {
+        didSet {
+            if let done = oldValue?.1, oldValue?.0 != current?.0 {
+                done()
+            }
+            panel?.reloadData()
+        }
+    }
+    
+    func numberOfPreviewItems(in panel: QLPreviewPanel!) -> Int {
+        return current == nil ? 0 : 1
+    }
+    
+    func previewPanel(_ panel: QLPreviewPanel!, previewItemAt index: Int) -> QLPreviewItem! {
+        return current?.0 as QLPreviewItem?
     }
 }
 
@@ -37,8 +65,10 @@ var sharedDownloadManager = DownloadManager(database: try! FilesDatabase(), clie
 
 let userDateFormatter: DateFormatter = {
     let formatter = DateFormatter()
-    formatter.dateStyle = .short
+    formatter.dateStyle = .medium
     formatter.timeStyle = .short
     formatter.doesRelativeDateFormatting = true
     return formatter
 }()
+
+let sharedQuickLook = QuickLookContext()

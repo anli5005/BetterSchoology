@@ -116,6 +116,14 @@ struct FileView: View {
             Button(isNotOnDisk ? "Download" : "Re-Download") {
                 self.downloadManager.download(file: self.file)
             }.disabled(file.id == nil)
+            
+            Button("Quick Look") {
+                try? self.downloadManager.withURL(of: download!) { url, done in
+                    sharedQuickLook.current = (url, done)
+                    sharedQuickLook.panel?.makeKeyAndOrderFront(nil)
+                }
+            }.disabled(download == nil)
+            
             Button("Reveal in Finder") {
                 try? self.downloadManager.revealInFinder(download: download!)
             }.disabled(download == nil)

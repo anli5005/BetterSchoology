@@ -109,6 +109,9 @@ struct ContentAndFilesView: View {
 extension AssignmentMaterialDetail: MaterialDetailViewRepresentable, HasContentAndFiles {
     func makeView(url: URL?) -> AnyView {
         return AnyView(VStack(alignment: .leading, spacing: 0) {
+            if material.due != nil {
+                Text("Due: \(material.due!, formatter: userDateFormatter)").fontWeight(.bold).padding([.bottom, .horizontal]).lineLimit(1)
+            }
             Divider()
             ContentAndFilesView(contentAndFiles: self)
             Divider()
@@ -140,6 +143,9 @@ extension DiscussionMaterialDetail: MaterialDetailViewRepresentable, HasContentA
     
     func makeView(url: URL?) -> AnyView {
         AnyView(VStack(alignment: .leading, spacing: 0) {
+            if material.due != nil {
+                Text("Due: \(material.due!, formatter: userDateFormatter)").fontWeight(.bold).padding([.bottom, .horizontal]).lineLimit(1)
+            }
             Divider()
             OpenChatButton(detail: self).padding()
             Divider()
