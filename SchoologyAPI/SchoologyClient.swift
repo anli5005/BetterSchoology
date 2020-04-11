@@ -110,11 +110,11 @@ class SchoologyClient {
                 }
                 
                 let document = try SwiftSoup.parse(string)
-                guard let table = try document.select("table#folder-contents-table").first() else {
+                let rows = try document.select("table#folder-contents-table tr")
+                
+                if try rows.isEmpty() && document.select(".materials-top").isEmpty() {
                     throw SchoologyParseError.unexpectedHtmlError
                 }
-                
-                let rows = try table.select("tr")
                 
                 return try rows.map { row in
                     let id = row.id()
