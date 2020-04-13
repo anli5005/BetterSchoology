@@ -158,6 +158,7 @@ class ChatViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         tableView?.register(NSNib(nibNamed: "DiscussionTableCellView", bundle: Bundle.main)!, forIdentifier: ChatViewController.reuseIdentifier)
         tableView?.delegate = self
         tableView?.dataSource = self
+        tableView?.tableColumns.first?.maxWidth = .infinity
         if let option = autoRefreshIntervalPicker?.indexOfSelectedItem {
             setAutoRefreshInterval(autoRefreshIntervals[option])
         } else {
