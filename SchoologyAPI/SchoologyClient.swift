@@ -230,7 +230,7 @@ class SchoologyClient {
         
         let items = detail.replyQueryItems + [
             URLQueryItem(name: "pid", value: parent),
-            URLQueryItem(name: "comment", value: content.escapingEmoji().addingPercentEncoding(withAllowedCharacters: schoologyAllowed)),
+            URLQueryItem(name: "comment", value: content.zwjIfEmpty.escapingEmoji().addingPercentEncoding(withAllowedCharacters: schoologyAllowed)),
             URLQueryItem(name: "drupal_ajax", value: "1")
         ]
         var components = URLComponents()
@@ -282,5 +282,9 @@ extension String {
             }
         }
         return newString
+    }
+    
+    var zwjIfEmpty: String {
+        isEmpty ? "\u{200d}" : self
     }
 }
