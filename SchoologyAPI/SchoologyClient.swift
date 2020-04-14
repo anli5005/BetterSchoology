@@ -304,7 +304,7 @@ class SchoologyClient {
         }
     }
     
-    func upload(name: String, mime: String, token: String?, makeStream: @escaping ((InputStream?) -> Void) -> Void) -> AnyPublisher<String, Error> {
+    func upload(name: String, type: String, token: String?, makeStream: @escaping ((InputStream?) -> Void) -> Void) -> AnyPublisher<String, Error> {
         Future<Data, Error> { promise in
             let randomStr = Data((0..<18).map { _ in UInt8.random(in: UInt8.min...UInt8.max) }).base64EncodedString()
             let boundary = "----SchoologyFormBoundary\(randomStr)"
@@ -316,10 +316,36 @@ class SchoologyClient {
                 request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             }
             
+            let prefix = """
+            --\(boundary)
+            Content-Disposition: form-data; name="name"
+            
+            \(name)\r
+            --\(boundary)
+            Content-Disposition: form-data; name="use_plain"
+            
+            1\r
+            --\(boundary)
+            Content-Disposition: form-data; name="file"; filename="\(name)"
+            Content-Type: \(type)
+            
+            
+            """.data(using: .utf8)!
+            
+            let suffix = "\r\n--\(boundary)--".data(using: .utf8)!
+            
             let task = self.session.uploadTask(withStreamedRequest: request)
             let upload = OngoingUpload(task: task, makeStream: { completion in
                 makeStream { stream in
-                    completion(stream)
+                    if let stream = stream {
+                        completion(SerialInputStream(inputStreams: [
+                            InputStream(data: prefix),
+                            stream,
+                            InputStream(data: suffix)
+                        ]))
+                    } else {
+                        completion(nil)
+                    }
                 }
             }, success: { data in
                 promise(.success(data))
@@ -327,6 +353,7 @@ class SchoologyClient {
                 promise(.failure(error))
             })
             self.ongoingUploads[task.taskIdentifier] = upload
+            task.resume()
         }.decode(type: UploadResponse.self, decoder: decoder).map { $0.fileMetadataId }.eraseToAnyPublisher()
     }
     

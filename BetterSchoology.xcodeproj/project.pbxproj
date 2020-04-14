@@ -37,6 +37,7 @@
 		4A84ECD72422A02B005C3C27 /* FilesDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */; };
 		4A84ECD92423D968005C3C27 /* FileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84ECD82423D968005C3C27 /* FileView.swift */; };
 		4A84ECDB24242101005C3C27 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84ECDA24242101005C3C27 /* DownloadManager.swift */; };
+		4AC62B6D244628EF005C3C27 /* SerialInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC62B6C244628EF005C3C27 /* SerialInputStream.swift */; };
 		4ADF57A5241EAA03005C3C27 /* MaterialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */; };
 /* End PBXBuildFile section */
 
@@ -71,6 +72,7 @@
 		4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesDatabase.swift; sourceTree = "<group>"; };
 		4A84ECD82423D968005C3C27 /* FileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileView.swift; sourceTree = "<group>"; };
 		4A84ECDA24242101005C3C27 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
+		4AC62B6C244628EF005C3C27 /* SerialInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInputStream.swift; sourceTree = "<group>"; };
 		4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -146,6 +148,7 @@
 				4A176DDE241C24D7005C3C27 /* Models.swift */,
 				4A1A9311241F2277005C3C27 /* MaterialDetailFetcher.swift */,
 				4A176DD6241C0D44005C3C27 /* SchoologyCredentials.swift */,
+				4AC62B6B244628D5005C3C27 /* SerialInputStream */,
 			);
 			path = SchoologyAPI;
 			sourceTree = "<group>";
@@ -187,6 +190,14 @@
 				4A79E2BF24267504005C3C27 /* DiscussionTableCellView.swift */,
 			);
 			name = "Utility Views";
+			sourceTree = "<group>";
+		};
+		4AC62B6B244628D5005C3C27 /* SerialInputStream */ = {
+			isa = PBXGroup;
+			children = (
+				4AC62B6C244628EF005C3C27 /* SerialInputStream.swift */,
+			);
+			path = SerialInputStream;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -295,6 +306,7 @@
 				4A0DA9772428F435005C3C27 /* ChatViewController.swift in Sources */,
 				4A84ECD72422A02B005C3C27 /* FilesDatabase.swift in Sources */,
 				4A176DD7241C0D44005C3C27 /* SchoologyCredentials.swift in Sources */,
+				4AC62B6D244628EF005C3C27 /* SerialInputStream.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
