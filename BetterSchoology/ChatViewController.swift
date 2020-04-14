@@ -380,6 +380,11 @@ class ChatViewController: NSViewController, NSTableViewDelegate, NSTableViewData
                         try pre.attr("style", "white-space: pre;")
                     }
                 }
+                try document.select("pre > code").forEach { code in
+                    if !code.hasAttr("style") {
+                        try code.attr("style", "white-space: pre; padding: 0;")
+                    }
+                }
                 content = try document.body()?.html() ?? document.html()
             } catch let e {
                 print("Couldn't parse HTML from Markdown: \(e)")
