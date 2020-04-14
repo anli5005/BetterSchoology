@@ -28,12 +28,16 @@ class SchoologyClient {
     let schoolId: String
     var materialDetailFetchers: [MaterialDetailFetcher]
     let decoder = JSONDecoder()
+    private let delegate: SessionDelegate
         
-    init(session: URLSession, prefix: String, schoolId: String, materialDetailFetchers: [MaterialDetailFetcher] = []) {
-        self.session = session
+    init(sessionConfiguration: URLSessionConfiguration, prefix: String, schoolId: String, materialDetailFetchers: [MaterialDetailFetcher] = []) {
+        delegate = SessionDelegate()
+        self.session = URLSession(configuration: sessionConfiguration, delegate: delegate, delegateQueue: nil)
         self.prefix = prefix
         self.schoolId = schoolId
         self.materialDetailFetchers = materialDetailFetchers
+        
+        delegate.client = self
     }
     
     func authenticate(credentials: SchoologyCredentials) -> Future<Void, Error> {
@@ -245,6 +249,115 @@ class SchoologyClient {
             return result.data
         }.decode(type: ReplyResponse.self, decoder: decoder)
     }
+    
+    struct UploadDetailsResponse: Codable {
+        var js: Js
+        struct Js: Codable {
+            var setting: Setting
+            struct Setting: Codable {
+                var s_common: Common
+                var s_attachment: Attachment
+                
+                struct Common: Codable {
+                    var user: User
+                    struct User: Codable {
+                        var uid: String
+                    }
+                }
+                
+                struct Attachment: Codable {
+                    var file_service_upload: FileServiceUpload
+                    struct FileServiceUpload: Codable {
+                        var token: String
+                        var token_expire: Date
+                    }
+                }
+            }
+        }
+    }
+    
+    func uploadDetails(for submissionAccepting: SubmissionAccepting) -> AnyPublisher<UploadDetailsResponse, Error> {
+        var request = URLRequest(url: URL(string: prefix + submissionAccepting.submitURLSuffix!)!)
+        request.httpMethod = "GET"
+        request.addValue("X-Drupal-Render-Mode", forHTTPHeaderField: "json/popups")
+        
+        return session.dataTaskPublisher(for: request).map { result in result.data }.decode(type: UploadDetailsResponse.self, decoder: decoder).eraseToAnyPublisher()
+    }
+    
+    struct UploadResponse: Codable {
+        var fileMetadataId: String
+    }
+    
+    var ongoingUploads = [Int: OngoingUpload]()
+    class OngoingUpload {
+        let task: URLSessionUploadTask
+        let makeStream: ((InputStream?) -> Void) -> Void
+        var data = Data()
+        let success: (Data) -> Void
+        let failure: (Error) -> Void
+        
+        init(task: URLSessionUploadTask, makeStream: @escaping ((InputStream?) -> Void) -> Void, success: @escaping (Data) -> Void, failure: @escaping (Error) -> Void) {
+            self.task = task
+            self.makeStream = makeStream
+            self.success = success
+            self.failure = failure
+        }
+    }
+    
+    func upload(name: String, mime: String, token: String?, makeStream: @escaping ((InputStream?) -> Void) -> Void) -> AnyPublisher<String, Error> {
+        Future<Data, Error> { promise in
+            let randomStr = Data((0..<18).map { _ in UInt8.random(in: UInt8.min...UInt8.max) }).base64EncodedString()
+            let boundary = "----SchoologyFormBoundary\(randomStr)"
+            
+            var request = URLRequest(url: URL(string: self.prefix + "/file/upload-service")!)
+            request.httpMethod = "POST"
+            request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+            if let token = token {
+                request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            }
+            
+            let task = self.session.uploadTask(withStreamedRequest: request)
+            let upload = OngoingUpload(task: task, makeStream: { completion in
+                makeStream { stream in
+                    completion(stream)
+                }
+            }, success: { data in
+                promise(.success(data))
+            }, failure: { error in
+                promise(.failure(error))
+            })
+            self.ongoingUploads[task.taskIdentifier] = upload
+        }.decode(type: UploadResponse.self, decoder: decoder).map { $0.fileMetadataId }.eraseToAnyPublisher()
+    }
+    
+    class SessionDelegate: NSObject, URLSessionDataDelegate {
+        weak var client: SchoologyClient?
+        
+        func urlSession(_ session: URLSession, task: URLSessionTask, needNewBodyStream completionHandler: @escaping (InputStream?) -> Void) {
+            if let upload = client?.ongoingUploads[task.taskIdentifier] {
+                upload.makeStream(completionHandler)
+            } else {
+                completionHandler(nil)
+            }
+        }
+        
+        func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
+            if let upload = client?.ongoingUploads[dataTask.taskIdentifier] {
+                upload.data += data
+            }
+        }
+        
+        func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+            if let upload = client?.ongoingUploads[task.taskIdentifier] {
+                if let error = error {
+                    upload.failure(error)
+                } else {
+                    upload.success(upload.data)
+                }
+                client!.ongoingUploads[task.taskIdentifier] = nil
+            }
+        }
+    }
 }
 
 extension CSRFDetails {
@@ -286,5 +399,12 @@ extension String {
     
     var zwjIfEmpty: String {
         isEmpty ? "\u{200d}" : self
+    }
+}
+
+extension SubmissionToken {
+    init(_ response: SchoologyClient.UploadDetailsResponse, userId: Int) {
+        let setting = response.js.setting
+        self.init(token: setting.s_attachment.file_service_upload.token, userId: setting.s_common.user.uid, expires: setting.s_attachment.file_service_upload.token_expire)
     }
 }

@@ -102,11 +102,20 @@ struct FileMaterialDetail: MaterialDetail {
     var file: SchoologyFile
 }
 
-struct AssignmentMaterialDetail: MaterialDetail {
+protocol SubmissionAccepting {
+    var submitURLSuffix: String? { get }
+}
+
+extension SubmissionAccepting {
+    var acceptsSubmissions: Bool { submitURLSuffix != nil }
+}
+
+struct AssignmentMaterialDetail: MaterialDetail, SubmissionAccepting {
     var material: Material
     var fullName: String
     var content: String
     var files: [SchoologyFile]
+    var submitURLSuffix: String?
 }
 
 struct Message: Identifiable {
@@ -155,3 +164,14 @@ struct CSRFDetails: Codable {
 struct DrupalSettings: Decodable {
     var s_common: CSRFDetails
 }
+
+struct SubmissionToken {
+    var token: String
+    var userId: String
+    var expires: Date
+    
+    func isExpired(asOf date: Date = Date()) -> Bool {
+        return date >= expires
+    }
+}
+

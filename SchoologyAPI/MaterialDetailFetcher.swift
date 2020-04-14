@@ -187,7 +187,8 @@ struct AssignmentFetcher: MaterialDetailFetcher {
                 material: material,
                 fullName: try document.select(".page-title").text(),
                 content: try document.select(".info-body").html(),
-                files: try document.select(".attachments-file").map { try extractFile(from: $0) }
+                files: try document.select(".attachments-file").map { try extractFile(from: $0) },
+                submitURLSuffix: try document.select(".submit-assignment > a").first()?.attr("href")
             )
         }.eraseToAnyPublisher()
     }
