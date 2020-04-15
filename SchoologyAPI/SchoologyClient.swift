@@ -27,6 +27,7 @@ class SchoologyClient {
     let prefix: String
     let schoolId: String
     var materialDetailFetchers: [MaterialDetailFetcher]
+    let encoder = JSONEncoder()
     let decoder = JSONDecoder()
     private let delegate: SessionDelegate
         
@@ -251,6 +252,7 @@ class SchoologyClient {
     }
     
     struct UploadDetailsResponse: Codable {
+        var content: String
         var js: Js
         struct Js: Codable {
             var setting: Setting
@@ -279,7 +281,7 @@ class SchoologyClient {
     func uploadDetails(for submissionAccepting: SubmissionAccepting) -> AnyPublisher<UploadDetailsResponse, Error> {
         var request = URLRequest(url: URL(string: prefix + submissionAccepting.submitURLSuffix!)!)
         request.httpMethod = "GET"
-        request.addValue("X-Drupal-Render-Mode", forHTTPHeaderField: "json/popups")
+        request.addValue("json/popups", forHTTPHeaderField: "X-Drupal-Render-Mode")
         
         return session.dataTaskPublisher(for: request).map { result in result.data }.decode(type: UploadDetailsResponse.self, decoder: decoder).eraseToAnyPublisher()
     }
@@ -306,8 +308,7 @@ class SchoologyClient {
     
     func upload(name: String, type: String, token: String?, makeStream: @escaping ((InputStream?) -> Void) -> Void) -> AnyPublisher<String, Error> {
         Future<Data, Error> { promise in
-            let randomStr = Data((0..<18).map { _ in UInt8.random(in: UInt8.min...UInt8.max) }).base64EncodedString()
-            let boundary = "----SchoologyFormBoundary\(randomStr)"
+            let boundary = generateMultipartBoundary()
             
             var request = URLRequest(url: URL(string: self.prefix + "/file/upload-service")!)
             request.httpMethod = "POST"
@@ -385,6 +386,64 @@ class SchoologyClient {
             }
         }
     }
+    
+    struct UploadRequest: Encodable {
+        var title: String
+        var encode = true
+        
+        init(_ title: String) {
+            self.title = title
+        }
+    }
+    
+    func submit(fileMetadataIdsAndTitles: [String: String], with comment: String? = nil, to submissionAccepting: SubmissionAccepting, uploadDetails: UploadDetailsResponse) -> AnyPublisher<Void, Error> {
+        let boundary = generateMultipartBoundary()
+        
+        var components = URLComponents(string: prefix + submissionAccepting.submitURLSuffix!)!
+        components.queryItems = [URLQueryItem(name: "destination", value: "/done")]
+        
+        var request = URLRequest(url: components.url!)
+        request.httpMethod = "POST"
+        request.addValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        request.addValue("json/popups", forHTTPHeaderField: "X-Drupal-Render-Mode")
+        
+        let parts: [(String, Data)]
+        do {
+            guard let form = try SwiftSoup.parse(uploadDetails.content).getElementById("s-drop-item-submit-upload-form") else {
+                throw SchoologyParseError.unexpectedHtmlError
+            }
+            
+            let formItems = try extractFormFields(from: form, names: ["sid", "op", "form_build_id", "form_token", "form_id", "form_origin_popups", "target_DOM_id"])
+            parts = try formItems.map { ($0, Data($1.utf8)) } + [
+                ("file[files]", encoder.encode(fileMetadataIdsAndTitles.mapValues { UploadRequest($0) })),
+                ("file[recording]", Data()),
+                ("drop_item_comment", comment?.data(using: .utf8) ?? Data())
+            ]
+        } catch let e {
+            return Fail(error: e).eraseToAnyPublisher()
+        }
+        
+        var data = Data()
+        for (name, part) in parts {
+            data += Data("""
+            --\(boundary)
+            Content-Disposition: form-data; name="\(name)"
+            
+            
+            """.utf8)
+            data += part
+            data += Data("\r\n".utf8)
+        }
+        data += Data("--\(boundary)--".utf8)
+        request.httpBody = data
+        
+        return session.dataTaskPublisher(for: request).tryMap { result in
+            print("Got response")
+            if result.response.url?.lastPathComponent != "done" {
+                throw SchoologyParseError.unexpectedHtmlError
+            }
+        }.eraseToAnyPublisher()
+    }
 }
 
 extension CSRFDetails {
@@ -430,8 +489,12 @@ extension String {
 }
 
 extension SubmissionToken {
-    init(_ response: SchoologyClient.UploadDetailsResponse, userId: Int) {
+    init(_ response: SchoologyClient.UploadDetailsResponse) {
         let setting = response.js.setting
         self.init(token: setting.s_attachment.file_service_upload.token, userId: setting.s_common.user.uid, expires: setting.s_attachment.file_service_upload.token_expire)
     }
+}
+
+func generateMultipartBoundary() -> String {
+    return "----BetterSchoologyFormBoundary\(Data((0..<18).map { _ in UInt8.random(in: UInt8.min...UInt8.max) }).base64EncodedString())".replacingOccurrences(of: "/", with: "-")
 }

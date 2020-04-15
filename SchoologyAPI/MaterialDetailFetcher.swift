@@ -271,12 +271,14 @@ func extractCsrf<TDecoder: TopLevelDecoder>(document: Element, using decoder: TD
     return nil
 }
 
-func extractReplyDetails(document: Element) throws -> [String: String] {
-    let keys = ["nid", "nid2", "node_realm", "node_realm2", "node_realm_id", "node_realm_id2", "form_id", "sid", "op", "form_token"]
-    
-    return [String: String](uniqueKeysWithValues: try keys.map {
+func extractFormFields(from document: Element, names: [String]) throws -> [String: String] {
+    [String: String](try names.map {
         ($0, try document.select("input[name='\($0)']").first()?.val())
-    }.filter { $0.1 != nil }.map { ($0.0, $0.1!) })
+    }.filter { $0.1 != nil }.map { ($0.0, $0.1!) }, uniquingKeysWith: { (a, b) in b })
+}
+
+func extractReplyDetails(document: Element) throws -> [String: String] {
+    try extractFormFields(from: document, names: ["nid", "nid2", "node_realm", "node_realm2", "node_realm_id", "node_realm_id2", "form_id", "sid", "op", "form_token"])
 }
 
 struct DiscussionFetcher: MaterialDetailFetcher {
