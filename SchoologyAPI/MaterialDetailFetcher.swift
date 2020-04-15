@@ -141,6 +141,24 @@ func extractFile(from attachment: Element) throws -> SchoologyFile {
     )
 }
 
+func extractImage(from attachment: Element) throws -> SchoologyFile {
+    let url: URL?
+    if let a = try attachment.select(".attachments-file-thumbnail > a").first() {
+        url = try URL(string: a.hasAttr("caption_href") ? a.attr("caption_href") : a.attr("href"))
+    } else {
+        url = nil
+    }
+    
+    let typeDescription: String?
+    if let ext = url?.pathExtension {
+        typeDescription = "\(ext.uppercased()) Image"
+    } else {
+        typeDescription = "Image"
+    }
+    
+    return SchoologyFile(name: try attachment.select(".infotip-content").first()?.text() ?? url?.lastPathComponent, url: url, size: nil, iconClass: nil, typeDescription: typeDescription)
+}
+
 struct FileFetcher: MaterialDetailFetcher {
     func type(for material: Material) -> MaterialDetail.Type? {
         return material.kind == .file ? FileMaterialDetail.self : nil
@@ -188,6 +206,7 @@ struct AssignmentFetcher: MaterialDetailFetcher {
                 fullName: try document.select(".page-title").text(),
                 content: try document.select(".info-body").html(),
                 files: try document.select(".attachments-file").map { try extractFile(from: $0) }
+                    + document.select(".attachments-file-image").map { try extractImage(from: $0) }
             )
         }.eraseToAnyPublisher()
     }
@@ -295,7 +314,8 @@ struct DiscussionFetcher: MaterialDetailFetcher {
                 material: material,
                 fullName: try document.select(".page-title").text(),
                 content: try document.select(".discussion-prompt").html(),
-                files: try document.select(".discussion-attachments .attachments-file").map { try extractFile(from: $0) },
+                files: try document.select(".discussion-attachments .attachments-file").map { try extractFile(from: $0) }
+                    + document.select(".discussion-attachments .attachments-file-image").map { try extractImage(from: $0) },
                 messages: messages,
                 rootMessages: rootMessages,
                 csrf: try extractCsrf(document: document, using: client.decoder),
