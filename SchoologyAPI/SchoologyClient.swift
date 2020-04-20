@@ -24,21 +24,19 @@ let dueDateFormatter: DateFormatter = {
 
 class SchoologyClient {
     let session: URLSession
-    let prefix: String
-    let schoolId: String
+    var prefix: String
     var materialDetailFetchers: [MaterialDetailFetcher]
     let decoder = JSONDecoder()
         
-    init(session: URLSession, prefix: String, schoolId: String, materialDetailFetchers: [MaterialDetailFetcher] = []) {
+    init(session: URLSession, prefix: String, materialDetailFetchers: [MaterialDetailFetcher] = []) {
         self.session = session
         self.prefix = prefix
-        self.schoolId = schoolId
         self.materialDetailFetchers = materialDetailFetchers
     }
     
     func authenticate(credentials: SchoologyCredentials) -> Future<Void, Error> {
         return Future<Void, Error> { promise in
-            var request = URLRequest(url: URL(string: "\(self.prefix)/login/ldap?&school=\(self.schoolId)")!)
+            var request = URLRequest(url: URL(string: "\(self.prefix)/login/ldap")!)
             request.addValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
             request.httpMethod = "POST"
             
@@ -50,11 +48,12 @@ class SchoologyClient {
                     return
             }
             
-            let body = "mail=\(mail)&pass=\(pass)&school_nid=\(self.schoolId)&form_id=s_user_login_form"
+            let body = "mail=\(mail)&pass=\(pass)&form_id=s_user_login_form"
             self.session.uploadTask(with: request, from: Data(body.utf8)) { (data, response, error) in
+                let str = data.map { String(data: $0, encoding: .utf8) }
                 if let error = error {
                     promise(.failure(error))
-                } else if data.map({ String(data: $0, encoding: .utf8) })??.contains("Sorry, unrecognized username or password.") == false {
+                } else if str??.contains("Sorry, unrecognized username or password.") == false && str??.contains("you entered is not recognized or does not exist") == false {
                     promise(.success(()))
                 } else {
                     promise(.failure(SchoologyAuthenticationError.unrecognizedCredentials))

@@ -23,6 +23,8 @@ private extension Dictionary {
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
+    
+    static let prefixDefaultsKey = "BetterSchoologyURLPrefix"
 
     var window: NSWindow!
     var windowControllers = Set<NSWindowController>()
@@ -84,7 +86,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 let attributes: [String: Any] = [
                     kSecAttrAccount as String: credentials.username,
                     kSecValueData as String: Data(credentials.password.utf8),
-                    kSecAttrLabel as String: "BetterSchoology BCA Password"
+                    kSecAttrLabel as String: "BetterSchoology Password"
                 ]
                 let status: OSStatus
                 if self.didFindKeychainItem {

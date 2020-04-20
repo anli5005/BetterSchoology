@@ -31,8 +31,10 @@ struct AuthView: View {
     
     @State var username = ""
     @State var password = ""
+    @State var prefix = UserDefaults.standard.string(forKey: AppDelegate.prefixDefaultsKey) ?? ""
     @State var signingIn: AnyCancellable?
     @State var error: Error?
+    @State var isModifyingPrefix = UserDefaults.standard.string(forKey: AppDelegate.prefixDefaultsKey) == nil
     
     var valid: Bool {
         !username.isEmpty && !password.isEmpty
@@ -42,7 +44,29 @@ struct AuthView: View {
         VStack(alignment: .center) {
             Text("Welcome to")
             Text("BetterSchoology").font(.title).fontWeight(.bold)
-            Text("Please enter your Schoology credentials.").padding(.vertical)
+            if isModifyingPrefix {
+                HStack(alignment: .center) {
+                    Text("Sign in to:").lineLimit(1)
+                    TextField("https://yourschool.schoology.com", text: $prefix)
+                    Button(action: {
+                        self.isModifyingPrefix = false
+                        UserDefaults.standard.set(self.prefix, forKey: AppDelegate.prefixDefaultsKey)
+                    }) {
+                        Text("Done")
+                    }
+                }.padding(.top)
+                Text("Include the \"https://\", but do not add slashes at the end.").foregroundColor(.gray).padding(.bottom)
+            } else {
+                HStack(alignment: .center, spacing: 0) {
+                    Text("Signing in to ").lineLimit(1)
+                    Text(prefix).fontWeight(.bold).lineLimit(1)
+                    Button(action: {
+                        self.isModifyingPrefix = true
+                    }) {
+                        Text("Change...")
+                    }.buttonStyle(LinkButtonStyle()).disabled(signingIn != nil).padding(.leading)
+                }.padding(.vertical)
+            }
             error.map { Text($0.authDescription).fontWeight(.bold).foregroundColor(.red) }
             Group {
                 TextField("Username", text: $username)
@@ -52,6 +76,7 @@ struct AuthView: View {
                 Button("Sign In", action: {
                     print("Signing in with username \(self.username)")
                     let credentials = SchoologyCredentials(username: self.username, password: self.password)
+                    self.client.prefix = self.prefix
                     self.signingIn = self.client.authenticate(credentials: credentials).sink(receiveCompletion: { completion in
                         switch completion {
                         case .failure(let error):
@@ -80,7 +105,7 @@ struct AuthView: View {
                         }
                     })
                     self.error = nil
-                })
+                }).disabled(isModifyingPrefix)
             } else {
                 Button("Signing in...", action: {}).disabled(true)
             }

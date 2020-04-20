@@ -51,7 +51,7 @@ class QuickLookContext: NSObject, QLPreviewPanelDelegate, QLPreviewPanelDataSour
 
 extension SchoologyClient: ObservableObject {}
 
-let sharedClient = SchoologyClient(session: URLSession(configuration: .default), prefix: "https://bca.schoology.com", schoolId: "11897239", materialDetailFetchers: [
+let sharedClient = SchoologyClient(session: URLSession(configuration: .ephemeral), prefix: "https://bca.schoology.com", materialDetailFetchers: [
     SimpleLinkFetcher(),
     PageLinkFetcher(),
     PageFetcher(),
