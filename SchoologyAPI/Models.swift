@@ -90,6 +90,7 @@ struct SchoologyFile {
     var size: String?
     var iconClass: String?
     var typeDescription: String?
+    var isDownload: Bool
     
     var id: String? {
         url?.lastPathComponent

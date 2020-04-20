@@ -137,7 +137,8 @@ func extractFile(from attachment: Element) throws -> SchoologyFile {
         url: URL(string: try a.attr("href")),
         size: try attachment.select(".attachments-file-size").first()?.text(),
         iconClass: try icon.first()?.className(),
-        typeDescription: try icon.select(".visually-hidden").first()?.text()
+        typeDescription: try icon.select(".visually-hidden").first()?.text(),
+        isDownload: true
     )
 }
 
@@ -156,7 +157,20 @@ func extractImage(from attachment: Element) throws -> SchoologyFile {
         typeDescription = "Image"
     }
     
-    return SchoologyFile(name: try attachment.select(".infotip-content").first()?.text() ?? url?.lastPathComponent, url: url, size: nil, iconClass: nil, typeDescription: typeDescription)
+    return SchoologyFile(name: try attachment.select(".infotip-content").first()?.text() ?? url?.lastPathComponent, url: url, size: nil, iconClass: nil, typeDescription: typeDescription, isDownload: true)
+}
+
+func extractFileLink(from attachment: Element, prefix: URL? = nil) throws -> SchoologyFile {
+    let icon = try attachment.select(".inline-icon")
+    let a = try attachment.select("a")
+    return SchoologyFile(
+        name: try a.text(),
+        url: try URL(string: a.attr("href"), relativeTo: prefix),
+        size: nil,
+        iconClass: try icon.first()?.className(),
+        typeDescription: "Link",
+        isDownload: false
+    )
 }
 
 struct FileFetcher: MaterialDetailFetcher {
@@ -185,7 +199,8 @@ struct FileFetcher: MaterialDetailFetcher {
                         url: URL(string: try contentWrapper.select("img").attr("src")),
                         size: nil,
                         iconClass: nil,
-                        typeDescription: nil
+                        typeDescription: nil,
+                        isDownload: true
                     )
                 )
             }
@@ -207,6 +222,7 @@ struct AssignmentFetcher: MaterialDetailFetcher {
                 content: try document.select(".info-body").html(),
                 files: try document.select(".attachments-file").map { try extractFile(from: $0) }
                     + document.select(".attachments-file-image").map { try extractImage(from: $0) }
+                    + document.select(".attachments-link").map { try extractFileLink(from: $0, prefix: URL(string: client.prefix)!) }
             )
         }.eraseToAnyPublisher()
     }
@@ -315,7 +331,8 @@ struct DiscussionFetcher: MaterialDetailFetcher {
                 fullName: try document.select(".page-title").text(),
                 content: try document.select(".discussion-prompt").html(),
                 files: try document.select(".discussion-attachments .attachments-file").map { try extractFile(from: $0) }
-                    + document.select(".discussion-attachments .attachments-file-image").map { try extractImage(from: $0) },
+                    + document.select(".discussion-attachments .attachments-file-image").map { try extractImage(from: $0) }
+                    + document.select(".attachments-link").map { try extractFileLink(from: $0, prefix: URL(string: client.prefix)!) },
                 messages: messages,
                 rootMessages: rootMessages,
                 csrf: try extractCsrf(document: document, using: client.decoder),
