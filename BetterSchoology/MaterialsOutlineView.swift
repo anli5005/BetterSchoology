@@ -43,6 +43,7 @@ struct MaterialsOutlineView: NSViewRepresentable {
         outlineView.usesAlternatingRowBackgroundColors = true
         outlineView.columnAutoresizingStyle = .reverseSequentialColumnAutoresizingStyle
         outlineView.allowsColumnReordering = true
+        outlineView.focusRingType = .none
         
         Column.allCases.forEach { column in
             let tableColumn = NSTableColumn()

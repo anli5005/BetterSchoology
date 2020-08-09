@@ -158,7 +158,7 @@ extension DiscussionMaterialDetail: MaterialDetailViewRepresentable, HasContentA
         if let window = delegate.chatWindows[AnyHashable(material.id)] {
             window.makeKeyAndOrderFront(nil)
         } else {
-            let controller = NSStoryboard(name: "Main", bundle: Bundle.main).instantiateController(withIdentifier: "chatWindowController") as! NSWindowController
+            let controller = NSStoryboard(name: "Chat", bundle: Bundle.main).instantiateController(withIdentifier: "chatWindowController") as! NSWindowController
             controller.window?.center()
             controller.window?.makeKeyAndOrderFront(nil)
             delegate.chatWindows[AnyHashable(material.id)] = controller.window

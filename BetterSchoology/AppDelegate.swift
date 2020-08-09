@@ -21,12 +21,13 @@ private extension Dictionary {
     }
 }
 
-@NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     var window: NSWindow!
     var windowControllers = Set<NSWindowController>()
     var chatWindows = [AnyHashable: NSWindow]()
+    
+    var hostingController: NSHostingController<AnyView>?
 
     private var initialAuthCancellable: AnyCancellable?
     private var persistAuthCancellable: AnyCancellable?
@@ -52,11 +53,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         return nil
     }
+    
+    let context = AuthContext()
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         UserDefaults.standard.set(false, forKey: "NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints")
-        
-        let context = AuthContext()
         
         if let creds = getCredentialsFromKeychain() {
             print("Found credentials")
@@ -66,12 +67,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 if case .failure(let error) = completion {
                     print("Authentication error: \(error)")
                     DispatchQueue.main.async {
-                        context.status = .unauthenticated
+                        self.context.status = .unauthenticated
                     }
                 }
             }, receiveValue: { props in
                 DispatchQueue.main.async {
-                    context.status = .authenticated(user: props.props.user, store: SchoologyStore(client: sharedClient))
+                    self.context.status = .authenticated(user: props.props.user, store: SchoologyStore(client: sharedClient))
                 }
             })
         } else {
@@ -116,19 +117,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             print("Error setting up downloads database: \(e)")
         }
         
+        if #available(macOS 11.0, *) {
+            return
+        }
+        
         // Create the SwiftUI view that provides the window contents.
-        let contentView = ContentView()
+        let contentView = AnyView(ContentView()
             .environmentObject(context)
-            .environmentObject(sharedClient)
+            .environmentObject(sharedClient))
 
-        // Create the window and set the content view. 
+        // Create the window and set the content view.
         window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 480, height: 300),
             styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
             backing: .buffered, defer: false)
         window.center()
         window.setFrameAutosaveName("Main Window")
-        window.contentView = NSHostingView(rootView: contentView)
+        hostingController = NSHostingController(rootView: contentView)
+        window.contentView = hostingController!.view
         window.makeKeyAndOrderFront(nil)
     }
 
