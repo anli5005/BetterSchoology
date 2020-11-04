@@ -21,7 +21,7 @@ private extension Dictionary {
     }
 }
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     var window: NSWindow!
     var windowControllers = Set<NSWindowController>()

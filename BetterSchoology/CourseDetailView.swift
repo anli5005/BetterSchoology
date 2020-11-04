@@ -85,11 +85,11 @@ struct CourseDetailView: View {
                 } else {
                     Text("Select a material").padding()
                 }
-            }.frame(maxHeight: .infinity).frame(width: 480)
+            }.frame(maxHeight: .infinity).frame(width: 400)
         }
         
         if #available(macOS 11.0, iOS 14.0, *) {
-            return AnyView(stack.navigationTitle(course.courseTitle).toolbar {
+            return AnyView(stack.toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     RefreshButton(action: {
                         self.materialsStore.materials = [:]
@@ -98,7 +98,7 @@ struct CourseDetailView: View {
                         self.materialsStore.requestFolder(id: nil)
                     })
                 }
-            })
+            }.navigationTitle(course.courseTitle))
         } else {
             return AnyView(stack)
         }

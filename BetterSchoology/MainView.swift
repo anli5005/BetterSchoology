@@ -15,7 +15,7 @@ struct MainView: View {
                 CourseListView().frame(minWidth: 200, maxWidth: 400, maxHeight: .infinity)
                 Text("Select a course to get started.").padding().frame(maxWidth: .infinity, maxHeight: .infinity).toolbar {
                     ToolbarItem(placement: .primaryAction) {
-                        RefreshButton()
+                        Spacer()
                     }
                 }
             })

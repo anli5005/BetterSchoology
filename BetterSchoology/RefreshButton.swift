@@ -14,6 +14,6 @@ import SwiftUI
     var body: some View {
         Button(action: action ?? {}) {
             Label("Refresh", systemImage: "arrow.clockwise")
-        }.disabled(action == nil)
+        }
     }
 }

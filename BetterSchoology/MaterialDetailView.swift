@@ -22,7 +22,7 @@ struct MaterialDetailView: View {
             Button(action: {
                 NSWorkspace.shared.open(self.url!)
             }) {
-                Text("Open in Schoology")
+                Text("Open in Schoology").foregroundColor(.accentColor)
             }.buttonStyle(LinkButtonStyle()).disabled(url == nil).padding([.horizontal, .bottom])
             if materialDetail is MaterialDetailViewRepresentable {
                 (materialDetail as! MaterialDetailViewRepresentable).makeView(url: self.url)
@@ -131,10 +131,18 @@ extension DiscussionMaterialDetail: MaterialDetailViewRepresentable, HasContentA
     struct OpenChatButton: View {
         var detail: DiscussionMaterialDetail
         @EnvironmentObject var store: CourseMaterialsStore
+        @available(macOS 10.16, *) @EnvironmentObject var appDelegate: AppDelegate
         
         var body: some View {
-            Button(action: {
-                self.detail.openChatWindow(courseMaterialsStore: self.store)
+            let delegate: AppDelegate
+            if #available(macOS 10.16, *) {
+                delegate = appDelegate
+            } else {
+                delegate = NSApp.delegate as! AppDelegate
+            }
+            
+            return Button(action: {
+                self.detail.openChatWindow(courseMaterialsStore: self.store, delegate: delegate)
             }) {
                 Text("Open Chat Window")
             }
@@ -153,8 +161,7 @@ extension DiscussionMaterialDetail: MaterialDetailViewRepresentable, HasContentA
         })
     }
     
-    func openChatWindow(courseMaterialsStore: CourseMaterialsStore) {
-        let delegate = NSApp.delegate as! AppDelegate
+    func openChatWindow(courseMaterialsStore: CourseMaterialsStore, delegate: AppDelegate) {
         if let window = delegate.chatWindows[AnyHashable(material.id)] {
             window.makeKeyAndOrderFront(nil)
         } else {
