@@ -129,12 +129,13 @@ struct PageFetcher: MaterialDetailFetcher {
     }
 }
 
-func extractFile(from attachment: Element) throws -> SchoologyFile {
+func extractFile(from attachment: Element, prefix: String) throws -> SchoologyFile {
     let icon = try attachment.select(".inline-icon")
     let a = try attachment.select(".attachments-file-name > a").not(".view-file-popup")
+    let href = try a.attr("href")
     return SchoologyFile(
         name: try attachment.select(".infotip").first()?.textNodes().first?.text() ?? a.text(),
-        url: URL(string: try a.attr("href")),
+        url: URL(string: href.starts(with: "/") ? (prefix + href) : href),
         size: try attachment.select(".attachments-file-size").first()?.text(),
         iconClass: try icon.first()?.className(),
         typeDescription: try icon.select(".visually-hidden").first()?.text(),
@@ -188,7 +189,7 @@ struct FileFetcher: MaterialDetailFetcher {
                 return FileMaterialDetail(
                     material: material,
                     fullName: fullName,
-                    file: try extractFile(from: attachment)
+                    file: try extractFile(from: attachment, prefix: client.prefix)
                 )
             } else {
                 return FileMaterialDetail(
@@ -220,7 +221,7 @@ struct AssignmentFetcher: MaterialDetailFetcher {
                 material: material,
                 fullName: try document.select(".page-title").text(),
                 content: try document.select(".info-body").html(),
-                files: try document.select(".attachments-file").map { try extractFile(from: $0) }
+                files: try document.select(".attachments-file").map { try extractFile(from: $0, prefix: client.prefix) }
                     + document.select(".attachments-file-image").map { try extractImage(from: $0) }
                     + document.select(".attachments-link").map { try extractFileLink(from: $0, prefix: URL(string: client.prefix)!) }
             )
@@ -330,7 +331,7 @@ struct DiscussionFetcher: MaterialDetailFetcher {
                 material: material,
                 fullName: try document.select(".page-title").text(),
                 content: try document.select(".discussion-prompt").html(),
-                files: try document.select(".discussion-attachments .attachments-file").map { try extractFile(from: $0) }
+                files: try document.select(".discussion-attachments .attachments-file").map { try extractFile(from: $0, prefix: client.prefix) }
                     + document.select(".discussion-attachments .attachments-file-image").map { try extractImage(from: $0) }
                     + document.select(".attachments-link").map { try extractFileLink(from: $0, prefix: URL(string: client.prefix)!) },
                 messages: messages,

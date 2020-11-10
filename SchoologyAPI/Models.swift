@@ -93,7 +93,15 @@ struct SchoologyFile {
     var isDownload: Bool
     
     var id: String? {
-        url?.lastPathComponent
+        guard let components = url?.pathComponents else {
+            return nil
+        }
+        
+        if components.count > 2 {
+            return components[components.count - 2]
+        } else {
+            return components.last
+        }
     }
 }
 

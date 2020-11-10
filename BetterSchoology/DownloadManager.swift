@@ -26,6 +26,7 @@ class DownloadManager: ObservableObject {
     struct FileStatus {
         var downloadStatus: DownloadStatus? = nil
         var diskStatus: DiskFileStatus? = nil
+        var locateError: Error? = nil
         var downloadPublisher: AnyPublisher<FileStatus, Error>? = nil
         var diskPublisher: AnyPublisher<DiskFileStatus, Never>? = nil
     }
@@ -57,6 +58,11 @@ class DownloadManager: ObservableObject {
             if (response as? HTTPURLResponse)?.statusCode == 200 {
                 var result: URL?
                 
+                var base = "..a" + (file.name ?? file.id!)
+                if base.starts(with: ".") {
+                    base.removeFirst(base.reduce(0, { $0 + ($1 == "." ? 1 : 0) }))
+                }
+                
                 do {
                     let downloads = try self.fileManager.url(for: .downloadsDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
                     
@@ -85,17 +91,17 @@ class DownloadManager: ObservableObject {
                             }
                             var destination: URL
                             if numAttempts > 15 || !useBetterSchoologyFolder {
-                                destination = downloads.appendingPathComponent(file.id!, isDirectory: false)
+                                destination = downloads.appendingPathComponent(base, isDirectory: false)
                             } else {
-                                destination = betterSchoologyFolder.appendingPathComponent(file.id!, isDirectory: false)
+                                destination = betterSchoologyFolder.appendingPathComponent(base, isDirectory: false)
                             }
                             if let suffix = suffix {
                                 let ext = destination.pathExtension
                                 let pathComponent: String
                                 if ext.count > 0 {
-                                    pathComponent = file.id!.prefix(file.id!.count - ext.count - 1) + suffix + "." + ext
+                                    pathComponent = base.prefix(base.count - ext.count - 1) + suffix + "." + ext
                                 } else {
-                                    pathComponent = file.id! + suffix
+                                    pathComponent = base + suffix
                                 }
                                 destination = destination.deletingLastPathComponent().appendingPathComponent(pathComponent, isDirectory: false)
                             }
@@ -111,25 +117,9 @@ class DownloadManager: ObservableObject {
                                 throw e
                             }
                         }
+                        
+                        self.locate(file: file, at: result!, subject: subject)
                     }
-                } catch let e {
-                    DispatchQueue.main.async {
-                        self.fileStatuses[file.id!]?.downloadStatus = .error(e)
-                        self.fileStatuses[file.id!]?.downloadPublisher = nil
-                    }
-                    subject.send(completion: .failure(e))
-                }
-                
-                do {
-                    let bookmark = try result!.bookmarkData(options: .withSecurityScope)
-                    let download = FileDownload(id: file.id!, bookmark: bookmark, userVisible: true)
-                    try self.database.upsertFile(download)
-                    let status = FileStatus(downloadStatus: nil, diskStatus: .onDisk(download), downloadPublisher: nil)
-                    DispatchQueue.main.async {
-                        self.fileStatuses[file.id!] = status
-                    }
-                    subject.send(status)
-                    subject.send(completion: .finished)
                 } catch let e {
                     DispatchQueue.main.async {
                         self.fileStatuses[file.id!]?.downloadStatus = .error(e)
@@ -163,6 +153,30 @@ class DownloadManager: ObservableObject {
             }
         }
         return publisher
+    }
+    
+    func locate(file: SchoologyFile, at url: URL, subject: PassthroughSubject<FileStatus, Error>? = nil, useLocateErrors: Bool = false) {
+        do {
+            let bookmark = try url.bookmarkData(options: .withSecurityScope)
+            let download = FileDownload(id: file.id!, bookmark: bookmark, userVisible: true)
+            try self.database.upsertFile(download)
+            let status = FileStatus(downloadStatus: nil, diskStatus: .onDisk(download), downloadPublisher: nil)
+            DispatchQueue.main.async {
+                self.fileStatuses[file.id!] = status
+            }
+            subject?.send(status)
+            subject?.send(completion: .finished)
+        } catch let e {
+            DispatchQueue.main.async {
+                if useLocateErrors {
+                    self.fileStatuses[file.id!]?.locateError = e
+                } else {
+                    self.fileStatuses[file.id!]?.downloadStatus = .error(e)
+                    self.fileStatuses[file.id!]?.downloadPublisher = nil
+                }
+            }
+            subject?.send(completion: .failure(e))
+        }
     }
     
     @discardableResult func diskStatus(id: String, queue: DispatchQueue = .global(qos: .userInitiated), force: Bool = false) -> AnyPublisher<DiskFileStatus, Never> {
