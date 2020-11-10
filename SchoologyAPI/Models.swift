@@ -82,6 +82,7 @@ struct PageMaterialDetail: MaterialDetail {
     var material: Material
     var fullName: String
     var content: String
+    var files: [SchoologyFile]
 }
 
 struct SchoologyFile {

@@ -54,11 +54,11 @@ extension LinkMaterialDetail: MaterialDetailViewRepresentable {
     }
 }
 
-extension PageMaterialDetail: MaterialDetailViewRepresentable {
+extension PageMaterialDetail: MaterialDetailViewRepresentable, HasContentAndFiles {
     func makeView(url: URL?) -> AnyView {
         return AnyView(VStack(spacing: 0) {
             Divider()
-            PageContentView(content)
+            ContentAndFilesView(contentAndFiles: self)
         })
     }
 }
@@ -85,7 +85,7 @@ struct ContentAndFilesView: View {
         let files = contentAndFiles.files
         
         let filesList = List(files.filter { $0.id != nil }, id: \.id) { file in
-            FileView(file: file)
+            FileView(file: file).padding(.horizontal, 1)
         }
         
         return VStack(spacing: 0) {

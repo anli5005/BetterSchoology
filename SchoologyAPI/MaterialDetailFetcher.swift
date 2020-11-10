@@ -120,10 +120,16 @@ struct PageFetcher: MaterialDetailFetcher {
     func fetch(material: Material, using client: SchoologyClient) -> AnyPublisher<MaterialDetail, Error> {
         return material.urlPublisher(prefix: client.prefix).flatMap { client.session.dataTaskPublisher(for: $0).castingToError() }.toString(encoding: .utf8).tryMap { str in
             let document = try SwiftSoup.parse(str)
+            let files = try document.select(".attachments-file").map { try extractFile(from: $0, prefix: client.prefix) }
+                + document.select(".attachments-file-image").map { try extractImage(from: $0) }
+                + document.select(".attachments-link").map { try extractFileLink(from: $0, prefix: URL(string: client.prefix)!) }
+            let content = try document.select(".s-page-summary")
+            try content.select(".attachments").remove()
             return PageMaterialDetail(
                 material: material,
                 fullName: try document.select(".s-page-title").text(),
-                content: try document.select(".s-page-content-full").html()
+                content: try content.html(),
+                files: files
             ) as MaterialDetail
         }.eraseToAnyPublisher()
     }

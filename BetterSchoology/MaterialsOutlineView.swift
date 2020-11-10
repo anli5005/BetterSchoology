@@ -145,6 +145,11 @@ struct MaterialsOutlineView: NSViewRepresentable {
             return false
         }
         
+        /* func outlineViewItemDidExpand(_ notification: Notification) {
+            guard let outlineView = notification.object as? NSOutlineView else { return }
+            outlineView.selectRowIndexes(IndexSet(), byExtendingSelection: false)
+        } */
+        
         func outlineViewSelectionDidChange(_ notification: Notification) {
             if let sender = notification.object as? NSOutlineView {
                 if let id = sender.item(atRow: sender.selectedRow) as? String {
