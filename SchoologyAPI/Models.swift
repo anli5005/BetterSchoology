@@ -98,11 +98,11 @@ struct SchoologyFile {
             return nil
         }
         
-        if components.count > 2 {
+        if components.starts(with: ["/", "attachment"]) && components.last == "source" {
             return components[components.count - 2]
-        } else {
-            return components.last
         }
+                
+        return url?.absoluteString
     }
 }
 

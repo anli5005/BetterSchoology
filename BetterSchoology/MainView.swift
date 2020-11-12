@@ -14,6 +14,13 @@ struct MainView: View {
             AnyView(NavigationView {
                 CourseListView().frame(minWidth: 200, maxWidth: 400, maxHeight: .infinity)
                 Text("Select a course to get started.").padding().frame(maxWidth: .infinity, maxHeight: .infinity).toolbar {
+                    ToolbarItem(placement: .navigation) {
+                        Button(action: {
+                            NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
+                        }, label: {
+                            Image(systemName: "sidebar.leading")
+                        })
+                    }
                     ToolbarItem(placement: .primaryAction) {
                         Spacer()
                     }

@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-@available(macOS 11.0, iOS 14.0, *) struct BetterSchoologyApp: App {
+@available(macOS 11.0, iOS 14.0, tvOS 14.0, watchOS 7.0, *) struct BetterSchoologyApp: App {
     @NSApplicationDelegateAdaptor var delegate: AppDelegate
     var context: AuthContext {
         delegate.context
@@ -17,6 +17,8 @@ import SwiftUI
     var body: some Scene {
         WindowGroup {
             ContentView().environmentObject(context).environmentObject(sharedClient)
+        }.commands {
+            SidebarCommands()
         }
     }
 }
