@@ -117,9 +117,9 @@ class DownloadManager: ObservableObject {
                                 throw e
                             }
                         }
-                        
-                        self.locate(file: file, at: result!, subject: subject)
                     }
+                    
+                    self.locate(file: file, at: result!, subject: subject)
                 } catch let e {
                     DispatchQueue.main.async {
                         self.fileStatuses[file.id!]?.downloadStatus = .error(e)

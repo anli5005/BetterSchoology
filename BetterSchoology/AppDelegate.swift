@@ -35,20 +35,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     private var didFindKeychainItem = false
     
     func getCredentialsFromKeychain() -> SchoologyCredentials? {
-        var passwordData: CFTypeRef?
+        var dictData: CFTypeRef?
         let status = SecItemCopyMatching(keychainQuery.mergingToCFDictionary([
-            kSecReturnData as String: true as CFBoolean
-        ]), &passwordData)
+            kSecReturnData as String: true as CFBoolean,
+            kSecReturnAttributes as String: true as CFBoolean
+        ]), &dictData)
         
-        if status == errSecSuccess, let data = passwordData as? Data, let password = String(data: data, encoding: .utf8) {
-            var dictData: CFTypeRef?
-            let attributesStatus = SecItemCopyMatching(keychainQuery.mergingToCFDictionary([
-                kSecReturnAttributes as String: true as CFBoolean
-            ]), &dictData)
-            if attributesStatus == errSecSuccess, let dict = dictData as? [String: Any], let username = dict[kSecAttrAccount as String] as? String {
-                didFindKeychainItem = true
-                return SchoologyCredentials(username: username, password: password)
-            }
+        if status == errSecSuccess, let dict = dictData as? [String: Any], let username = dict[kSecAttrAccount as String] as? String, let data = dict[kSecValueData as String] as? Data, let password = String(data: data, encoding: .utf8) {
+            didFindKeychainItem = true
+            return SchoologyCredentials(username: username, password: password)
         }
         
         return nil

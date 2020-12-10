@@ -145,30 +145,32 @@ struct FileView: View {
                 Button("Reveal in Finder") {
                     try? self.downloadManager.revealInFinder(download: download!)
                 }.disabled(download == nil)
+                
+                Button("Locate File") {
+                    let dialog = NSOpenPanel()
+                    dialog.showsHiddenFiles = false
+                    dialog.allowsMultipleSelection = false
+                    dialog.canChooseDirectories = false
+                    dialog.showsResizeIndicator = true
+                    dialog.prompt = "Locate"
+                    
+                    if dialog.runModal() == .OK, let url = dialog.url {
+                        if !url.startAccessingSecurityScopedResource() {
+                            print("Could not access security scoped resource")
+                        }
+                        self.downloadManager.locate(file: file, at: url, useLocateErrors: true)
+                        url.stopAccessingSecurityScopedResource()
+                    }
+                }
             }
+            
+            Divider()
             
             Button("Copy \(file.isDownload ? "Download" : "Link") URL") {
                 let pasteboard = NSPasteboard.general
                 pasteboard.clearContents()
                 pasteboard.setString(self.file.url!.absoluteString, forType: .string)
             }.disabled(file.url == nil)
-            
-            Button("Locate File") {
-                let dialog = NSOpenPanel()
-                dialog.showsHiddenFiles = false
-                dialog.allowsMultipleSelection = false
-                dialog.canChooseDirectories = false
-                dialog.showsResizeIndicator = true
-                dialog.prompt = "Locate"
-                
-                if dialog.runModal() == .OK, let url = dialog.url {
-                    if !url.startAccessingSecurityScopedResource() {
-                        print("Could not access security scoped resource")
-                    }
-                    self.downloadManager.locate(file: file, at: url, useLocateErrors: true)
-                    url.stopAccessingSecurityScopedResource()
-                }
-            }
         }
     }
 }
