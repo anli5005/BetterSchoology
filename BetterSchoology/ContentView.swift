@@ -16,7 +16,11 @@ struct ContentView: View {
     var body: some View {
         switch authContext.status {
         case .unknown:
-            return AnyView(Text("Loading...").padding().frame(maxWidth: .infinity, maxHeight: .infinity))
+            if #available(macOS 11.0, iOS 14.0, *) {
+                return AnyView(ProgressView("Loading...").progressViewStyle(CircularProgressViewStyle()).padding().frame(maxWidth: .infinity, maxHeight: .infinity))
+            } else {
+                return AnyView(Text("Loading...").padding().frame(maxWidth: .infinity, maxHeight: .infinity))
+            }
         case .unauthenticated:
             return AnyView(AuthView().frame(width: 400).padding().frame(maxWidth: .infinity, maxHeight: .infinity))
         case .authenticated(_, let store):

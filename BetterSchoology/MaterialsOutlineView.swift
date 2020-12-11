@@ -29,6 +29,7 @@ struct MaterialsOutlineView: NSViewRepresentable {
     @EnvironmentObject var globalStore: SchoologyStore
     var store: CourseMaterialsStore
     @Binding var selectedMaterial: Material?
+    @available(macOS 10.16, *) @EnvironmentObject var appDelegate: AppDelegate
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -43,6 +44,8 @@ struct MaterialsOutlineView: NSViewRepresentable {
         outlineView.usesAlternatingRowBackgroundColors = true
         outlineView.columnAutoresizingStyle = .reverseSequentialColumnAutoresizingStyle
         outlineView.allowsColumnReordering = true
+        outlineView.focusRingType = .none
+        outlineView.rowHeight = 18
         
         Column.allCases.forEach { column in
             let tableColumn = NSTableColumn()
@@ -115,6 +118,23 @@ struct MaterialsOutlineView: NSViewRepresentable {
             }
         }
         
+        /* func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
+            let view = (outlineView.makeView(withIdentifier: "MaterialRowView", owner: self) as? NSTextField) ?? { () -> NSTextField in
+                let result = NSTextField(labelWithString: "")
+                result.frame.size.width = outlineView.frame.width
+                result.identifier = "MaterialRowView"
+                
+                return result
+            }()
+            let material = parent.store.materialsById[item as! String]!
+            if let column = tableColumn {
+                view.stringValue = (Column(rawValue: column.identifier)!.value(for: material) as? String) ?? ""
+            } else {
+                view.stringValue = material.name
+            }
+            return view
+        } */
+        
         /* func outlineViewItemDidExpand(_ notification: Notification) {
             if let id = notification.userInfo?["NSObject"] as? String {
                 parent.store.requestFolder(id: id)
@@ -124,6 +144,11 @@ struct MaterialsOutlineView: NSViewRepresentable {
         func outlineView(_ outlineView: NSOutlineView, shouldEdit tableColumn: NSTableColumn?, item: Any) -> Bool {
             return false
         }
+        
+        /* func outlineViewItemDidExpand(_ notification: Notification) {
+            guard let outlineView = notification.object as? NSOutlineView else { return }
+            outlineView.selectRowIndexes(IndexSet(), byExtendingSelection: false)
+        } */
         
         func outlineViewSelectionDidChange(_ notification: Notification) {
             if let sender = notification.object as? NSOutlineView {
@@ -137,7 +162,13 @@ struct MaterialsOutlineView: NSViewRepresentable {
         
         func doubleClick(material: Material, with clickable: DoubleClickable? = nil) {
             if clickable?.acceptsDoubleClick == true {
-                clickable!.handleDoubleClick(courseMaterialsStore: parent.store)
+                let delegate: AppDelegate
+                if #available(macOS 10.16, *) {
+                    delegate = parent.appDelegate
+                } else {
+                    delegate = NSApp.delegate as! AppDelegate
+                }
+                clickable!.handleDoubleClick(courseMaterialsStore: parent.store, delegate: delegate)
             } else if let url = URL(string: parent.globalStore.client.prefix + material.urlSuffix) {
                 NSWorkspace.shared.open(url)
             } else {

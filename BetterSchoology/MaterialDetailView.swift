@@ -22,7 +22,7 @@ struct MaterialDetailView: View {
             Button(action: {
                 NSWorkspace.shared.open(self.url!)
             }) {
-                Text("Open in Schoology")
+                Text("Open in Schoology").foregroundColor(.accentColor)
             }.buttonStyle(LinkButtonStyle()).disabled(url == nil).padding([.horizontal, .bottom])
             if materialDetail is MaterialDetailViewRepresentable {
                 (materialDetail as! MaterialDetailViewRepresentable).makeView(url: self.url)
@@ -54,11 +54,11 @@ extension LinkMaterialDetail: MaterialDetailViewRepresentable {
     }
 }
 
-extension PageMaterialDetail: MaterialDetailViewRepresentable {
+extension PageMaterialDetail: MaterialDetailViewRepresentable, HasContentAndFiles {
     func makeView(url: URL?) -> AnyView {
         return AnyView(VStack(spacing: 0) {
             Divider()
-            PageContentView(content)
+            ContentAndFilesView(contentAndFiles: self)
         })
     }
 }
@@ -85,7 +85,7 @@ struct ContentAndFilesView: View {
         let files = contentAndFiles.files
         
         let filesList = List(files.filter { $0.id != nil }, id: \.id) { file in
-            FileView(file: file)
+            FileView(file: file).padding(.horizontal, 1)
         }
         
         return VStack(spacing: 0) {
@@ -131,10 +131,18 @@ extension DiscussionMaterialDetail: MaterialDetailViewRepresentable, HasContentA
     struct OpenChatButton: View {
         var detail: DiscussionMaterialDetail
         @EnvironmentObject var store: CourseMaterialsStore
+        @available(macOS 10.16, *) @EnvironmentObject var appDelegate: AppDelegate
         
         var body: some View {
-            Button(action: {
-                self.detail.openChatWindow(courseMaterialsStore: self.store)
+            let delegate: AppDelegate
+            if #available(macOS 10.16, *) {
+                delegate = appDelegate
+            } else {
+                delegate = NSApp.delegate as! AppDelegate
+            }
+            
+            return Button(action: {
+                self.detail.openChatWindow(courseMaterialsStore: self.store, delegate: delegate)
             }) {
                 Text("Open Chat Window")
             }
@@ -153,12 +161,11 @@ extension DiscussionMaterialDetail: MaterialDetailViewRepresentable, HasContentA
         })
     }
     
-    func openChatWindow(courseMaterialsStore: CourseMaterialsStore) {
-        let delegate = NSApp.delegate as! AppDelegate
+    func openChatWindow(courseMaterialsStore: CourseMaterialsStore, delegate: AppDelegate) {
         if let window = delegate.chatWindows[AnyHashable(material.id)] {
             window.makeKeyAndOrderFront(nil)
         } else {
-            let controller = NSStoryboard(name: "Main", bundle: Bundle.main).instantiateController(withIdentifier: "chatWindowController") as! NSWindowController
+            let controller = NSStoryboard(name: "Chat", bundle: Bundle.main).instantiateController(withIdentifier: "chatWindowController") as! NSWindowController
             controller.window?.center()
             controller.window?.makeKeyAndOrderFront(nil)
             delegate.chatWindows[AnyHashable(material.id)] = controller.window

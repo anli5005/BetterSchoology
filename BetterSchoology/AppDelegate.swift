@@ -21,12 +21,13 @@ private extension Dictionary {
     }
 }
 
-@NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     var window: NSWindow!
     var windowControllers = Set<NSWindowController>()
     var chatWindows = [AnyHashable: NSWindow]()
+    
+    var hostingController: NSHostingController<AnyView>?
 
     private var initialAuthCancellable: AnyCancellable?
     private var persistAuthCancellable: AnyCancellable?
@@ -34,29 +35,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var didFindKeychainItem = false
     
     func getCredentialsFromKeychain() -> SchoologyCredentials? {
-        var passwordData: CFTypeRef?
+        var dictData: CFTypeRef?
         let status = SecItemCopyMatching(keychainQuery.mergingToCFDictionary([
-            kSecReturnData as String: true as CFBoolean
-        ]), &passwordData)
+            kSecReturnData as String: true as CFBoolean,
+            kSecReturnAttributes as String: true as CFBoolean
+        ]), &dictData)
         
-        if status == errSecSuccess, let data = passwordData as? Data, let password = String(data: data, encoding: .utf8) {
-            var dictData: CFTypeRef?
-            let attributesStatus = SecItemCopyMatching(keychainQuery.mergingToCFDictionary([
-                kSecReturnAttributes as String: true as CFBoolean
-            ]), &dictData)
-            if attributesStatus == errSecSuccess, let dict = dictData as? [String: Any], let username = dict[kSecAttrAccount as String] as? String {
-                didFindKeychainItem = true
-                return SchoologyCredentials(username: username, password: password)
-            }
+        if status == errSecSuccess, let dict = dictData as? [String: Any], let username = dict[kSecAttrAccount as String] as? String, let data = dict[kSecValueData as String] as? Data, let password = String(data: data, encoding: .utf8) {
+            didFindKeychainItem = true
+            return SchoologyCredentials(username: username, password: password)
         }
         
         return nil
     }
+    
+    let context = AuthContext()
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         UserDefaults.standard.set(false, forKey: "NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints")
-        
-        let context = AuthContext()
         
         if let creds = getCredentialsFromKeychain() {
             print("Found credentials")
@@ -66,12 +62,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 if case .failure(let error) = completion {
                     print("Authentication error: \(error)")
                     DispatchQueue.main.async {
-                        context.status = .unauthenticated
+                        self.context.status = .unauthenticated
                     }
                 }
             }, receiveValue: { props in
                 DispatchQueue.main.async {
-                    context.status = .authenticated(user: props.props.user, store: SchoologyStore(client: sharedClient))
+                    self.context.status = .authenticated(user: props.props.user, store: SchoologyStore(client: sharedClient))
                 }
             })
         } else {
@@ -116,19 +112,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             print("Error setting up downloads database: \(e)")
         }
         
+        if #available(macOS 11.0, *) {
+            return
+        }
+        
         // Create the SwiftUI view that provides the window contents.
-        let contentView = ContentView()
+        let contentView = AnyView(ContentView()
             .environmentObject(context)
-            .environmentObject(sharedClient)
+            .environmentObject(sharedClient))
 
-        // Create the window and set the content view. 
+        // Create the window and set the content view.
         window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 480, height: 300),
             styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
             backing: .buffered, defer: false)
         window.center()
         window.setFrameAutosaveName("Main Window")
-        window.contentView = NSHostingView(rootView: contentView)
+        hostingController = NSHostingController(rootView: contentView)
+        window.contentView = hostingController!.view
         window.makeKeyAndOrderFront(nil)
     }
 

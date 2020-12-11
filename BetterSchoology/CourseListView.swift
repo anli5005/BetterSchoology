@@ -21,7 +21,11 @@ struct CourseListView: View {
             case .success(let courses):
                 return AnyView(List(courses) { course in
                     NavigationLink(destination: CourseDetailView(course: course, materialsStore: self.store.courseMaterialsStore(for: course.id)).environmentObject(self.store)) {
-                        CourseListItemView(course: course).padding(.vertical, 8)
+                        if #available(macOS 11.0, *) {
+                            CourseListItemView(course: course).padding(.vertical, 4)
+                        } else {
+                            CourseListItemView(course: course).padding(.vertical, 8)
+                        }
                     }.contextMenu {
                         Button(action: {
                             NSWorkspace.shared.open(URL(string: "\(self.store.client.prefix)/course/\(course.nid)")!)

@@ -82,6 +82,7 @@ struct PageMaterialDetail: MaterialDetail {
     var material: Material
     var fullName: String
     var content: String
+    var files: [SchoologyFile]
 }
 
 struct SchoologyFile {
@@ -90,9 +91,18 @@ struct SchoologyFile {
     var size: String?
     var iconClass: String?
     var typeDescription: String?
+    var isDownload: Bool
     
     var id: String? {
-        url?.lastPathComponent
+        guard let components = url?.pathComponents else {
+            return nil
+        }
+        
+        if components.starts(with: ["/", "attachment"]) && components.last == "source" {
+            return components[components.count - 2]
+        }
+                
+        return url?.absoluteString
     }
 }
 

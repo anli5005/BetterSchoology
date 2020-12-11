@@ -14,7 +14,7 @@
 		4A176DBD241BE25F005C3C27 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DBC241BE25F005C3C27 /* ContentView.swift */; };
 		4A176DBF241BE262005C3C27 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A176DBE241BE262005C3C27 /* Assets.xcassets */; };
 		4A176DC2241BE262005C3C27 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A176DC1241BE262005C3C27 /* Preview Assets.xcassets */; };
-		4A176DC5241BE262005C3C27 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A176DC3241BE262005C3C27 /* Main.storyboard */; };
+		4A176DC5241BE262005C3C27 /* Chat.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4A176DC3241BE262005C3C27 /* Chat.storyboard */; };
 		4A176DCF241BFF85005C3C27 /* SchoologyClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DCE241BFF85005C3C27 /* SchoologyClient.swift */; };
 		4A176DD7241C0D44005C3C27 /* SchoologyCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DD6241C0D44005C3C27 /* SchoologyCredentials.swift */; };
 		4A176DD9241C0DD2005C3C27 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A176DD8241C0DD2005C3C27 /* Errors.swift */; };
@@ -39,6 +39,10 @@
 		4A84ECDB24242101005C3C27 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84ECDA24242101005C3C27 /* DownloadManager.swift */; };
 		4AC62B6D244628EF005C3C27 /* SerialInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC62B6C244628EF005C3C27 /* SerialInputStream.swift */; };
 		4ADF57A5241EAA03005C3C27 /* MaterialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */; };
+		89E652C124DFA12A0047416A /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E652C024DFA12A0047416A /* main.swift */; };
+		89E652C324DFA1EF0047416A /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E652C224DFA1EF0047416A /* App.swift */; };
+		89E652C524DFA8280047416A /* RefreshButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E652C424DFA8280047416A /* RefreshButton.swift */; };
+		89E652C724DFB2550047416A /* Main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89E652C624DFB2550047416A /* Main.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,7 +53,7 @@
 		4A176DBC241BE25F005C3C27 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		4A176DBE241BE262005C3C27 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4A176DC1241BE262005C3C27 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		4A176DC4241BE262005C3C27 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		4A176DC4241BE262005C3C27 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Chat.storyboard; sourceTree = "<group>"; };
 		4A176DC6241BE262005C3C27 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4A176DC7241BE262005C3C27 /* BetterSchoology.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BetterSchoology.entitlements; sourceTree = "<group>"; };
 		4A176DCE241BFF85005C3C27 /* SchoologyClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchoologyClient.swift; sourceTree = "<group>"; };
@@ -74,6 +78,10 @@
 		4A84ECDA24242101005C3C27 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
 		4AC62B6C244628EF005C3C27 /* SerialInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInputStream.swift; sourceTree = "<group>"; };
 		4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDetailView.swift; sourceTree = "<group>"; };
+		89E652C024DFA12A0047416A /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		89E652C224DFA1EF0047416A /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
+		89E652C424DFA8280047416A /* RefreshButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshButton.swift; sourceTree = "<group>"; };
+		89E652C624DFB2550047416A /* Main.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Main.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,7 +132,9 @@
 				4A84ECDF242421E3005C3C27 /* Stores & Managers */,
 				4A0DA9752428688D005C3C27 /* View Controllers */,
 				4A176DBE241BE262005C3C27 /* Assets.xcassets */,
-				4A176DC3241BE262005C3C27 /* Main.storyboard */,
+				89E652C024DFA12A0047416A /* main.swift */,
+				4A176DC3241BE262005C3C27 /* Chat.storyboard */,
+				89E652C624DFB2550047416A /* Main.xib */,
 				4A176DC6241BE262005C3C27 /* Info.plist */,
 				4A176DC7241BE262005C3C27 /* BetterSchoology.entitlements */,
 				4A176DC0241BE262005C3C27 /* Preview Content */,
@@ -170,6 +180,7 @@
 			isa = PBXGroup;
 			children = (
 				4A176DBA241BE25F005C3C27 /* AppDelegate.swift */,
+				89E652C224DFA1EF0047416A /* App.swift */,
 				4A176DDC241C1C01005C3C27 /* Context.swift */,
 				4A2AA11D241C3F1E005C3C27 /* Store.swift */,
 				4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */,
@@ -188,6 +199,7 @@
 				4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */,
 				4A79E2BD24267457005C3C27 /* DiscussionTableCellView.xib */,
 				4A79E2BF24267504005C3C27 /* DiscussionTableCellView.swift */,
+				89E652C424DFA8280047416A /* RefreshButton.swift */,
 			);
 			name = "Utility Views";
 			sourceTree = "<group>";
@@ -232,7 +244,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1130;
-				LastUpgradeCheck = 1140;
+				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = "Anthony Li";
 				TargetAttributes = {
 					4A176DB6241BE25F005C3C27 = {
@@ -268,7 +280,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4A176DC5241BE262005C3C27 /* Main.storyboard in Resources */,
+				4A176DC5241BE262005C3C27 /* Chat.storyboard in Resources */,
+				89E652C724DFB2550047416A /* Main.xib in Resources */,
 				4A176DC2241BE262005C3C27 /* Preview Assets.xcassets in Resources */,
 				4A176DBF241BE262005C3C27 /* Assets.xcassets in Resources */,
 				4A79E2BE24267457005C3C27 /* DiscussionTableCellView.xib in Resources */,
@@ -283,6 +296,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A2AA129241D3444005C3C27 /* MaterialsOutlineView.swift in Sources */,
+				89E652C524DFA8280047416A /* RefreshButton.swift in Sources */,
 				4A0DA97424286886005C3C27 /* ChatWindowController.swift in Sources */,
 				4A84ECDB24242101005C3C27 /* DownloadManager.swift in Sources */,
 				4A176DDB241C17AB005C3C27 /* AuthView.swift in Sources */,
@@ -295,9 +309,11 @@
 				4A176DDF241C24D7005C3C27 /* Models.swift in Sources */,
 				4A2AA11E241C3F1E005C3C27 /* Store.swift in Sources */,
 				4A2AA125241C4F11005C3C27 /* CourseListItemView.swift in Sources */,
+				89E652C324DFA1EF0047416A /* App.swift in Sources */,
 				4A1A9312241F2277005C3C27 /* MaterialDetailFetcher.swift in Sources */,
 				4A2AA127241C7A25005C3C27 /* CourseDetailView.swift in Sources */,
 				4A176DE0241C28EA005C3C27 /* Context.swift in Sources */,
+				89E652C124DFA12A0047416A /* main.swift in Sources */,
 				4A2AA123241C4DB5005C3C27 /* MainView.swift in Sources */,
 				4A79E2C024267504005C3C27 /* DiscussionTableCellView.swift in Sources */,
 				4A176DE4241C32A9005C3C27 /* CourseListView.swift in Sources */,
@@ -313,12 +329,12 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		4A176DC3241BE262005C3C27 /* Main.storyboard */ = {
+		4A176DC3241BE262005C3C27 /* Chat.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				4A176DC4241BE262005C3C27 /* Base */,
 			);
-			name = Main.storyboard;
+			name = Chat.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -328,6 +344,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = Accent;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -350,6 +367,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -388,6 +406,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = Accent;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -410,6 +429,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -445,9 +465,9 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 27;
+				CURRENT_PROJECT_VERSION = 33;
 				DEVELOPMENT_ASSET_PATHS = "\"BetterSchoology/Preview Content\"";
-				DEVELOPMENT_TEAM = 9DDM72ZZ79;
+				DEVELOPMENT_TEAM = 9G475R3MEF;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = BetterSchoology/Info.plist;
@@ -456,7 +476,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 0.6.7;
+				MARKETING_VERSION = 0.7.2;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.anli.BetterSchoology;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -471,9 +491,9 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 27;
+				CURRENT_PROJECT_VERSION = 33;
 				DEVELOPMENT_ASSET_PATHS = "\"BetterSchoology/Preview Content\"";
-				DEVELOPMENT_TEAM = 9DDM72ZZ79;
+				DEVELOPMENT_TEAM = 9G475R3MEF;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = BetterSchoology/Info.plist;
@@ -482,7 +502,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 0.6.7;
+				MARKETING_VERSION = 0.7.2;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.anli.BetterSchoology;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

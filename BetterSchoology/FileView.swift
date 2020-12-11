@@ -44,6 +44,10 @@ struct FileButton: View {
             }
         }
         
+        if status?.locateError != nil {
+            return "Error locating file"
+        }
+        
         return nil
     }
     
@@ -57,12 +61,14 @@ struct FileButton: View {
                     Text(file.typeDescription!).opacity(0.8)
                 }
                 HStack {
-                    if downloading {
-                        Text("Downloading...").opacity(0.6)
-                    } else if errorDescription != nil {
-                        Text(errorDescription!).foregroundColor(.red)
-                    } else {
-                        Text(needsDownload ? "Click to download and open" : "Click to open").opacity(0.4)
+                    if file.isDownload {
+                        if downloading {
+                            Text("Downloading...").opacity(0.6)
+                        } else if errorDescription != nil {
+                            Text(errorDescription!).foregroundColor(.red)
+                        } else {
+                            Text(needsDownload ? "Click to download and open" : "Click to open").opacity(0.4)
+                        }
                     }
                     if file.size != nil {
                         Text(file.size!)
@@ -82,7 +88,7 @@ struct FileButton: View {
 
 struct FileView_Previews: PreviewProvider {
     static var previews: some View {
-        FileButton(file: SchoologyFile(name: "Generic File", url: URL(string: "https://anli.dev/test.html"), size: "3 MB", iconClass: nil, typeDescription: "Type Description"), status: DownloadManager.FileStatus(downloadStatus: nil, diskStatus: .fileError(FileDownload(id: "s", bookmark: Data(), userVisible: true), DownloadError.fileNotFound))) {}.padding()
+        FileButton(file: SchoologyFile(name: "Generic File", url: URL(string: "https://anli.dev/test.html"), size: "3 MB", iconClass: nil, typeDescription: "Type Description", isDownload: true), status: DownloadManager.FileStatus(downloadStatus: nil, diskStatus: .fileError(FileDownload(id: "s", bookmark: Data(), userVisible: true), DownloadError.fileNotFound))) {}.padding()
     }
 }
 
@@ -91,11 +97,18 @@ struct FileView: View {
     var file: SchoologyFile
     
     var body: some View {
-        if let id = file.id {
-            downloadManager.diskStatus(id: id)
+        let status: DownloadManager.FileStatus?
+        
+        if file.isDownload {
+            if let id = file.id {
+                downloadManager.diskStatus(id: id)
+            }
+            
+            status = file.id == nil ? nil : self.downloadManager.fileStatuses[file.id!]
+        } else {
+            status = nil
         }
         
-        let status = file.id == nil ? nil : self.downloadManager.fileStatuses[file.id!]
         let isNotOnDisk: Bool
         if case .some(.notOnDisk) = status?.diskStatus {
             isNotOnDisk = true
@@ -111,22 +124,53 @@ struct FileView: View {
         }
         
         return FileButton(file: file, status: status, action: {
-            self.downloadManager.downloadAndOpen(self.file)
+            if self.file.isDownload {
+                self.downloadManager.downloadAndOpen(self.file)
+            } else if self.file.url != nil {
+                NSWorkspace.shared.open(self.file.url!)
+            }
         }).contextMenu {
-            Button(isNotOnDisk ? "Download" : "Re-Download") {
-                self.downloadManager.download(file: self.file)
-            }.disabled(file.id == nil)
-            
-            Button("Quick Look") {
-                try? self.downloadManager.withURL(of: download!) { url, done in
-                    sharedQuickLook.current = (url, done)
-                    sharedQuickLook.panel?.makeKeyAndOrderFront(nil)
+            if file.isDownload {
+                Button(isNotOnDisk ? "Download" : "Re-Download") {
+                    self.downloadManager.download(file: self.file)
+                }.disabled(file.id == nil)
+                
+                Button("Quick Look") {
+                    try? self.downloadManager.withURL(of: download!) { url, done in
+                        sharedQuickLook.current = (url, done)
+                        sharedQuickLook.panel?.makeKeyAndOrderFront(nil)
+                    }
+                }.disabled(download == nil)
+                
+                Button("Reveal in Finder") {
+                    try? self.downloadManager.revealInFinder(download: download!)
+                }.disabled(download == nil)
+                
+                Button("Locate File") {
+                    let dialog = NSOpenPanel()
+                    dialog.showsHiddenFiles = false
+                    dialog.allowsMultipleSelection = false
+                    dialog.canChooseDirectories = false
+                    dialog.showsResizeIndicator = true
+                    dialog.prompt = "Locate"
+                    
+                    if dialog.runModal() == .OK, let url = dialog.url {
+                        if !url.startAccessingSecurityScopedResource() {
+                            print("Could not access security scoped resource")
+                        }
+                        self.downloadManager.locate(file: file, at: url, useLocateErrors: true)
+                        url.stopAccessingSecurityScopedResource()
+                    }
                 }
-            }.disabled(download == nil)
+            }
             
-            Button("Reveal in Finder") {
-                try? self.downloadManager.revealInFinder(download: download!)
-            }.disabled(download == nil)
+            Divider()
+            
+            Button("Copy \(file.isDownload ? "Download" : "Link") URL") {
+                let pasteboard = NSPasteboard.general
+                pasteboard.clearContents()
+                pasteboard.setString(self.file.url!.absoluteString, forType: .string)
+            }.disabled(file.url == nil)
         }
     }
 }
