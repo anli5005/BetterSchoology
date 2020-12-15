@@ -10,6 +10,7 @@ import SwiftUI
 
 struct CourseDetailView: View {
     var course: Course
+    @EnvironmentObject var store: SchoologyStore
     @ObservedObject var materialsStore: CourseMaterialsStore
     @State var selectedMaterial: Material?
     
@@ -89,7 +90,14 @@ struct CourseDetailView: View {
         }
         
         if #available(macOS 11.0, iOS 14.0, *) {
-            return AnyView(stack.toolbar {
+            let view = stack.toolbar {
+                ToolbarItem(placement: .navigation) {
+                    Button(action: {
+                        NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
+                    }, label: {
+                        Label("Sidebar", systemImage: "sidebar.leading")
+                    })
+                }
                 ToolbarItem(placement: .primaryAction) {
                     RefreshButton(action: {
                         self.materialsStore.materials = [:]
@@ -98,7 +106,19 @@ struct CourseDetailView: View {
                         self.materialsStore.requestFolder(id: nil)
                     })
                 }
-            }.navigationTitle(course.courseTitle))
+                ToolbarItem(content: {
+                    Button(action: {
+                        NSWorkspace.shared.open(URL(string: "\(self.store.client.prefix)/course/\(course.nid)")!)
+                    }, label: {
+                        Label("Open in Web Browser", systemImage: "safari")
+                    })
+                })
+            }.navigationTitle(course.courseTitle)
+            if !course.sectionTitle.isEmpty {
+                return AnyView(view.navigationSubtitle(Text(course.sectionTitle)))
+            } else {
+                return AnyView(view)
+            }
         } else {
             return AnyView(stack)
         }
