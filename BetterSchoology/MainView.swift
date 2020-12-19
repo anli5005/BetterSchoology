@@ -18,7 +18,7 @@ struct MainView: View {
                         Button(action: {
                             NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
                         }, label: {
-                            Image(systemName: "sidebar.leading")
+                            Label("Sidebar", systemImage: "sidebar.leading")
                         })
                     }
                     ToolbarItem(placement: .primaryAction) {
