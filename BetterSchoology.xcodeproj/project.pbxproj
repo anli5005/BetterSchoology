@@ -37,6 +37,8 @@
 		4A84ECD72422A02B005C3C27 /* FilesDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */; };
 		4A84ECD92423D968005C3C27 /* FileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84ECD82423D968005C3C27 /* FileView.swift */; };
 		4A84ECDB24242101005C3C27 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84ECDA24242101005C3C27 /* DownloadManager.swift */; };
+		4AAB48AB259F872C00362CEC /* UploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AAB48AA259F872C00362CEC /* UploadViewController.swift */; };
+		4AAB48AE259F895200362CEC /* UploadViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4AAB48AD259F895200362CEC /* UploadViewController.xib */; };
 		4AC62B6D244628EF005C3C27 /* SerialInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC62B6C244628EF005C3C27 /* SerialInputStream.swift */; };
 		4ADF57A5241EAA03005C3C27 /* MaterialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */; };
 		89E652C124DFA12A0047416A /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E652C024DFA12A0047416A /* main.swift */; };
@@ -76,6 +78,8 @@
 		4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesDatabase.swift; sourceTree = "<group>"; };
 		4A84ECD82423D968005C3C27 /* FileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileView.swift; sourceTree = "<group>"; };
 		4A84ECDA24242101005C3C27 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
+		4AAB48AA259F872C00362CEC /* UploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadViewController.swift; sourceTree = "<group>"; };
+		4AAB48AD259F895200362CEC /* UploadViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UploadViewController.xib; sourceTree = "<group>"; };
 		4AC62B6C244628EF005C3C27 /* SerialInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInputStream.swift; sourceTree = "<group>"; };
 		4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDetailView.swift; sourceTree = "<group>"; };
 		89E652C024DFA12A0047416A /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -103,6 +107,8 @@
 			children = (
 				4A0DA97324286886005C3C27 /* ChatWindowController.swift */,
 				4A0DA9762428F435005C3C27 /* ChatViewController.swift */,
+				4AAB48AA259F872C00362CEC /* UploadViewController.swift */,
+				4AAB48AD259F895200362CEC /* UploadViewController.xib */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -281,6 +287,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A176DC5241BE262005C3C27 /* Chat.storyboard in Resources */,
+				4AAB48AE259F895200362CEC /* UploadViewController.xib in Resources */,
 				89E652C724DFB2550047416A /* Main.xib in Resources */,
 				4A176DC2241BE262005C3C27 /* Preview Assets.xcassets in Resources */,
 				4A176DBF241BE262005C3C27 /* Assets.xcassets in Resources */,
@@ -302,6 +309,7 @@
 				4A176DDB241C17AB005C3C27 /* AuthView.swift in Sources */,
 				4ADF57A5241EAA03005C3C27 /* MaterialDetailView.swift in Sources */,
 				4A176DBD241BE25F005C3C27 /* ContentView.swift in Sources */,
+				4AAB48AB259F872C00362CEC /* UploadViewController.swift in Sources */,
 				4A176DBB241BE25F005C3C27 /* AppDelegate.swift in Sources */,
 				4A1A931424200273005C3C27 /* DoubleClick.swift in Sources */,
 				4A176DCF241BFF85005C3C27 /* SchoologyClient.swift in Sources */,
