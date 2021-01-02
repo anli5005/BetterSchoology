@@ -19,7 +19,7 @@ struct UploadConfirmation: Identifiable {
     let alert: Alert
 }
 
-class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource {
+class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource, NSMenuDelegate, NSServicesMenuRequestor {
     var client: SchoologyClient
     var destination: SubmissionAccepting {
         didSet {
@@ -34,6 +34,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     
     @IBOutlet weak var tableView: NSTableView?
     @IBOutlet weak var submitButton: NSButton?
+    @IBOutlet weak var addButton: NSButton?
     
     enum UploadItem {
         case loading(promise: NSFilePromiseReceiver)
@@ -75,6 +76,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
             }
             return false
         }
+        addButton?.menu?.delegate = self
     }
     
     func handle(draggingInfo: NSDraggingInfo) -> Bool {
@@ -153,6 +155,72 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         }, secondaryButton: Alert.Button.cancel { [weak self] in
             self?.coordinator?.parent.uploadConfirmation = nil
         }))
+    }
+    
+    func url(for name: String, with ext: String) throws -> URL {
+        let destinationURL = try FileManager.default.url(for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: FileManager.default.homeDirectoryForCurrentUser, create: true)
+        var filename = name + "." + ext
+        var i = 1
+        while items.contains(where: { item in
+            if case .url(let url) = item {
+                return url.lastPathComponent == filename
+            }
+            return false
+        }) {
+            i += 1
+            filename = "\(name) \(i).\(ext)"
+        }
+        return destinationURL.appendingPathComponent(filename)
+    }
+    
+    func readSelection(from pasteboard: NSPasteboard) -> Bool {
+        do {
+            switch pasteboard.availableType(from: [.pdf, .png]) {
+            case .some(.pdf):
+                guard let data = pasteboard.data(forType: .pdf) else { return false }
+                let url = try self.url(for: "Scanned Document", with: "pdf")
+                try data.write(to: url)
+                items.append(.url(url))
+                return true
+            case .some(.png):
+                guard let data = pasteboard.data(forType: .png) else { return false }
+                let url = try self.url(for: "Image", with: "png")
+                try data.write(to: url)
+                items.append(.url(url))
+                return true
+            default:
+                guard pasteboard.canReadItem(withDataConformingToTypes: NSImage.imageTypes) else { return false }
+                guard let image = NSImage(pasteboard: pasteboard) else { return false }
+                guard let data = NSBitmapImageRep.representationOfImageReps(in: image.representations, using: .jpeg, properties: [:]) else { return false }
+                let url = try self.url(for: "Photo", with: "jpg")
+                try data.write(to: url)
+                items.append(.url(url))
+                return true
+            }
+        } catch let e {
+            print(e)
+            return false
+        }
+    }
+    
+    override func validRequestor(forSendType sendType: NSPasteboard.PasteboardType?, returnType: NSPasteboard.PasteboardType?) -> Any? {
+        if let pasteboardType = returnType, NSImage.imageTypes.contains(pasteboardType.rawValue) {
+            return self
+        } else {
+            return super.validRequestor(forSendType: sendType, returnType: returnType)
+        }
+    }
+    
+    @IBAction func addButtonAction(sender: NSButton) {
+        guard let event = NSApp.currentEvent else { return }
+        view.window?.makeFirstResponder(self)
+        let menu = NSMenu()
+        
+        let selectFile = NSMenuItem(title: "Select File", action: nil, keyEquivalent: "")
+        selectFile.target = self
+        menu.addItem(selectFile)
+        
+        NSMenu.popUpContextMenu(menu, with: event, for: sender)
     }
 }
 

@@ -8,6 +8,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="UploadViewController" customModule="BetterSchoology" customModuleProvider="target">
             <connections>
+                <outlet property="addButton" destination="yUC-2s-xDZ" id="CMS-2M-NNe"/>
                 <outlet property="submitButton" destination="g7Q-ZO-1H7" id="RU1-k4-qBc"/>
                 <outlet property="tableView" destination="fHZ-6F-Oyv" id="ezT-Pd-9kq"/>
                 <outlet property="view" destination="c22-O7-iKe" id="K7W-B4-nEm"/>
@@ -152,9 +153,21 @@
                         <action selector="submitWithSender:" target="-2" id="lm1-yw-Fi1"/>
                     </connections>
                 </button>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yUC-2s-xDZ">
+                    <rect key="frame" x="431" y="237" width="44" height="32"/>
+                    <buttonCell key="cell" type="push" bezelStyle="rounded" image="NSAddTemplate" imagePosition="only" alignment="center" borderStyle="border" inset="2" id="eDZ-AT-zjJ">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <connections>
+                        <action selector="addButtonActionWithSender:" target="-2" id="cex-xB-ONE"/>
+                    </connections>
+                </button>
             </subviews>
             <constraints>
                 <constraint firstItem="dzH-EB-AI3" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="12" id="7Yk-wb-EkM"/>
+                <constraint firstItem="yUC-2s-xDZ" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" constant="8" id="8di-1a-C8S"/>
+                <constraint firstAttribute="trailing" secondItem="yUC-2s-xDZ" secondAttribute="trailing" constant="12" id="MoG-sN-NEj"/>
                 <constraint firstItem="g7Q-ZO-1H7" firstAttribute="top" secondItem="A2w-Vd-puQ" secondAttribute="bottom" constant="12" id="P0u-fk-ZKb"/>
                 <constraint firstItem="g7Q-ZO-1H7" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="12" id="Q84-KG-1Xa"/>
                 <constraint firstAttribute="trailing" secondItem="g7Q-ZO-1H7" secondAttribute="trailing" constant="12" id="VgZ-7d-3hB"/>
@@ -168,6 +181,7 @@
         </customView>
     </objects>
     <resources>
+        <image name="NSAddTemplate" width="14" height="13"/>
         <image name="NSCaution" width="32" height="32"/>
         <image name="doc" catalog="system" width="14" height="16"/>
     </resources>
