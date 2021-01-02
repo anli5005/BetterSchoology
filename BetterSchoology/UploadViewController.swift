@@ -9,9 +9,36 @@
 import AppKit
 import Foundation
 import SwiftUI
+import Combine
+import Dispatch
 
 struct UploadProgress: Identifiable {
     let id: UUID
+    var fileCount: Int
+    var status: Status
+    var error: Error?
+    
+    enum Status {
+        case fetchingDetails
+        case uploading(uploaded: Int, current: String)
+        case submitting
+        case complete
+    }
+}
+
+extension UploadProgress {
+    var progress: Double {
+        switch status {
+        case .fetchingDetails:
+            return 0
+        case .uploading(let uploaded, _):
+            return Double(uploaded + 1) / Double(fileCount + 2)
+        case .submitting:
+            return Double(fileCount + 1) / Double(fileCount + 2)
+        case .complete:
+            return 1
+        }
+    }
 }
 
 struct UploadConfirmation: Identifiable {
@@ -31,6 +58,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     }
     let filePromiseQueue = OperationQueue()
     fileprivate var coordinator: InternalUploadView.Coordinator?
+    var cancellables = Set<AnyCancellable>()
     
     @IBOutlet weak var tableView: NSTableView?
     @IBOutlet weak var submitButton: NSButton?
@@ -152,9 +180,78 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     @IBAction func submit(sender: Any?) {
         coordinator?.parent.uploadConfirmation = UploadConfirmation(id: UUID(), alert: Alert(title: Text("Submit \(items.count) file(s)?"), message: Text("This action can't be undone."), primaryButton: Alert.Button.default(Text("Submit")) { [weak self] in
             self?.coordinator?.parent.uploadConfirmation = nil
+            self?.uploadAndSubmit()
         }, secondaryButton: Alert.Button.cancel { [weak self] in
             self?.coordinator?.parent.uploadConfirmation = nil
         }))
+    }
+    
+    func handleUploadError(_ error: Error) {
+        DispatchQueue.main.async {
+            self.coordinator?.parent.uploadProgress?.error = error
+        }
+        print(error)
+    }
+    
+    private func finalizeSubmission(files: [String: String], to destination: SubmissionAccepting, with uploadDetails: SchoologyClient.UploadDetailsResponse) {
+        DispatchQueue.main.async {
+            self.coordinator?.parent.uploadProgress?.status = .submitting
+        }
+        client.submit(fileMetadataIdsAndTitles: files, to: destination, uploadDetails: uploadDetails).sink(receiveCompletion: { completion in
+            switch completion {
+            case .failure(let e):
+                self.handleUploadError(e)
+            case .finished:
+                // We're finished
+                DispatchQueue.main.async {
+                    self.coordinator?.parent.uploadProgress = nil
+                }
+            }
+        }, receiveValue: {}).store(in: &cancellables)
+    }
+    
+    private func upload<T: RandomAccessCollection>(remainingURLs: T, details: SchoologyClient.UploadDetailsResponse, to destination: SubmissionAccepting, filesUploaded: [String: String] = [:]) where T.Element == URL {
+        if let url = remainingURLs.last {
+            DispatchQueue.main.async {
+                self.coordinator?.parent.uploadProgress?.status = .uploading(uploaded: filesUploaded.count, current: url.lastPathComponent)
+            }
+            var mimeType = "text/plain"
+            if let type = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, url.pathExtension as CFString, nil) {
+                if let mime = UTTypeCopyPreferredTagWithClass(type.takeRetainedValue(), kUTTagClassMIMEType) {
+                    mimeType = mime.takeRetainedValue() as String
+                }
+            }
+            client.upload(name: url.lastPathComponent, type: mimeType, token: SubmissionToken(details).token, makeStream: { $0(InputStream(url: url)) }).sink(receiveCompletion: { completion in
+                if case .failure(let e) = completion {
+                    self.handleUploadError(e)
+                }
+            }, receiveValue: { response in
+                var files = filesUploaded
+                files[response] = url.lastPathComponent
+                self.upload(remainingURLs: remainingURLs.prefix(upTo: remainingURLs.index(before: remainingURLs.endIndex)), details: details, to: destination, filesUploaded: files)
+            }).store(in: &cancellables)
+        } else {
+            finalizeSubmission(files: filesUploaded, to: destination, with: details)
+        }
+    }
+    
+    func uploadAndSubmit() {
+        let urls = items.map { item -> URL in
+            if case .url(let url) = item {
+                return url
+            } else {
+                fatalError("Attempt to submit non-URL item")
+            }
+        }
+        let dest = destination
+        coordinator?.parent.uploadProgress = UploadProgress(id: UUID(), fileCount: urls.count, status: .fetchingDetails)
+        client.uploadDetails(for: dest).sink(receiveCompletion: { completion in
+            if case .failure(let e) = completion {
+                self.handleUploadError(e)
+            }
+        }, receiveValue: { details in
+            self.upload(remainingURLs: urls, details: details, to: dest)
+        }).store(in: &cancellables)
     }
     
     func url(for name: String, with ext: String) throws -> URL {
@@ -284,7 +381,22 @@ struct UploadView: View {
     
     var body: some View {
         InternalUploadView(destination: destination, uploadProgress: $uploadProgress, uploadConfirmation: $uploadConfirmation).sheet(item: $uploadProgress, content: { uploadProgress in
-            Text("Uploading...")
+            VStack(alignment: .leading) {
+                Text("Submitting \(uploadProgress.fileCount) file(s)...").font(.headline)
+                switch uploadProgress.status {
+                case .fetchingDetails:
+                    Text("Preparing to submit...")
+                case .uploading(let uploaded, let current):
+                    Text("Uploading \(uploaded + 1) of \(uploadProgress.fileCount) (\(current))...")
+                case .submitting:
+                    Text("Finalizing submission...")
+                case .complete:
+                    Text("Done!")
+                }
+                if #available(macOS 11.0, *) {
+                    ProgressView(value: uploadProgress.progress).progressViewStyle(LinearProgressViewStyle())
+                }
+            }.padding().frame(width: 256)
         }).alert(item: $uploadConfirmation, content: { $0.alert })
     }
 }
