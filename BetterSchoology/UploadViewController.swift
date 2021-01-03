@@ -15,6 +15,7 @@ import Dispatch
 struct UploadProgress: Identifiable {
     let id: UUID
     var fileCount: Int
+    var isCanceling: Bool
     var status: Status
     var error: Error?
     
@@ -37,6 +38,16 @@ extension UploadProgress {
             return Double(fileCount + 1) / Double(fileCount + 2)
         case .complete:
             return 1
+        }
+    }
+    
+    var canCancel: Bool {
+        if isCanceling { return false }
+        switch status {
+        case .submitting, .complete:
+            return false
+        default:
+            return true
         }
     }
 }
@@ -66,15 +77,14 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     
     enum UploadItem {
         case loading(promise: NSFilePromiseReceiver)
-        case url(URL)
-        case error(Error)
+        case url(url: URL, isTemporary: Bool)
     }
     
     var items = [UploadItem]() {
         didSet {
             tableView?.reloadData()
             submitButton?.isEnabled = !items.isEmpty && items.allSatisfy { item in
-                if case .url(_) = item {
+                if case .url(_, _) = item {
                     return true
                 }
                 return false
@@ -99,12 +109,19 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         tableView?.dataSource = self
         tableView?.reloadData()
         submitButton?.isEnabled = !items.isEmpty && items.allSatisfy { item in
-            if case .url(_) = item {
+            if case .url(_, _) = item {
                 return true
             }
             return false
         }
         addButton?.menu?.delegate = self
+    }
+    
+    func handleFileAddError(_ error: Error) {
+        print(error)
+        coordinator?.parent.uploadConfirmation = UploadConfirmation(id: UUID(), alert: Alert(title: Text("An error occurred while adding the file."), message: Text(error.localizedDescription), dismissButton: Alert.Button.default(Text("OK")) { [weak self] in
+            self?.coordinator?.parent.uploadConfirmation = nil
+        }))
     }
     
     func handle(draggingInfo: NSDraggingInfo) -> Bool {
@@ -115,7 +132,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                 do {
                     destinationURL = try FileManager.default.url(for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: FileManager.default.homeDirectoryForCurrentUser, create: true)
                 } catch let e {
-                    items.append(.error(e))
+                    handleFileAddError(e)
                     return
                 }
                 items.append(.loading(promise: promise))
@@ -131,9 +148,10 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                             }
                         }) {
                             if let error = error {
-                                self.items.replaceSubrange(index...index, with: [.error(error)])
+                                self.items.remove(at: index)
+                                self.handleFileAddError(error)
                             } else {
-                                self.items.replaceSubrange(index...index, with: [.url(fileURL)])
+                                self.items.replaceSubrange(index...index, with: [.url(url: fileURL, isTemporary: true)])
                             }
                         }
                     }
@@ -149,7 +167,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                 }
                 return isDirectory.boolValue
             }) {
-                urls.forEach { self.items.append(.url($0)) }
+                urls.forEach { self.items.append(.url(url: $0, isTemporary: false)) }
                 return true
             }
         }
@@ -166,9 +184,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
             let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("LoadingCell"), owner: nil)
             view?.subviews.lazy.compactMap { $0 as? NSProgressIndicator }.first?.startAnimation(self)
             return view
-        case .error(_):
-            return tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("ErrorCell"), owner: nil)
-        case .url(let url):
+        case .url(let url, _):
             if let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("URLCell"), owner: nil) as? NSTableCellView {
                 view.textField?.stringValue = url.lastPathComponent
                 return view
@@ -205,12 +221,17 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                 // We're finished
                 DispatchQueue.main.async {
                     self.coordinator?.parent.uploadProgress = nil
+                    self.items = []
                 }
             }
         }, receiveValue: {}).store(in: &cancellables)
     }
     
     private func upload<T: RandomAccessCollection>(remainingURLs: T, details: SchoologyClient.UploadDetailsResponse, to destination: SubmissionAccepting, filesUploaded: [String: String] = [:]) where T.Element == URL {
+        if coordinator?.parent.uploadProgress?.isCanceling == true {
+            coordinator?.parent.uploadProgress = nil
+            return
+        }
         if let url = remainingURLs.last {
             DispatchQueue.main.async {
                 self.coordinator?.parent.uploadProgress?.status = .uploading(uploaded: filesUploaded.count, current: url.lastPathComponent)
@@ -237,14 +258,14 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     
     func uploadAndSubmit() {
         let urls = items.map { item -> URL in
-            if case .url(let url) = item {
+            if case .url(let url, _) = item {
                 return url
             } else {
                 fatalError("Attempt to submit non-URL item")
             }
         }
         let dest = destination
-        coordinator?.parent.uploadProgress = UploadProgress(id: UUID(), fileCount: urls.count, status: .fetchingDetails)
+        coordinator?.parent.uploadProgress = UploadProgress(id: UUID(), fileCount: urls.count, isCanceling: false, status: .fetchingDetails)
         client.uploadDetails(for: dest).sink(receiveCompletion: { completion in
             if case .failure(let e) = completion {
                 self.handleUploadError(e)
@@ -259,7 +280,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         var filename = name + "." + ext
         var i = 1
         while items.contains(where: { item in
-            if case .url(let url) = item {
+            if case .url(let url, _) = item {
                 return url.lastPathComponent == filename
             }
             return false
@@ -277,13 +298,13 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                 guard let data = pasteboard.data(forType: .pdf) else { return false }
                 let url = try self.url(for: "Scanned Document", with: "pdf")
                 try data.write(to: url)
-                items.append(.url(url))
+                items.append(.url(url: url, isTemporary: true))
                 return true
             case .some(.png):
                 guard let data = pasteboard.data(forType: .png) else { return false }
                 let url = try self.url(for: "Image", with: "png")
                 try data.write(to: url)
-                items.append(.url(url))
+                items.append(.url(url: url, isTemporary: true))
                 return true
             default:
                 guard pasteboard.canReadItem(withDataConformingToTypes: NSImage.imageTypes) else { return false }
@@ -291,7 +312,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                 guard let data = NSBitmapImageRep.representationOfImageReps(in: image.representations, using: .jpeg, properties: [:]) else { return false }
                 let url = try self.url(for: "Photo", with: "jpg")
                 try data.write(to: url)
-                items.append(.url(url))
+                items.append(.url(url: url, isTemporary: true))
                 return true
             }
         } catch let e {
@@ -313,11 +334,24 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         view.window?.makeFirstResponder(self)
         let menu = NSMenu()
         
-        let selectFile = NSMenuItem(title: "Select File", action: nil, keyEquivalent: "")
+        let selectFile = NSMenuItem(title: "Select Files...", action: #selector(selectFile(sender:)), keyEquivalent: "")
         selectFile.target = self
         menu.addItem(selectFile)
         
         NSMenu.popUpContextMenu(menu, with: event, for: sender)
+    }
+    
+    @objc func selectFile(sender: Any?) {
+        let dialog = NSOpenPanel()
+        dialog.showsHiddenFiles = false
+        dialog.allowsMultipleSelection = true
+        dialog.canChooseDirectories = false
+        dialog.showsResizeIndicator = true
+        dialog.prompt = "Select"
+        
+        if dialog.runModal() == .OK {
+            items.append(contentsOf: dialog.urls.map { UploadItem.url(url: $0, isTemporary: false) })
+        }
     }
 }
 
@@ -383,20 +417,36 @@ struct UploadView: View {
         InternalUploadView(destination: destination, uploadProgress: $uploadProgress, uploadConfirmation: $uploadConfirmation).sheet(item: $uploadProgress, content: { uploadProgress in
             VStack(alignment: .leading) {
                 Text("Submitting \(uploadProgress.fileCount) file(s)...").font(.headline)
-                switch uploadProgress.status {
-                case .fetchingDetails:
-                    Text("Preparing to submit...")
-                case .uploading(let uploaded, let current):
-                    Text("Uploading \(uploaded + 1) of \(uploadProgress.fileCount) (\(current))...")
-                case .submitting:
-                    Text("Finalizing submission...")
-                case .complete:
-                    Text("Done!")
+                if uploadProgress.isCanceling {
+                    Text("Canceling...")
+                } else {
+                    switch uploadProgress.status {
+                    case .fetchingDetails:
+                        Text("Preparing to submit...")
+                    case .uploading(let uploaded, let current):
+                        Text("Uploading \(uploaded + 1) of \(uploadProgress.fileCount) (\(current))...")
+                    case .submitting:
+                        Text("Finalizing submission...")
+                    case .complete:
+                        Text("Done!")
+                    }
+                }
+                if let error = uploadProgress.error {
+                    Text(error.localizedDescription).foregroundColor(.red).lineLimit(nil).fixedSize(horizontal: false, vertical: true)
                 }
                 if #available(macOS 11.0, *) {
                     ProgressView(value: uploadProgress.progress).progressViewStyle(LinearProgressViewStyle())
                 }
-            }.padding().frame(width: 256)
+                if uploadProgress.error != nil {
+                    Button("OK") {
+                        self.uploadProgress = nil
+                    }.frame(maxWidth: .infinity, alignment: .trailing)
+                } else {
+                    Button("Cancel") {
+                        self.uploadProgress?.isCanceling = true
+                    }.frame(maxWidth: .infinity, alignment: .trailing).disabled(!uploadProgress.canCancel)
+                }
+            }.padding().frame(width: 300)
         }).alert(item: $uploadConfirmation, content: { $0.alert })
     }
 }
