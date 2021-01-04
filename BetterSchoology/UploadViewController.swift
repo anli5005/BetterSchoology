@@ -63,7 +63,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         didSet {
             assert(destination.acceptsSubmissions)
             if destination.submitURLSuffix != oldValue.submitURLSuffix {
-                items = []
+                clearItems()
             }
         }
     }
@@ -76,7 +76,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     @IBOutlet weak var addButton: NSButton?
     
     enum UploadItem {
-        case loading(promise: NSFilePromiseReceiver)
+        case loading(promise: NSFilePromiseReceiver, url: URL)
         case url(url: URL, isTemporary: Bool)
     }
     
@@ -130,18 +130,20 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
             promises.forEach { promise in
                 let destinationURL: URL
                 do {
-                    destinationURL = try FileManager.default.url(for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: FileManager.default.homeDirectoryForCurrentUser, create: true)
+                    let tempURL = try FileManager.default.url(for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: FileManager.default.homeDirectoryForCurrentUser, create: true)
+                    destinationURL = tempURL.appendingPathComponent(UUID().uuidString)
+                    try FileManager.default.createDirectory(at: destinationURL, withIntermediateDirectories: false, attributes: nil)
                 } catch let e {
                     handleFileAddError(e)
                     return
                 }
-                items.append(.loading(promise: promise))
+                items.append(.loading(promise: promise, url: destinationURL))
                 promise.receivePromisedFiles(atDestination: destinationURL, options: [:], operationQueue: filePromiseQueue) { (fileURL, error) in
                     OperationQueue.main.addOperation { [weak self] in
                         guard let self = self else { return }
                         
                         if let index = self.items.firstIndex(where: { item in
-                            if case .loading(let itemPromise) = item {
+                            if case .loading(let itemPromise, _) = item {
                                 return itemPromise == promise
                             } else {
                                 return false
@@ -180,7 +182,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         switch items[row] {
-        case .loading(_):
+        case .loading(_, _):
             let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("LoadingCell"), owner: nil)
             view?.subviews.lazy.compactMap { $0 as? NSProgressIndicator }.first?.startAnimation(self)
             return view
@@ -221,7 +223,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                 // We're finished
                 DispatchQueue.main.async {
                     self.coordinator?.parent.uploadProgress = nil
-                    self.items = []
+                    self.clearItems()
                 }
             }
         }, receiveValue: {}).store(in: &cancellables)
@@ -352,6 +354,35 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         if dialog.runModal() == .OK {
             items.append(contentsOf: dialog.urls.map { UploadItem.url(url: $0, isTemporary: false) })
         }
+    }
+    
+    func cleanup() {
+        filePromiseQueue.cancelAllOperations()
+        items.compactMap { item -> URL? in
+            if case .url(let url, let temp) = item, temp {
+                return url
+            } else if case .loading(_, let url) = item {
+                return url
+            } else {
+                return nil
+            }
+        }.forEach { url in
+            do {
+                print("Removing temporary file at \(url.absoluteString)")
+                try FileManager.default.removeItem(at: url)
+            } catch let e {
+                print("Error removing temporary file: \(e)")
+            }
+        }
+    }
+    
+    func clearItems() {
+        cleanup()
+        items = []
+    }
+    
+    deinit {
+        cleanup()
     }
 }
 
