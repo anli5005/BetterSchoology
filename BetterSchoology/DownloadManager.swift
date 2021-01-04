@@ -55,13 +55,19 @@ class DownloadManager: ObservableObject {
         
         let subject = PassthroughSubject<FileStatus, Error>()
         let task = client.session.downloadTask(with: file.url!) { (url, response, error) in
-            if (response as? HTTPURLResponse)?.statusCode == 200 {
+            if let response = response as? HTTPURLResponse, response.statusCode == 200 {
                 var result: URL?
                 
-                var base = "..a" + (file.name ?? file.id!)
-                if base.starts(with: ".") {
-                    base.removeFirst(base.reduce(0, { $0 + ($1 == "." ? 1 : 0) }))
+                var base = file.name ?? file.id!
+                var numberOfDots = 0
+                for char in base {
+                    if char == "." {
+                        numberOfDots += 1
+                    } else {
+                        break
+                    }
                 }
+                base.removeFirst(numberOfDots)
                 
                 do {
                     let downloads = try self.fileManager.url(for: .downloadsDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
@@ -81,9 +87,10 @@ class DownloadManager: ObservableObject {
                     }
                     
                     var numAttempts = 0
+                    var inferredExtension: String?
                     while result == nil {
                         do {
-                            var suffix: String?
+                            var suffix = ""
                             if numAttempts > 10 {
                                 suffix = "-\(Int.random(in: 10000..<100000))"
                             } else if numAttempts > 0 {
@@ -95,16 +102,28 @@ class DownloadManager: ObservableObject {
                             } else {
                                 destination = betterSchoologyFolder.appendingPathComponent(base, isDirectory: false)
                             }
-                            if let suffix = suffix {
-                                let ext = destination.pathExtension
-                                let pathComponent: String
-                                if ext.count > 0 {
-                                    pathComponent = base.prefix(base.count - ext.count - 1) + suffix + "." + ext
+                            var ext = destination.pathExtension
+                            if ext.isEmpty {
+                                if let inferredExtension = inferredExtension {
+                                    ext = inferredExtension
+                                } else if let mime = response.allHeaderFields["Content-Type"] as? String, let type = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, mime as CFString, nil), let tag = UTTypeCopyPreferredTagWithClass(type.takeRetainedValue(), kUTTagClassFilenameExtension)?.takeRetainedValue() {
+                                    ext = tag as String
+                                    inferredExtension = ext
                                 } else {
-                                    pathComponent = base + suffix
+                                    inferredExtension = ext
                                 }
-                                destination = destination.deletingLastPathComponent().appendingPathComponent(pathComponent, isDirectory: false)
                             }
+                            let pathComponent: String
+                            if ext.count > 0 {
+                                var pathExtLength = destination.pathExtension.count
+                                if pathExtLength > 0 {
+                                    pathExtLength += 1
+                                }
+                                pathComponent = base.prefix(base.count - pathExtLength) + suffix + "." + ext
+                            } else {
+                                pathComponent = base + suffix
+                            }
+                            destination = destination.deletingLastPathComponent().appendingPathComponent(pathComponent, isDirectory: false)
                             try self.fileManager.moveItem(at: url!, to: destination)
                             result = destination
                         } catch let e as NSError {
