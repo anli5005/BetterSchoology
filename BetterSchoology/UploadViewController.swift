@@ -57,6 +57,17 @@ struct UploadConfirmation: Identifiable {
     let alert: Alert
 }
 
+enum UploadError: LocalizedError {
+    case emptyFile
+    
+    var errorDescription: String? {
+        switch self {
+        case .emptyFile:
+            return "Empty files are not supported due to a limitation with Schoology."
+        }
+    }
+}
+
 class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource, NSMenuDelegate, NSServicesMenuRequestor {
     var client: SchoologyClient
     var destination: SubmissionAccepting {
@@ -83,7 +94,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     var items = [UploadItem]() {
         didSet {
             tableView?.reloadData()
-            submitButton?.isEnabled = !items.isEmpty && items.allSatisfy { item in
+            submitButton?.isEnabled = items.allSatisfy { item in
                 if case .url(_, _) = item {
                     return true
                 }
@@ -108,7 +119,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         tableView?.delegate = self
         tableView?.dataSource = self
         tableView?.reloadData()
-        submitButton?.isEnabled = !items.isEmpty && items.allSatisfy { item in
+        submitButton?.isEnabled = items.allSatisfy { item in
             if case .url(_, _) = item {
                 return true
             }
@@ -122,6 +133,14 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         coordinator?.parent.uploadConfirmation = UploadConfirmation(id: UUID(), alert: Alert(title: Text("An error occurred while adding the file."), message: Text(error.localizedDescription), dismissButton: Alert.Button.default(Text("OK")) { [weak self] in
             self?.coordinator?.parent.uploadConfirmation = nil
         }))
+    }
+    
+    func verifyFile(at url: URL) throws {
+        if let size = try FileManager.default.attributesOfItem(atPath: url.path)[.size] as? NSNumber {
+            if size.intValue == 0 {
+                throw UploadError.emptyFile
+            }
+        }
     }
     
     func handle(draggingInfo: NSDraggingInfo) -> Bool {
@@ -149,11 +168,15 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                                 return false
                             }
                         }) {
-                            if let error = error {
-                                self.items.remove(at: index)
-                                self.handleFileAddError(error)
-                            } else {
+                            do {
+                                if let error = error {
+                                    throw error
+                                }
+                                try self.verifyFile(at: fileURL)
                                 self.items.replaceSubrange(index...index, with: [.url(url: fileURL, isTemporary: true)])
+                            } catch let e {
+                                self.items.remove(at: index)
+                                self.handleFileAddError(e)
                             }
                         }
                     }
@@ -169,7 +192,14 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                 }
                 return isDirectory.boolValue
             }) {
-                urls.forEach { self.items.append(.url(url: $0, isTemporary: false)) }
+                urls.forEach { url in
+                    do {
+                        try self.verifyFile(at: url)
+                        self.items.append(.url(url: url, isTemporary: false))
+                    } catch let e {
+                        self.handleFileAddError(e)
+                    }
+                }
                 return true
             }
         }
@@ -196,7 +226,13 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     }
     
     @IBAction func submit(sender: Any?) {
-        coordinator?.parent.uploadConfirmation = UploadConfirmation(id: UUID(), alert: Alert(title: Text("Submit \(items.count) file(s)?"), message: Text("This action can't be undone."), primaryButton: Alert.Button.default(Text("Submit")) { [weak self] in
+        let confirmationText: String
+        if items.isEmpty {
+            confirmationText = "A blank text file will be created for you. This action can't be undone."
+        } else {
+            confirmationText = "This action can't be undone."
+        }
+        coordinator?.parent.uploadConfirmation = UploadConfirmation(id: UUID(), alert: Alert(title: Text("Submit \(items.count) file(s)?"), message: Text(confirmationText), primaryButton: Alert.Button.default(Text("Submit")) { [weak self] in
             self?.coordinator?.parent.uploadConfirmation = nil
             self?.uploadAndSubmit()
         }, secondaryButton: Alert.Button.cancel { [weak self] in
@@ -259,12 +295,15 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     }
     
     func uploadAndSubmit() {
-        let urls = items.map { item -> URL in
+        var urls = items.map { item -> URL in
             if case .url(let url, _) = item {
                 return url
             } else {
                 fatalError("Attempt to submit non-URL item")
             }
+        }
+        if urls.isEmpty {
+            urls = [Bundle.main.url(forResource: "Submission", withExtension: "txt")!]
         }
         let dest = destination
         coordinator?.parent.uploadProgress = UploadProgress(id: UUID(), fileCount: urls.count, isCanceling: false, status: .fetchingDetails)
@@ -352,7 +391,15 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         dialog.prompt = "Select"
         
         if dialog.runModal() == .OK {
-            items.append(contentsOf: dialog.urls.map { UploadItem.url(url: $0, isTemporary: false) })
+            items.append(contentsOf: dialog.urls.compactMap { url in
+                do {
+                    try self.verifyFile(at: url)
+                    return UploadItem.url(url: url, isTemporary: false)
+                } catch let e {
+                    self.handleFileAddError(e)
+                    return nil
+                }
+            })
         }
     }
     
