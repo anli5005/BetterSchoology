@@ -28,13 +28,13 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="17" horizontalPageScroll="10" verticalLineScroll="17" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A2w-Vd-puQ">
+                <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A2w-Vd-puQ">
                     <rect key="frame" x="0.0" y="44" width="480" height="192"/>
                     <clipView key="contentView" drawsBackground="NO" id="r2b-Ql-iig">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="192"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="fHZ-6F-Oyv">
+                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="automatic" viewBased="YES" id="fHZ-6F-Oyv">
                                 <rect key="frame" x="0.0" y="0.0" width="480" height="192"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <size key="intercellSpacing" width="17" height="0.0"/>
@@ -53,7 +53,7 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
                                         <prototypeCellViews>
-                                            <tableCellView identifier="LoadingCell" id="sRD-1s-5T8">
+                                            <tableCellView identifier="LoadingCell" id="sRD-1s-5T8" customClass="UploadTableCellView" customModule="BetterSchoology" customModuleProvider="target">
                                                 <rect key="frame" x="18" y="0.0" width="443" height="24"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
@@ -61,67 +61,72 @@
                                                         <rect key="frame" x="3" y="4" width="16" height="16"/>
                                                     </progressIndicator>
                                                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="PGQ-nQ-O2w">
-                                                        <rect key="frame" x="26" y="4" width="64" height="16"/>
+                                                        <rect key="frame" x="22" y="4" width="64" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Loading..." id="fOf-bh-0wJ">
                                                             <font key="font" usesAppearanceFont="YES"/>
                                                             <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
+                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="De8-Ba-Qwv">
+                                                        <rect key="frame" x="425" y="5" width="15" height="15"/>
+                                                        <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="NSStopProgressFreestandingTemplate" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="fOx-0u-dHx">
+                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="removeWithSender:" target="sRD-1s-5T8" id="yf5-xA-hGl"/>
+                                                        </connections>
+                                                    </button>
                                                 </subviews>
                                                 <constraints>
+                                                    <constraint firstAttribute="trailing" secondItem="De8-Ba-Qwv" secondAttribute="trailing" constant="3" id="3c2-9k-viR"/>
                                                     <constraint firstItem="PVE-MQ-xx1" firstAttribute="leading" secondItem="sRD-1s-5T8" secondAttribute="leading" constant="3" id="9vA-mh-cit"/>
                                                     <constraint firstItem="PVE-MQ-xx1" firstAttribute="centerY" secondItem="sRD-1s-5T8" secondAttribute="centerY" id="Isl-SY-LIi"/>
+                                                    <constraint firstItem="De8-Ba-Qwv" firstAttribute="centerY" secondItem="sRD-1s-5T8" secondAttribute="centerY" id="nXG-S5-wc1"/>
                                                     <constraint firstItem="PGQ-nQ-O2w" firstAttribute="centerY" secondItem="sRD-1s-5T8" secondAttribute="centerY" id="qlc-FN-koe"/>
-                                                    <constraint firstItem="PGQ-nQ-O2w" firstAttribute="leading" secondItem="PVE-MQ-xx1" secondAttribute="trailing" constant="9" id="xLF-69-qu1"/>
+                                                    <constraint firstItem="PGQ-nQ-O2w" firstAttribute="leading" secondItem="PVE-MQ-xx1" secondAttribute="trailing" constant="5" id="xLF-69-qu1"/>
                                                 </constraints>
                                                 <connections>
                                                     <outlet property="textField" destination="PGQ-nQ-O2w" id="2TY-Zf-Hba"/>
                                                 </connections>
                                             </tableCellView>
-                                            <tableCellView identifier="ErrorCell" id="kUZ-MJ-OTg">
+                                            <tableCellView identifier="URLCell" id="CtF-XD-de8" customClass="UploadTableCellView" customModule="BetterSchoology" customModuleProvider="target">
                                                 <rect key="frame" x="18" y="24" width="443" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NkP-iT-hvx">
-                                                        <rect key="frame" x="3" y="3" width="17" height="11"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSCaution" id="J1U-PS-sj5"/>
-                                                    </imageView>
-                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3dc-1n-Esm">
-                                                        <rect key="frame" x="25" y="0.0" width="418" height="17"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="An error occurred." id="rPA-eO-2oG">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="systemRedColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                </subviews>
-                                                <connections>
-                                                    <outlet property="imageView" destination="NkP-iT-hvx" id="t1B-jf-7lG"/>
-                                                    <outlet property="textField" destination="3dc-1n-Esm" id="ton-1t-JPA"/>
-                                                </connections>
-                                            </tableCellView>
-                                            <tableCellView identifier="URLCell" id="CtF-XD-de8">
-                                                <rect key="frame" x="18" y="41" width="443" height="17"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <subviews>
-                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fqi-vV-tMF">
-                                                        <rect key="frame" x="3" y="-0.5" width="17" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fqi-vV-tMF">
+                                                        <rect key="frame" x="3" y="0.5" width="14" height="16"/>
                                                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="doc" catalog="system" id="Wpa-ck-U5O"/>
                                                     </imageView>
-                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iYW-69-yZp">
-                                                        <rect key="frame" x="25" y="0.0" width="418" height="17"/>
-                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                                    <textField horizontalHuggingPriority="100" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iYW-69-yZp">
+                                                        <rect key="frame" x="22" y="1" width="397" height="16"/>
                                                         <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="URL" id="LfG-yi-YCZ">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
+                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="XQt-lT-ww8">
+                                                        <rect key="frame" x="425" y="1" width="15" height="15"/>
+                                                        <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="NSStopProgressFreestandingTemplate" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="Cj2-pv-zBh">
+                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="removeWithSender:" target="CtF-XD-de8" id="O6R-Ra-yQn"/>
+                                                        </connections>
+                                                    </button>
                                                 </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="XQt-lT-ww8" firstAttribute="centerY" secondItem="iYW-69-yZp" secondAttribute="centerY" id="8DO-Cc-W1m"/>
+                                                    <constraint firstAttribute="trailing" secondItem="XQt-lT-ww8" secondAttribute="trailing" constant="3" id="EwP-sf-ghc"/>
+                                                    <constraint firstItem="iYW-69-yZp" firstAttribute="leading" secondItem="fqi-vV-tMF" secondAttribute="trailing" constant="7" id="WTe-E5-BGh"/>
+                                                    <constraint firstItem="fqi-vV-tMF" firstAttribute="leading" secondItem="CtF-XD-de8" secondAttribute="leading" constant="3" id="XUR-R5-X6v"/>
+                                                    <constraint firstItem="fqi-vV-tMF" firstAttribute="centerY" secondItem="iYW-69-yZp" secondAttribute="centerY" id="avA-Eo-44v"/>
+                                                    <constraint firstItem="XQt-lT-ww8" firstAttribute="leading" secondItem="iYW-69-yZp" secondAttribute="trailing" constant="8" symbolic="YES" id="bHh-WF-Sa1"/>
+                                                    <constraint firstItem="iYW-69-yZp" firstAttribute="centerY" secondItem="CtF-XD-de8" secondAttribute="centerY" id="iMN-nX-mSV"/>
+                                                </constraints>
                                                 <connections>
                                                     <outlet property="imageView" destination="fqi-vV-tMF" id="gCt-Af-CZq"/>
                                                     <outlet property="textField" destination="iYW-69-yZp" id="Az8-sz-TlA"/>
@@ -182,7 +187,7 @@
     </objects>
     <resources>
         <image name="NSAddTemplate" width="14" height="13"/>
-        <image name="NSCaution" width="32" height="32"/>
+        <image name="NSStopProgressFreestandingTemplate" width="15" height="15"/>
         <image name="doc" catalog="system" width="14" height="16"/>
     </resources>
 </document>

@@ -183,6 +183,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                                 try self.verifyFile(at: fileURL)
                                 self.items.replaceSubrange(index...index, with: [.url(url: fileURL, isTemporary: true)])
                             } catch let e {
+                                self.cleanup(item: self.items[index])
                                 self.items.remove(at: index)
                                 self.handleFileAddError(e)
                             }
@@ -216,6 +217,8 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     
     // MARK: Table View
     
+    static let dragAndDropIdentifier = "dev.anli.BetterSchoology.submission"
+    
     func numberOfRows(in tableView: NSTableView) -> Int {
         return items.count
     }
@@ -223,15 +226,40 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         switch items[row] {
         case .loading(_, _):
-            let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("LoadingCell"), owner: nil)
+            let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("LoadingCell"), owner: nil) as? UploadTableCellView
             view?.subviews.lazy.compactMap { $0 as? NSProgressIndicator }.first?.startAnimation(self)
+            view?.index = row
+            view?.controller = self
             return view
         case .url(let url, _):
-            if let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("URLCell"), owner: nil) as? NSTableCellView {
+            if let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("URLCell"), owner: nil) as? UploadTableCellView {
+                view.index = row
+                view.controller = self
                 view.textField?.stringValue = url.lastPathComponent
                 return view
             }
             return nil
+        }
+    }
+    
+    // MARK: Editing
+    
+    func remove(itemAt index: Int) {
+        cleanup(item: items.remove(at: index))
+    }
+    
+    override func keyDown(with event: NSEvent) {
+        if let tableView = tableView, view.window?.firstResponder == tableView {
+            if event.specialKey.map({ [NSEvent.SpecialKey.backspace, .delete].contains($0) }) ?? false {
+                let rows = tableView.selectedRowIndexes
+                for row in rows {
+                    cleanup(item: items[row])
+                }
+                items.remove(atOffsets: rows)
+                if let row = rows.first, row < numberOfRows(in: tableView) {
+                    tableView.selectRowIndexes(IndexSet(integer: row), byExtendingSelection: false)
+                }
+            }
         }
     }
     
@@ -421,24 +449,27 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     
     // MARK: Cleanup
     
+    func cleanup(item: UploadItem) {
+        let temporaryURL: URL
+        if case .url(let url, let temp) = item, temp {
+            temporaryURL = url
+        } else if case .loading(_, let url) = item {
+            temporaryURL = url
+        } else {
+            return
+        }
+        
+        do {
+            print("Removing temporary file at \(temporaryURL.absoluteString)")
+            try FileManager.default.removeItem(at: temporaryURL)
+        } catch let e {
+            print("Error removing temporary file: \(e)")
+        }
+    }
+    
     func cleanup() {
         filePromiseQueue.cancelAllOperations()
-        items.compactMap { item -> URL? in
-            if case .url(let url, let temp) = item, temp {
-                return url
-            } else if case .loading(_, let url) = item {
-                return url
-            } else {
-                return nil
-            }
-        }.forEach { url in
-            do {
-                print("Removing temporary file at \(url.absoluteString)")
-                try FileManager.default.removeItem(at: url)
-            } catch let e {
-                print("Error removing temporary file: \(e)")
-            }
-        }
+        items.forEach { cleanup(item: $0) }
     }
     
     func clearItems() {
@@ -478,6 +509,18 @@ class UploadContainerView: NSView {
     
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
         return uploadController?.handle(draggingInfo: sender) ?? false
+    }
+}
+
+// MARK: UploadTableCellView
+
+class UploadTableCellView: NSTableCellView {
+    weak var controller: UploadViewController?
+    
+    var index = -1
+    
+    @IBAction func remove(sender: Any) {
+        controller?.remove(itemAt: index)
     }
 }
 
