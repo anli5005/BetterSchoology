@@ -12,6 +12,8 @@ import SwiftUI
 import Combine
 import Dispatch
 
+// MARK: Basic Structs
+
 struct UploadProgress: Identifiable {
     let id: UUID
     var fileCount: Int
@@ -68,6 +70,8 @@ enum UploadError: LocalizedError {
     }
 }
 
+// MARK: UploadViewController
+
 class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource, NSMenuDelegate, NSServicesMenuRequestor {
     var client: SchoologyClient
     var destination: SubmissionAccepting {
@@ -90,6 +94,8 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         case loading(promise: NSFilePromiseReceiver, url: URL)
         case url(url: URL, isTemporary: Bool)
     }
+    
+    // MARK: Setup & View Reloading
     
     var items = [UploadItem]() {
         didSet {
@@ -127,6 +133,8 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         }
         addButton?.menu?.delegate = self
     }
+    
+    // MARK: File Handling
     
     func handleFileAddError(_ error: Error) {
         print(error)
@@ -206,6 +214,8 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         return false
     }
     
+    // MARK: Table View
+    
     func numberOfRows(in tableView: NSTableView) -> Int {
         return items.count
     }
@@ -224,6 +234,8 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
             return nil
         }
     }
+    
+    // MARK: Submission
     
     @IBAction func submit(sender: Any?) {
         let confirmationText: String
@@ -316,6 +328,8 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         }).store(in: &cancellables)
     }
     
+    // MARK: Continuity Camera
+    
     func url(for name: String, with ext: String) throws -> URL {
         let destinationURL = try FileManager.default.url(for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: FileManager.default.homeDirectoryForCurrentUser, create: true)
         var filename = name + "." + ext
@@ -370,6 +384,8 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         }
     }
     
+    // MARK: The Add Button
+    
     @IBAction func addButtonAction(sender: NSButton) {
         guard let event = NSApp.currentEvent else { return }
         view.window?.makeFirstResponder(self)
@@ -403,6 +419,8 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         }
     }
     
+    // MARK: Cleanup
+    
     func cleanup() {
         filePromiseQueue.cancelAllOperations()
         items.compactMap { item -> URL? in
@@ -433,6 +451,8 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     }
 }
 
+// MARK: UploadContainerView
+
 class UploadContainerView: NSView {
     weak var uploadController: UploadViewController?
     
@@ -460,6 +480,8 @@ class UploadContainerView: NSView {
         return uploadController?.handle(draggingInfo: sender) ?? false
     }
 }
+
+// MARK: SwiftUI
 
 private struct InternalUploadView: NSViewControllerRepresentable {
     var destination: SubmissionAccepting
