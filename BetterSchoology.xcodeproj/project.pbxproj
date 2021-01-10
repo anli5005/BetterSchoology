@@ -32,6 +32,8 @@
 		4A2AA129241D3444005C3C27 /* MaterialsOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */; };
 		4A533B2325A8D3EB00FFFC3F /* Submission.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4A533B2225A8D3EB00FFFC3F /* Submission.txt */; };
 		4A53FE4924213E74005C3C27 /* PageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A53FE4824213E74005C3C27 /* PageContentView.swift */; };
+		4A6ECE3325AB9BA500852A8B /* TextInputViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A6ECE3225AB9BA500852A8B /* TextInputViewController.xib */; };
+		4A6ECE3725AB9D1100852A8B /* TextInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A6ECE3625AB9D1100852A8B /* TextInputViewController.swift */; };
 		4A79E2BE24267457005C3C27 /* DiscussionTableCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A79E2BD24267457005C3C27 /* DiscussionTableCellView.xib */; };
 		4A79E2C024267504005C3C27 /* DiscussionTableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A79E2BF24267504005C3C27 /* DiscussionTableCellView.swift */; };
 		4A84ECD524229F81005C3C27 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 4A84ECD424229F81005C3C27 /* SQLite */; };
@@ -75,6 +77,8 @@
 		4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialsOutlineView.swift; sourceTree = "<group>"; };
 		4A533B2225A8D3EB00FFFC3F /* Submission.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Submission.txt; sourceTree = "<group>"; };
 		4A53FE4824213E74005C3C27 /* PageContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageContentView.swift; sourceTree = "<group>"; };
+		4A6ECE3225AB9BA500852A8B /* TextInputViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextInputViewController.xib; sourceTree = "<group>"; };
+		4A6ECE3625AB9D1100852A8B /* TextInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputViewController.swift; sourceTree = "<group>"; };
 		4A79E2BD24267457005C3C27 /* DiscussionTableCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DiscussionTableCellView.xib; sourceTree = "<group>"; };
 		4A79E2BF24267504005C3C27 /* DiscussionTableCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscussionTableCellView.swift; sourceTree = "<group>"; };
 		4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesDatabase.swift; sourceTree = "<group>"; };
@@ -111,6 +115,8 @@
 				4A0DA9762428F435005C3C27 /* ChatViewController.swift */,
 				4AAB48AA259F872C00362CEC /* UploadViewController.swift */,
 				4AAB48AD259F895200362CEC /* UploadViewController.xib */,
+				4A6ECE3625AB9D1100852A8B /* TextInputViewController.swift */,
+				4A6ECE3225AB9BA500852A8B /* TextInputViewController.xib */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -289,6 +295,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A6ECE3325AB9BA500852A8B /* TextInputViewController.xib in Resources */,
 				4A176DC5241BE262005C3C27 /* Chat.storyboard in Resources */,
 				4AAB48AE259F895200362CEC /* UploadViewController.xib in Resources */,
 				89E652C724DFB2550047416A /* Main.xib in Resources */,
@@ -310,6 +317,7 @@
 				89E652C524DFA8280047416A /* RefreshButton.swift in Sources */,
 				4A0DA97424286886005C3C27 /* ChatWindowController.swift in Sources */,
 				4A84ECDB24242101005C3C27 /* DownloadManager.swift in Sources */,
+				4A6ECE3725AB9D1100852A8B /* TextInputViewController.swift in Sources */,
 				4A176DDB241C17AB005C3C27 /* AuthView.swift in Sources */,
 				4ADF57A5241EAA03005C3C27 /* MaterialDetailView.swift in Sources */,
 				4A176DBD241BE25F005C3C27 /* ContentView.swift in Sources */,

@@ -59,6 +59,15 @@ struct UploadConfirmation: Identifiable {
     let alert: Alert
 }
 
+struct UploadTextInput: Identifiable {
+    let id: UUID
+    var supportsMarkdown: Bool
+    var title: String
+    var initialText: String
+    var cancel: () -> Void
+    var save: (String) -> Void
+}
+
 enum UploadError: LocalizedError {
     case emptyFile
     
@@ -106,6 +115,11 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                 }
                 return false
             }
+        }
+    }
+    var comment: String? {
+        didSet {
+            tableView?.reloadData(forRowIndexes: IndexSet(integer: items.count), columnIndexes: IndexSet(integer: 0))
         }
     }
     
@@ -220,10 +234,22 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     static let dragAndDropIdentifier = "dev.anli.BetterSchoology.submission"
     
     func numberOfRows(in tableView: NSTableView) -> Int {
-        return items.count
+        return items.count + 1
     }
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        if row == items.count {
+            if comment != nil {
+                let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("CommentCell"), owner: nil) as? CommentTableCellView
+                view?.controller = self
+                return view
+            } else {
+                let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("AddCommentCell"), owner: nil) as? AddCommentTableCellView
+                view?.controller = self
+                return view
+            }
+        }
+        
         switch items[row] {
         case .loading(_, _):
             let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("LoadingCell"), owner: nil) as? UploadTableCellView
@@ -242,6 +268,16 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         }
     }
     
+    func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
+        if row == numberOfRows(in: tableView) - 1 {
+            return comment != nil
+        } else if row < items.count {
+            return true
+        } else {
+            return false
+        }
+    }
+    
     // MARK: Editing
     
     func remove(itemAt index: Int) {
@@ -251,12 +287,15 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     override func keyDown(with event: NSEvent) {
         if let tableView = tableView, view.window?.firstResponder == tableView {
             if event.specialKey.map({ [NSEvent.SpecialKey.backspace, .delete].contains($0) }) ?? false {
-                let rows = tableView.selectedRowIndexes
+                let rows = tableView.selectedRowIndexes.intersection(IndexSet(integersIn: items.indices))
                 for row in rows {
                     cleanup(item: items[row])
                 }
+                if tableView.selectedRowIndexes.contains(numberOfRows(in: tableView) - 1) {
+                    comment = nil
+                }
                 items.remove(atOffsets: rows)
-                if let row = rows.first, row < numberOfRows(in: tableView) {
+                if let row = rows.first, row < items.count {
                     tableView.selectRowIndexes(IndexSet(integer: row), byExtendingSelection: false)
                 }
             }
@@ -287,11 +326,11 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         print(error)
     }
     
-    private func finalizeSubmission(files: [String: String], to destination: SubmissionAccepting, with uploadDetails: SchoologyClient.UploadDetailsResponse) {
+    private func finalizeSubmission(files: [String: String], comment: String?, to destination: SubmissionAccepting, with uploadDetails: SchoologyClient.UploadDetailsResponse) {
         DispatchQueue.main.async {
             self.coordinator?.parent.uploadProgress?.status = .submitting
         }
-        client.submit(fileMetadataIdsAndTitles: files, to: destination, uploadDetails: uploadDetails).sink(receiveCompletion: { completion in
+        client.submit(fileMetadataIdsAndTitles: files, with: comment, to: destination, uploadDetails: uploadDetails).sink(receiveCompletion: { completion in
             switch completion {
             case .failure(let e):
                 self.handleUploadError(e)
@@ -305,7 +344,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         }, receiveValue: {}).store(in: &cancellables)
     }
     
-    private func upload<T: RandomAccessCollection>(remainingURLs: T, details: SchoologyClient.UploadDetailsResponse, to destination: SubmissionAccepting, filesUploaded: [String: String] = [:]) where T.Element == URL {
+    private func upload<T: RandomAccessCollection>(remainingURLs: T, details: SchoologyClient.UploadDetailsResponse, comment: String?, to destination: SubmissionAccepting, filesUploaded: [String: String] = [:]) where T.Element == URL {
         if coordinator?.parent.uploadProgress?.isCanceling == true {
             coordinator?.parent.uploadProgress = nil
             return
@@ -327,14 +366,15 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
             }, receiveValue: { response in
                 var files = filesUploaded
                 files[response] = url.lastPathComponent
-                self.upload(remainingURLs: remainingURLs.prefix(upTo: remainingURLs.index(before: remainingURLs.endIndex)), details: details, to: destination, filesUploaded: files)
+                self.upload(remainingURLs: remainingURLs.prefix(upTo: remainingURLs.index(before: remainingURLs.endIndex)), details: details, comment: comment, to: destination, filesUploaded: files)
             }).store(in: &cancellables)
         } else {
-            finalizeSubmission(files: filesUploaded, to: destination, with: details)
+            finalizeSubmission(files: filesUploaded, comment: comment, to: destination, with: details)
         }
     }
     
     func uploadAndSubmit() {
+        let comment = self.comment
         var urls = items.map { item -> URL in
             if case .url(let url, _) = item {
                 return url
@@ -352,7 +392,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                 self.handleUploadError(e)
             }
         }, receiveValue: { details in
-            self.upload(remainingURLs: urls, details: details, to: dest)
+            self.upload(remainingURLs: urls, details: details, comment: comment, to: dest)
         }).store(in: &cancellables)
     }
     
@@ -447,6 +487,33 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         }
     }
     
+    // MARK: Commenting
+    
+    func addComment() {
+        coordinator?.parent.uploadTextInput = UploadTextInput(id: UUID(), supportsMarkdown: false, title: "Write a comment:", initialText: "", cancel: { [weak self] in
+            self?.coordinator?.parent.uploadTextInput = nil
+        }, save: { [weak self] content in
+            self?.coordinator?.parent.uploadTextInput = nil
+            self?.comment = content
+        })
+    }
+    
+    func editComment() {
+        coordinator?.parent.uploadTextInput = UploadTextInput(id: UUID(), supportsMarkdown: false, title: "Edit comment:", initialText: comment ?? "", cancel: { [weak self] in
+            self?.coordinator?.parent.uploadTextInput = nil
+        }, save: { [weak self] content in
+            self?.coordinator?.parent.uploadTextInput = nil
+            self?.comment = content
+        })
+    }
+    
+    func removeComment() {
+        comment = nil
+        if let tableView = tableView {
+            tableView.deselectRow(numberOfRows(in: tableView) - 1)
+        }
+    }
+    
     // MARK: Cleanup
     
     func cleanup(item: UploadItem) {
@@ -475,6 +542,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     func clearItems() {
         cleanup()
         items = []
+        comment = nil
     }
     
     deinit {
@@ -512,7 +580,7 @@ class UploadContainerView: NSView {
     }
 }
 
-// MARK: UploadTableCellView
+// MARK: Table Cell Views
 
 class UploadTableCellView: NSTableCellView {
     weak var controller: UploadViewController?
@@ -524,12 +592,39 @@ class UploadTableCellView: NSTableCellView {
     }
 }
 
+class CommentTableCellView: NSTableCellView {
+    weak var controller: UploadViewController?
+    @IBOutlet weak var editButton: NSButton?
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        editButton?.controlSize = .mini
+    }
+    
+    @IBAction func edit(sender: Any) {
+        controller?.editComment()
+    }
+    
+    @IBAction func remove(sender: Any) {
+        controller?.removeComment()
+    }
+}
+
+class AddCommentTableCellView: NSTableCellView {
+    weak var controller: UploadViewController?
+    
+    @IBAction func add(sender: Any) {
+        controller?.addComment()
+    }
+}
+
 // MARK: SwiftUI
 
 private struct InternalUploadView: NSViewControllerRepresentable {
     var destination: SubmissionAccepting
     @Binding var uploadProgress: UploadProgress?
     @Binding var uploadConfirmation: UploadConfirmation?
+    @Binding var uploadTextInput: UploadTextInput?
     
     func makeNSViewController(context: Context) -> UploadViewController {
         let controller = UploadViewController(destination: destination)
@@ -555,9 +650,10 @@ struct UploadView: View {
     var destination: SubmissionAccepting
     @State var uploadProgress: UploadProgress?
     @State var uploadConfirmation: UploadConfirmation?
+    @State var uploadTextInput: UploadTextInput?
     
     var body: some View {
-        InternalUploadView(destination: destination, uploadProgress: $uploadProgress, uploadConfirmation: $uploadConfirmation).sheet(item: $uploadProgress, content: { uploadProgress in
+        InternalUploadView(destination: destination, uploadProgress: $uploadProgress, uploadConfirmation: $uploadConfirmation, uploadTextInput: $uploadTextInput).sheet(item: $uploadProgress, content: { uploadProgress in
             VStack(alignment: .leading) {
                 Text("Submitting \(uploadProgress.fileCount) file(s)...").font(.headline)
                 if uploadProgress.isCanceling {
@@ -590,6 +686,8 @@ struct UploadView: View {
                     }.frame(maxWidth: .infinity, alignment: .trailing).disabled(!uploadProgress.canCancel)
                 }
             }.padding().frame(width: 300)
+        }).sheet(item: $uploadTextInput, content: { textInput in
+            TextInputDialog(id: UUID(), title: textInput.title, initialText: textInput.initialText, cancel: textInput.cancel, save: textInput.save).frame(width: 600, height: 400)
         }).alert(item: $uploadConfirmation, content: { $0.alert })
     }
 }

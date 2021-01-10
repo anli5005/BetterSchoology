@@ -28,13 +28,13 @@
                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                     </textFieldCell>
                 </textField>
-                <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A2w-Vd-puQ">
+                <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="17" horizontalPageScroll="10" verticalLineScroll="17" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A2w-Vd-puQ">
                     <rect key="frame" x="0.0" y="44" width="480" height="192"/>
                     <clipView key="contentView" drawsBackground="NO" id="r2b-Ql-iig">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="192"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="automatic" viewBased="YES" id="fHZ-6F-Oyv">
+                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="fHZ-6F-Oyv">
                                 <rect key="frame" x="0.0" y="0.0" width="480" height="192"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <size key="intercellSpacing" width="17" height="0.0"/>
@@ -132,6 +132,81 @@
                                                     <outlet property="textField" destination="iYW-69-yZp" id="Az8-sz-TlA"/>
                                                 </connections>
                                             </tableCellView>
+                                            <tableCellView identifier="CommentCell" id="Un0-ON-YQC" customClass="CommentTableCellView" customModule="BetterSchoology" customModuleProvider="target">
+                                                <rect key="frame" x="18" y="41" width="443" height="17"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="AiH-cF-ybq">
+                                                        <rect key="frame" x="1" y="0.5" width="17" height="16"/>
+                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="text.bubble" catalog="system" id="kWz-SR-50w"/>
+                                                    </imageView>
+                                                    <textField horizontalHuggingPriority="100" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jWO-LH-I3T">
+                                                        <rect key="frame" x="22" y="1" width="63" height="16"/>
+                                                        <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Comment" id="uUk-mL-f1X">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="P4N-Z8-Hur">
+                                                        <rect key="frame" x="425" y="1" width="15" height="15"/>
+                                                        <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="NSStopProgressFreestandingTemplate" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="HCR-0g-bu5">
+                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="removeWithSender:" target="Un0-ON-YQC" id="Xto-6d-NBo"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cuz-LL-1Gk">
+                                                        <rect key="frame" x="84" y="-8" width="60" height="32"/>
+                                                        <buttonCell key="cell" type="push" title="Edit..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2lE-3z-xIq">
+                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="miniSystem"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="editWithSender:" target="Un0-ON-YQC" id="I1w-S4-TMx"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="AiH-cF-ybq" firstAttribute="centerY" secondItem="jWO-LH-I3T" secondAttribute="centerY" id="2E4-fg-UTz"/>
+                                                    <constraint firstAttribute="trailing" secondItem="P4N-Z8-Hur" secondAttribute="trailing" constant="3" id="Hyy-ar-H9u"/>
+                                                    <constraint firstItem="jWO-LH-I3T" firstAttribute="centerY" secondItem="Un0-ON-YQC" secondAttribute="centerY" id="JnG-KV-Fib"/>
+                                                    <constraint firstItem="jWO-LH-I3T" firstAttribute="leading" secondItem="AiH-cF-ybq" secondAttribute="trailing" constant="6" id="PYr-OE-VnV"/>
+                                                    <constraint firstItem="cuz-LL-1Gk" firstAttribute="leading" secondItem="jWO-LH-I3T" secondAttribute="trailing" constant="8" symbolic="YES" id="Tgo-Dn-6Tb"/>
+                                                    <constraint firstItem="P4N-Z8-Hur" firstAttribute="centerY" secondItem="jWO-LH-I3T" secondAttribute="centerY" id="YIp-ug-Tvl"/>
+                                                    <constraint firstItem="cuz-LL-1Gk" firstAttribute="centerY" secondItem="jWO-LH-I3T" secondAttribute="centerY" id="jcT-sn-4JS"/>
+                                                    <constraint firstItem="AiH-cF-ybq" firstAttribute="leading" secondItem="Un0-ON-YQC" secondAttribute="leading" constant="1" id="z4D-RK-Rvu"/>
+                                                </constraints>
+                                                <connections>
+                                                    <outlet property="editButton" destination="cuz-LL-1Gk" id="9lf-xb-xiF"/>
+                                                    <outlet property="imageView" destination="AiH-cF-ybq" id="jSR-la-dHJ"/>
+                                                    <outlet property="textField" destination="jWO-LH-I3T" id="9G8-SM-FVn"/>
+                                                </connections>
+                                            </tableCellView>
+                                            <tableCellView identifier="AddCommentCell" id="arv-vl-kLd" customClass="AddCommentTableCellView" customModule="BetterSchoology" customModuleProvider="target">
+                                                <rect key="frame" x="18" y="58" width="443" height="17"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RvX-JQ-8XG">
+                                                        <rect key="frame" x="1" y="0.0" width="442" height="17"/>
+                                                        <buttonCell key="cell" type="bevel" title="  Add a comment..." bezelStyle="rounded" image="plus.bubble" catalog="system" imagePosition="leading" alignment="left" imageScaling="proportionallyDown" inset="2" id="9Jv-28-Qp9">
+                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="addWithSender:" target="arv-vl-kLd" id="1gZ-Ic-MG6"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstAttribute="trailing" secondItem="RvX-JQ-8XG" secondAttribute="trailing" id="Xdk-H3-Hsb"/>
+                                                    <constraint firstItem="RvX-JQ-8XG" firstAttribute="top" secondItem="arv-vl-kLd" secondAttribute="top" id="iAY-C5-K4q"/>
+                                                    <constraint firstItem="RvX-JQ-8XG" firstAttribute="leading" secondItem="arv-vl-kLd" secondAttribute="leading" constant="1" id="wYw-ee-6Ih"/>
+                                                    <constraint firstAttribute="bottom" secondItem="RvX-JQ-8XG" secondAttribute="bottom" id="zkO-ql-ry3"/>
+                                                </constraints>
+                                            </tableCellView>
                                         </prototypeCellViews>
                                     </tableColumn>
                                 </tableColumns>
@@ -189,5 +264,7 @@
         <image name="NSAddTemplate" width="14" height="13"/>
         <image name="NSStopProgressFreestandingTemplate" width="15" height="15"/>
         <image name="doc" catalog="system" width="14" height="16"/>
+        <image name="plus.bubble" catalog="system" width="17" height="16"/>
+        <image name="text.bubble" catalog="system" width="17" height="16"/>
     </resources>
 </document>
