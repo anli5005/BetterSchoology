@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="17701"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -17,11 +18,11 @@
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customView id="c22-O7-iKe" customClass="UploadContainerView" customModule="BetterSchoology" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="480" height="272"/>
+            <rect key="frame" x="0.0" y="0.0" width="480" height="284"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="dzH-EB-AI3">
-                    <rect key="frame" x="10" y="244" width="86" height="16"/>
+                    <rect key="frame" x="10" y="256" width="86" height="16"/>
                     <textFieldCell key="cell" lineBreakMode="clipping" title="SUBMISSION" id="XTj-IS-Q3V">
                         <font key="font" metaFont="systemMedium" size="13"/>
                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -29,13 +30,13 @@
                     </textFieldCell>
                 </textField>
                 <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="17" horizontalPageScroll="10" verticalLineScroll="17" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A2w-Vd-puQ">
-                    <rect key="frame" x="0.0" y="44" width="480" height="192"/>
+                    <rect key="frame" x="0.0" y="44" width="480" height="204"/>
                     <clipView key="contentView" drawsBackground="NO" id="r2b-Ql-iig">
-                        <rect key="frame" x="0.0" y="0.0" width="480" height="192"/>
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="204"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnReordering="NO" columnResizing="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="fHZ-6F-Oyv">
-                                <rect key="frame" x="0.0" y="0.0" width="480" height="192"/>
+                                <rect key="frame" x="0.0" y="0.0" width="480" height="204"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <size key="intercellSpacing" width="17" height="0.0"/>
                                 <color key="backgroundColor" name="windowBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -53,8 +54,56 @@
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
                                         <prototypeCellViews>
+                                            <tableCellView identifier="HintCell" id="vF2-nJ-C6l" customClass="HintTableCellView" customModule="BetterSchoology" customModuleProvider="target">
+                                                <rect key="frame" x="18" y="0.0" width="443" height="105"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="apf-kp-zbY">
+                                                        <rect key="frame" x="3" y="17.5" width="72" height="82"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" secondItem="apf-kp-zbY" secondAttribute="height" multiplier="1:1" id="N3N-6T-ohs"/>
+                                                            <constraint firstAttribute="width" constant="72" id="wyk-UG-YtE"/>
+                                                        </constraints>
+                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="rqF-EG-MVl">
+                                                            <imageReference key="image" image="checkmark.circle.fill" catalog="system" symbolScale="large"/>
+                                                        </imageCell>
+                                                    </imageView>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="V9u-yI-Kd4">
+                                                        <rect key="frame" x="89" y="61" width="156" height="35"/>
+                                                        <textFieldCell key="cell" lineBreakMode="clipping" title="Submitted!" id="eyc-kx-w71">
+                                                            <font key="font" metaFont="systemSemibold" size="30"/>
+                                                            <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="749" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="Ykg-Uk-pPm">
+                                                        <rect key="frame" x="89" y="19" width="353" height="34"/>
+                                                        <textFieldCell key="cell" title="Drag and drop files to resubmit. Past submissions will be visible." id="mrn-8t-9zH">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstAttribute="bottom" secondItem="apf-kp-zbY" secondAttribute="bottom" constant="22" id="4rn-2Y-GKR"/>
+                                                    <constraint firstItem="V9u-yI-Kd4" firstAttribute="top" secondItem="vF2-nJ-C6l" secondAttribute="top" constant="9" id="9YX-aI-B1Q"/>
+                                                    <constraint firstItem="apf-kp-zbY" firstAttribute="leading" secondItem="vF2-nJ-C6l" secondAttribute="leading" constant="3" id="Blq-xV-meO"/>
+                                                    <constraint firstItem="V9u-yI-Kd4" firstAttribute="leading" secondItem="apf-kp-zbY" secondAttribute="trailing" constant="16" id="WQj-5t-vsK"/>
+                                                    <constraint firstAttribute="bottom" secondItem="Ykg-Uk-pPm" secondAttribute="bottom" constant="19" id="fL8-aC-ogg"/>
+                                                    <constraint firstItem="Ykg-Uk-pPm" firstAttribute="leading" secondItem="apf-kp-zbY" secondAttribute="trailing" constant="16" id="gOV-3y-c5T"/>
+                                                    <constraint firstItem="apf-kp-zbY" firstAttribute="top" secondItem="vF2-nJ-C6l" secondAttribute="top" constant="11" id="oB5-KB-mdn"/>
+                                                    <constraint firstAttribute="trailing" secondItem="Ykg-Uk-pPm" secondAttribute="trailing" constant="3" id="oKr-Qz-beE"/>
+                                                    <constraint firstItem="Ykg-Uk-pPm" firstAttribute="top" secondItem="V9u-yI-Kd4" secondAttribute="bottom" constant="8" symbolic="YES" id="zgs-ca-Li2"/>
+                                                </constraints>
+                                                <connections>
+                                                    <outlet property="imageView" destination="apf-kp-zbY" id="G20-w7-Zeo"/>
+                                                    <outlet property="textField" destination="Ykg-Uk-pPm" id="T5E-UE-ZrN"/>
+                                                    <outlet property="titleLabel" destination="V9u-yI-Kd4" id="GaL-Vu-5WT"/>
+                                                </connections>
+                                            </tableCellView>
                                             <tableCellView identifier="LoadingCell" id="sRD-1s-5T8" customClass="UploadTableCellView" customModule="BetterSchoology" customModuleProvider="target">
-                                                <rect key="frame" x="18" y="0.0" width="443" height="24"/>
+                                                <rect key="frame" x="18" y="105" width="443" height="24"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <progressIndicator maxValue="100" indeterminate="YES" controlSize="small" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="PVE-MQ-xx1">
@@ -92,7 +141,7 @@
                                                 </connections>
                                             </tableCellView>
                                             <tableCellView identifier="URLCell" id="CtF-XD-de8" customClass="UploadTableCellView" customModule="BetterSchoology" customModuleProvider="target">
-                                                <rect key="frame" x="18" y="24" width="443" height="17"/>
+                                                <rect key="frame" x="18" y="129" width="443" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fqi-vV-tMF">
@@ -132,61 +181,61 @@
                                                     <outlet property="textField" destination="iYW-69-yZp" id="Az8-sz-TlA"/>
                                                 </connections>
                                             </tableCellView>
-                                            <tableCellView identifier="CommentCell" id="Un0-ON-YQC" customClass="CommentTableCellView" customModule="BetterSchoology" customModuleProvider="target">
-                                                <rect key="frame" x="18" y="41" width="443" height="17"/>
+                                            <tableCellView identifier="CommentCell" id="LX8-o4-V0I" customClass="CommentTableCellView" customModule="BetterSchoology" customModuleProvider="target">
+                                                <rect key="frame" x="18" y="146" width="443" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
-                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="AiH-cF-ybq">
+                                                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CMH-x3-r4S">
                                                         <rect key="frame" x="1" y="0.5" width="17" height="16"/>
-                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="text.bubble" catalog="system" id="kWz-SR-50w"/>
+                                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="text.bubble" catalog="system" id="i7Z-52-o3p"/>
                                                     </imageView>
-                                                    <textField horizontalHuggingPriority="100" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jWO-LH-I3T">
+                                                    <textField horizontalHuggingPriority="100" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsExpansionToolTips="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kir-dM-r0F">
                                                         <rect key="frame" x="22" y="1" width="63" height="16"/>
-                                                        <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Comment" id="uUk-mL-f1X">
+                                                        <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Comment" id="hAD-nR-ou4">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                         </textFieldCell>
                                                     </textField>
-                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="P4N-Z8-Hur">
+                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hKR-Hm-mXT">
                                                         <rect key="frame" x="425" y="1" width="15" height="15"/>
-                                                        <buttonCell key="cell" type="bevel" title="Remove" bezelStyle="rounded" image="NSStopProgressFreestandingTemplate" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="HCR-0g-bu5">
+                                                        <buttonCell key="cell" type="bevel" title="Remove" bezelStyle="rounded" image="NSStopProgressFreestandingTemplate" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="spG-KX-Kv0">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
                                                         <connections>
-                                                            <action selector="removeWithSender:" target="Un0-ON-YQC" id="Xto-6d-NBo"/>
+                                                            <action selector="removeWithSender:" target="LX8-o4-V0I" id="JoL-Jk-259"/>
                                                         </connections>
                                                     </button>
-                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cuz-LL-1Gk">
+                                                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TaF-Ct-z2z">
                                                         <rect key="frame" x="84" y="-8" width="60" height="32"/>
-                                                        <buttonCell key="cell" type="push" title="Edit..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2lE-3z-xIq">
+                                                        <buttonCell key="cell" type="push" title="Edit..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Nwd-S6-enJ">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="miniSystem"/>
                                                         </buttonCell>
                                                         <connections>
-                                                            <action selector="editWithSender:" target="Un0-ON-YQC" id="I1w-S4-TMx"/>
+                                                            <action selector="editWithSender:" target="LX8-o4-V0I" id="3Wb-LW-69C"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>
                                                 <constraints>
-                                                    <constraint firstItem="AiH-cF-ybq" firstAttribute="centerY" secondItem="jWO-LH-I3T" secondAttribute="centerY" id="2E4-fg-UTz"/>
-                                                    <constraint firstAttribute="trailing" secondItem="P4N-Z8-Hur" secondAttribute="trailing" constant="3" id="Hyy-ar-H9u"/>
-                                                    <constraint firstItem="jWO-LH-I3T" firstAttribute="centerY" secondItem="Un0-ON-YQC" secondAttribute="centerY" id="JnG-KV-Fib"/>
-                                                    <constraint firstItem="jWO-LH-I3T" firstAttribute="leading" secondItem="AiH-cF-ybq" secondAttribute="trailing" constant="6" id="PYr-OE-VnV"/>
-                                                    <constraint firstItem="cuz-LL-1Gk" firstAttribute="leading" secondItem="jWO-LH-I3T" secondAttribute="trailing" constant="8" symbolic="YES" id="Tgo-Dn-6Tb"/>
-                                                    <constraint firstItem="P4N-Z8-Hur" firstAttribute="centerY" secondItem="jWO-LH-I3T" secondAttribute="centerY" id="YIp-ug-Tvl"/>
-                                                    <constraint firstItem="cuz-LL-1Gk" firstAttribute="centerY" secondItem="jWO-LH-I3T" secondAttribute="centerY" id="jcT-sn-4JS"/>
-                                                    <constraint firstItem="AiH-cF-ybq" firstAttribute="leading" secondItem="Un0-ON-YQC" secondAttribute="leading" constant="1" id="z4D-RK-Rvu"/>
+                                                    <constraint firstItem="TaF-Ct-z2z" firstAttribute="leading" secondItem="kir-dM-r0F" secondAttribute="trailing" constant="8" symbolic="YES" id="2tf-Cb-YyB"/>
+                                                    <constraint firstItem="hKR-Hm-mXT" firstAttribute="centerY" secondItem="kir-dM-r0F" secondAttribute="centerY" id="AEy-1S-upE"/>
+                                                    <constraint firstItem="kir-dM-r0F" firstAttribute="leading" secondItem="CMH-x3-r4S" secondAttribute="trailing" constant="6" id="UHs-Ud-aDW"/>
+                                                    <constraint firstItem="kir-dM-r0F" firstAttribute="centerY" secondItem="LX8-o4-V0I" secondAttribute="centerY" id="ULd-3J-E4V"/>
+                                                    <constraint firstItem="CMH-x3-r4S" firstAttribute="leading" secondItem="LX8-o4-V0I" secondAttribute="leading" constant="1" id="YKa-Ys-ose"/>
+                                                    <constraint firstItem="TaF-Ct-z2z" firstAttribute="centerY" secondItem="LX8-o4-V0I" secondAttribute="centerY" id="l0O-gr-HIj"/>
+                                                    <constraint firstItem="CMH-x3-r4S" firstAttribute="centerY" secondItem="kir-dM-r0F" secondAttribute="centerY" id="sXY-NM-1yw"/>
+                                                    <constraint firstAttribute="trailing" secondItem="hKR-Hm-mXT" secondAttribute="trailing" constant="3" id="v9U-dJ-y0F"/>
                                                 </constraints>
                                                 <connections>
-                                                    <outlet property="editButton" destination="cuz-LL-1Gk" id="9lf-xb-xiF"/>
-                                                    <outlet property="imageView" destination="AiH-cF-ybq" id="jSR-la-dHJ"/>
-                                                    <outlet property="textField" destination="jWO-LH-I3T" id="9G8-SM-FVn"/>
+                                                    <outlet property="editButton" destination="TaF-Ct-z2z" id="XtM-Rx-Edb"/>
+                                                    <outlet property="imageView" destination="CMH-x3-r4S" id="W84-Fu-LmM"/>
+                                                    <outlet property="textField" destination="kir-dM-r0F" id="5vl-iE-tts"/>
                                                 </connections>
                                             </tableCellView>
                                             <tableCellView identifier="AddCommentCell" id="arv-vl-kLd" customClass="AddCommentTableCellView" customModule="BetterSchoology" customModuleProvider="target">
-                                                <rect key="frame" x="18" y="58" width="443" height="17"/>
+                                                <rect key="frame" x="18" y="163" width="443" height="17"/>
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RvX-JQ-8XG">
@@ -225,16 +274,18 @@
                 </scrollView>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="g7Q-ZO-1H7">
                     <rect key="frame" x="5" y="5" width="470" height="32"/>
-                    <buttonCell key="cell" type="push" title="Submit" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="wtb-kE-T0A">
+                    <buttonCell key="cell" type="push" title="Submit (⌥⌘S)" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="wtb-kE-T0A">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
+                        <string key="keyEquivalent">s</string>
+                        <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                     </buttonCell>
                     <connections>
                         <action selector="submitWithSender:" target="-2" id="lm1-yw-Fi1"/>
                     </connections>
                 </button>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yUC-2s-xDZ">
-                    <rect key="frame" x="431" y="237" width="44" height="32"/>
+                    <rect key="frame" x="431" y="249" width="44" height="32"/>
                     <buttonCell key="cell" type="push" title="Add..." bezelStyle="rounded" image="NSAddTemplate" imagePosition="only" alignment="center" borderStyle="border" inset="2" id="eDZ-AT-zjJ">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
@@ -263,6 +314,7 @@
     <resources>
         <image name="NSAddTemplate" width="14" height="13"/>
         <image name="NSStopProgressFreestandingTemplate" width="15" height="15"/>
+        <image name="checkmark.circle.fill" catalog="system" width="19" height="19"/>
         <image name="doc" catalog="system" width="14" height="16"/>
         <image name="plus.bubble" catalog="system" width="17" height="16"/>
         <image name="text.bubble" catalog="system" width="17" height="16"/>

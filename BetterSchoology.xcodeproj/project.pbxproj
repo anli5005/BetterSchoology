@@ -32,6 +32,7 @@
 		4A2AA129241D3444005C3C27 /* MaterialsOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */; };
 		4A533B2325A8D3EB00FFFC3F /* Submission.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4A533B2225A8D3EB00FFFC3F /* Submission.txt */; };
 		4A53FE4924213E74005C3C27 /* PageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A53FE4824213E74005C3C27 /* PageContentView.swift */; };
+		4A62174C25ADF58D0090D4F5 /* SubmittedQuotes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4A62174B25ADF58D0090D4F5 /* SubmittedQuotes.txt */; };
 		4A6ECE3325AB9BA500852A8B /* TextInputViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A6ECE3225AB9BA500852A8B /* TextInputViewController.xib */; };
 		4A6ECE3725AB9D1100852A8B /* TextInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A6ECE3625AB9D1100852A8B /* TextInputViewController.swift */; };
 		4A79E2BE24267457005C3C27 /* DiscussionTableCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A79E2BD24267457005C3C27 /* DiscussionTableCellView.xib */; };
@@ -77,6 +78,7 @@
 		4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialsOutlineView.swift; sourceTree = "<group>"; };
 		4A533B2225A8D3EB00FFFC3F /* Submission.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Submission.txt; sourceTree = "<group>"; };
 		4A53FE4824213E74005C3C27 /* PageContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageContentView.swift; sourceTree = "<group>"; };
+		4A62174B25ADF58D0090D4F5 /* SubmittedQuotes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = SubmittedQuotes.txt; sourceTree = "<group>"; };
 		4A6ECE3225AB9BA500852A8B /* TextInputViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextInputViewController.xib; sourceTree = "<group>"; };
 		4A6ECE3625AB9D1100852A8B /* TextInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputViewController.swift; sourceTree = "<group>"; };
 		4A79E2BD24267457005C3C27 /* DiscussionTableCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DiscussionTableCellView.xib; sourceTree = "<group>"; };
@@ -151,6 +153,7 @@
 				89E652C624DFB2550047416A /* Main.xib */,
 				4A176DC6241BE262005C3C27 /* Info.plist */,
 				4A533B2225A8D3EB00FFFC3F /* Submission.txt */,
+				4A62174B25ADF58D0090D4F5 /* SubmittedQuotes.txt */,
 				4A176DC7241BE262005C3C27 /* BetterSchoology.entitlements */,
 				4A176DC0241BE262005C3C27 /* Preview Content */,
 			);
@@ -302,6 +305,7 @@
 				4A533B2325A8D3EB00FFFC3F /* Submission.txt in Resources */,
 				4A176DC2241BE262005C3C27 /* Preview Assets.xcassets in Resources */,
 				4A176DBF241BE262005C3C27 /* Assets.xcassets in Resources */,
+				4A62174C25ADF58D0090D4F5 /* SubmittedQuotes.txt in Resources */,
 				4A79E2BE24267457005C3C27 /* DiscussionTableCellView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -485,7 +489,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				DEVELOPMENT_ASSET_PATHS = "\"BetterSchoology/Preview Content\"";
 				DEVELOPMENT_TEAM = 9G475R3MEF;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -511,7 +515,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				DEVELOPMENT_ASSET_PATHS = "\"BetterSchoology/Preview Content\"";
 				DEVELOPMENT_TEAM = 9G475R3MEF;
 				ENABLE_HARDENED_RUNTIME = YES;

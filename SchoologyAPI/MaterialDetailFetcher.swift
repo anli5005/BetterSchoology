@@ -223,6 +223,7 @@ struct AssignmentFetcher: MaterialDetailFetcher {
     func fetch(material: Material, using client: SchoologyClient) -> AnyPublisher<MaterialDetail, Error> {
         return material.urlPublisher(prefix: client.prefix).flatMap { client.session.dataTaskPublisher(for: $0).castingToError() }.toString(encoding: .utf8).tryMap { str in
             let document = try SwiftSoup.parse(str)
+            let submissionButton = try document.select(".submit-assignment > a").first()
             return AssignmentMaterialDetail(
                 material: material,
                 fullName: try document.select(".page-title").text(),
@@ -230,7 +231,8 @@ struct AssignmentFetcher: MaterialDetailFetcher {
                 files: try document.select(".attachments-file").map { try extractFile(from: $0, prefix: client.prefix) }
                     + document.select(".attachments-file-image").map { try extractImage(from: $0) }
                     + document.select(".attachments-link").map { try extractFileLink(from: $0, prefix: URL(string: client.prefix)!) },
-                submitURLSuffix: try document.select(".submit-assignment > a").first()?.attr("href")
+                submitURLSuffix: try submissionButton?.attr("href"),
+                isSubmitted: try submissionButton?.text().contains("Re-submit") ?? false
             )
         }.eraseToAnyPublisher()
     }

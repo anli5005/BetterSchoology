@@ -120,12 +120,21 @@ extension SubmissionAccepting {
     var acceptsSubmissions: Bool { submitURLSuffix != nil }
 }
 
-struct AssignmentMaterialDetail: MaterialDetail, SubmissionAccepting {
+protocol SubmissionStatusProviding {
+    var isSubmitted: Bool { get }
+}
+
+protocol SubmissionStatusAssignable: SubmissionStatusProviding {
+    var isSubmitted: Bool { get set }
+}
+
+struct AssignmentMaterialDetail: MaterialDetail, SubmissionAccepting, SubmissionStatusAssignable {
     var material: Material
     var fullName: String
     var content: String
     var files: [SchoologyFile]
     var submitURLSuffix: String?
+    var isSubmitted: Bool
 }
 
 struct Message: Identifiable {

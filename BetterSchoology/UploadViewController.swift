@@ -79,6 +79,8 @@ enum UploadError: LocalizedError {
     }
 }
 
+let submittedQuotes: [String] = (try? String(data: Data(contentsOf: Bundle.main.url(forResource: "SubmittedQuotes", withExtension: "txt")!), encoding: .utf8)?.split(separator: "\n").filter { !$0.isEmpty }.map { String($0) }) ?? []
+
 // MARK: UploadViewController
 
 class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource, NSMenuDelegate, NSServicesMenuRequestor {
@@ -99,6 +101,8 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     fileprivate var coordinator: InternalUploadView.Coordinator?
     var cancellables = Set<AnyCancellable>()
     var filesToDelete = [URL]()
+    
+    var submittedQuote = ""
     
     @IBOutlet weak var tableView: NSTableView?
     @IBOutlet weak var submitButton: NSButton?
@@ -124,7 +128,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     }
     var comment: String? {
         didSet {
-            tableView?.reloadData(forRowIndexes: IndexSet(integer: items.count), columnIndexes: IndexSet(integer: 0))
+            tableView?.reloadData()
         }
     }
     
@@ -132,6 +136,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         self.destination = destination
         self.client = client
         super.init(nibName: "UploadViewController", bundle: nil)
+        submittedQuote = submittedQuotes.randomElement() ?? ""
     }
     
     required init?(coder: NSCoder) {
@@ -143,6 +148,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         (view as? UploadContainerView)?.uploadController = self
         tableView?.delegate = self
         tableView?.dataSource = self
+        tableView?.usesAutomaticRowHeights = true
         tableView?.reloadData()
         submitButton?.isEnabled = items.allSatisfy { item in
             if case .url(_) = item {
@@ -239,11 +245,29 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     static let dragAndDropIdentifier = "dev.anli.BetterSchoology.submission"
     
     func numberOfRows(in tableView: NSTableView) -> Int {
-        return items.count + 1
+        return max(items.count, 1) + 1
     }
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        if row == items.count {
+        if row == 0 && items.isEmpty {
+            let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("HintCell"), owner: nil) as? HintTableCellView
+            if let detail = destination as? SubmissionStatusProviding, detail.isSubmitted {
+                if #available(macOS 11.0, *) {
+                    view?.imageView?.image = NSImage(systemSymbolName: "checkmark.circle.fill", accessibilityDescription: "Submitted")
+                }
+                view?.titleLabel?.stringValue = submittedQuote
+                view?.textField?.stringValue = "Drag and drop files to resubmit. Past submissions will be visible."
+            } else {
+                if #available(macOS 11.0, *) {
+                    view?.imageView?.image = NSImage(systemSymbolName: "square.and.arrow.down", accessibilityDescription: nil)
+                }
+                view?.titleLabel?.stringValue = "Drop a file"
+                view?.textField?.stringValue = "Or use the + button to add a file.\nClick Submit once you're ready."
+            }
+            return view
+        }
+        
+        if row >= items.count {
             if comment != nil {
                 let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("CommentCell"), owner: nil) as? CommentTableCellView
                 view?.controller = self
@@ -340,6 +364,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                 // We're finished
                 DispatchQueue.main.async {
                     self.coordinator?.parent.uploadProgress = nil
+                    self.coordinator?.handleSubmission()
                     self.clearItems()
                 }
             }
@@ -613,6 +638,17 @@ class AddCommentTableCellView: NSTableCellView {
     }
 }
 
+class HintTableCellView: NSTableCellView {
+    @IBOutlet weak var titleLabel: NSTextField?
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        if let imageView = imageView, #available(macOS 11.0, *) {
+            imageView.symbolConfiguration = NSImage.SymbolConfiguration(pointSize: imageView.bounds.height, weight: .regular)
+        }
+    }
+}
+
 // MARK: SwiftUI
 
 private struct InternalUploadView: NSViewControllerRepresentable {
@@ -683,6 +719,7 @@ private struct InternalUploadView: NSViewControllerRepresentable {
     }
     
     @Binding var sheet: Sheet?
+    var onSubmission: () -> Void
     
     func makeNSViewController(context: Context) -> UploadViewController {
         let controller = UploadViewController(destination: destination)
@@ -701,6 +738,10 @@ private struct InternalUploadView: NSViewControllerRepresentable {
     
     struct Coordinator {
         var parent: InternalUploadView
+        
+        func handleSubmission() {
+            parent.onSubmission()
+        }
     }
 }
 
@@ -708,9 +749,15 @@ struct UploadView: View {
     var destination: SubmissionAccepting
     @State private var sheet: InternalUploadView.Sheet?
     @State var uploadConfirmation: UploadConfirmation?
+    @EnvironmentObject var store: CourseMaterialsStore
     
     var body: some View {
-        InternalUploadView(destination: destination, uploadConfirmation: $uploadConfirmation, sheet: $sheet).sheet(item: $sheet, content: { sheet -> AnyView in
+        InternalUploadView(destination: destination, uploadConfirmation: $uploadConfirmation, sheet: $sheet, onSubmission: {
+            if var newDest = destination as? SubmissionStatusAssignable & MaterialDetail {
+                newDest.isSubmitted = true
+                store.materialDetails[newDest.material.id] = .done(.success(newDest))
+            }
+        }).sheet(item: $sheet, content: { sheet -> AnyView in
             switch sheet {
             case .progress(let uploadProgress):
                 return AnyView(VStack(alignment: .leading) {
