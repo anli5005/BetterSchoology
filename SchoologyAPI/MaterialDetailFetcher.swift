@@ -238,6 +238,16 @@ struct AssignmentFetcher: MaterialDetailFetcher {
     }
 }
 
+struct QuizFetcher: MaterialDetailFetcher {
+    func type(for material: Material) -> MaterialDetail.Type? {
+        return material.kind == .quiz ? QuizMaterialDetail.self : nil
+    }
+    
+    func fetch(material: Material, using _: SchoologyClient) -> AnyPublisher<MaterialDetail, Error> {
+        return Just(QuizMaterialDetail(material: material)).castingToError().eraseToAnyPublisher()
+    }
+}
+
 func parseMessage(comment: Element, parent: String?) throws -> Message {
     var content = ""
     if let body = try comment.select(".comment-body-wrapper").first() {

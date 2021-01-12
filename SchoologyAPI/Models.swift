@@ -137,6 +137,11 @@ struct AssignmentMaterialDetail: MaterialDetail, SubmissionAccepting, Submission
     var isSubmitted: Bool
 }
 
+struct QuizMaterialDetail: MaterialDetail {
+    var material: Material
+    var fullName: String { material.name }
+}
+
 struct Message: Identifiable {
     var id: String
     

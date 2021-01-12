@@ -57,6 +57,7 @@ let sharedClient = SchoologyClient(sessionConfiguration: .default, prefix: "http
     PageFetcher(),
     FileFetcher(),
     AssignmentFetcher(),
+    QuizFetcher(),
     DiscussionFetcher(),
     FolderFetcher()
 ])

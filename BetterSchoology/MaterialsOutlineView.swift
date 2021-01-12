@@ -55,7 +55,15 @@ struct MaterialsOutlineView: NSViewRepresentable {
         }
                 
         context.coordinator.listenCancellable = store.reloadPublisher.sink(receiveValue: { _ in
+            var id: String?
+            let selected = outlineView.selectedRow
+            if selected >= 0 {
+                id = outlineView.item(atRow: selected) as? String
+            }
             outlineView.reloadData()
+            if let row = id.map({ outlineView.row(forItem: $0) }), row >= 0 {
+                outlineView.selectRowIndexes(IndexSet(integer: row), byExtendingSelection: false)
+            }
         })
         
         outlineView.reloadData()

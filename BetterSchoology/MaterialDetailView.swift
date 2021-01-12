@@ -116,9 +116,22 @@ extension AssignmentMaterialDetail: MaterialDetailViewRepresentable, HasContentA
             ContentAndFilesView(contentAndFiles: self)
             if acceptsSubmissions {
                 Divider()
-                UploadView(destination: self).frame(maxWidth: .infinity, alignment: .center)
+                UploadView(destination: self).frame(maxWidth: .infinity, alignment: .center).frame(height: 225)
             }
         })
+    }
+}
+
+extension QuizMaterialDetail: MaterialDetailViewRepresentable {
+    func makeView(url: URL?) -> AnyView {
+        return AnyView(VStack {
+            Text("To view or take this assessment, open it in a web browser.").frame(alignment: .center).lineLimit(nil).fixedSize(horizontal: false, vertical: true).multilineTextAlignment(.center)
+            Button(action: {
+                NSWorkspace.shared.open(url!)
+            }) {
+                Text("Open in Web Browser")
+            }.disabled(url == nil)
+        }.padding().frame(maxWidth: .infinity, alignment: .center))
     }
 }
 
