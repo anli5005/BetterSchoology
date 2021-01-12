@@ -70,7 +70,7 @@
                                                     </textField>
                                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="De8-Ba-Qwv">
                                                         <rect key="frame" x="425" y="5" width="15" height="15"/>
-                                                        <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="NSStopProgressFreestandingTemplate" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="fOx-0u-dHx">
+                                                        <buttonCell key="cell" type="bevel" title="Remove" bezelStyle="rounded" image="NSStopProgressFreestandingTemplate" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="fOx-0u-dHx">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -109,7 +109,7 @@
                                                     </textField>
                                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="XQt-lT-ww8">
                                                         <rect key="frame" x="425" y="1" width="15" height="15"/>
-                                                        <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="NSStopProgressFreestandingTemplate" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="Cj2-pv-zBh">
+                                                        <buttonCell key="cell" type="bevel" title="Remove" bezelStyle="rounded" image="NSStopProgressFreestandingTemplate" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="Cj2-pv-zBh">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -150,7 +150,7 @@
                                                     </textField>
                                                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="P4N-Z8-Hur">
                                                         <rect key="frame" x="425" y="1" width="15" height="15"/>
-                                                        <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="NSStopProgressFreestandingTemplate" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="HCR-0g-bu5">
+                                                        <buttonCell key="cell" type="bevel" title="Remove" bezelStyle="rounded" image="NSStopProgressFreestandingTemplate" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="HCR-0g-bu5">
                                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                                             <font key="font" metaFont="system"/>
                                                         </buttonCell>
@@ -235,7 +235,7 @@
                 </button>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yUC-2s-xDZ">
                     <rect key="frame" x="431" y="237" width="44" height="32"/>
-                    <buttonCell key="cell" type="push" bezelStyle="rounded" image="NSAddTemplate" imagePosition="only" alignment="center" borderStyle="border" inset="2" id="eDZ-AT-zjJ">
+                    <buttonCell key="cell" type="push" title="Add..." bezelStyle="rounded" image="NSAddTemplate" imagePosition="only" alignment="center" borderStyle="border" inset="2" id="eDZ-AT-zjJ">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
                     </buttonCell>

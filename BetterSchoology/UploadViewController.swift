@@ -91,17 +91,22 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
             }
         }
     }
-    let filePromiseQueue = OperationQueue()
+    lazy var filePromiseQueue: OperationQueue = {
+        let queue = OperationQueue()
+        queue.qualityOfService = .userInitiated
+        return queue
+    }()
     fileprivate var coordinator: InternalUploadView.Coordinator?
     var cancellables = Set<AnyCancellable>()
+    var filesToDelete = [URL]()
     
     @IBOutlet weak var tableView: NSTableView?
     @IBOutlet weak var submitButton: NSButton?
     @IBOutlet weak var addButton: NSButton?
     
     enum UploadItem {
-        case loading(promise: NSFilePromiseReceiver, url: URL)
-        case url(url: URL, isTemporary: Bool)
+        case loading(promise: NSFilePromiseReceiver)
+        case url(url: URL)
     }
     
     // MARK: Setup & View Reloading
@@ -110,7 +115,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         didSet {
             tableView?.reloadData()
             submitButton?.isEnabled = items.allSatisfy { item in
-                if case .url(_, _) = item {
+                if case .url(_) = item {
                     return true
                 }
                 return false
@@ -140,7 +145,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         tableView?.dataSource = self
         tableView?.reloadData()
         submitButton?.isEnabled = items.allSatisfy { item in
-            if case .url(_, _) = item {
+            if case .url(_) = item {
                 return true
             }
             return false
@@ -166,25 +171,31 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     }
     
     func handle(draggingInfo: NSDraggingInfo) -> Bool {
-        let pasteboard = draggingInfo.draggingPasteboard
-        if let promises = pasteboard.readObjects(forClasses: [NSFilePromiseReceiver.self], options: nil)?.compactMap({ $0 as? NSFilePromiseReceiver }), !promises.isEmpty {
-            promises.forEach { promise in
+        let supportedClasses = [NSFilePromiseReceiver.self, NSURL.self]
+        let searchOptions: [NSPasteboard.ReadingOptionKey: Any] = [.urlReadingFileURLsOnly: true]
+        var tempURL: URL?
+        draggingInfo.enumerateDraggingItems(options: [], for: nil, classes: supportedClasses, searchOptions: searchOptions) { [weak self] (draggingItem, _, _) in
+            guard let self = self else { return }
+            switch draggingItem.item {
+            case let promise as NSFilePromiseReceiver:
                 let destinationURL: URL
                 do {
-                    let tempURL = try FileManager.default.url(for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: FileManager.default.homeDirectoryForCurrentUser, create: true)
-                    destinationURL = tempURL.appendingPathComponent(UUID().uuidString)
-                    try FileManager.default.createDirectory(at: destinationURL, withIntermediateDirectories: false, attributes: nil)
+                    if tempURL == nil {
+                        tempURL = try FileManager.default.url(for: .itemReplacementDirectory, in: .userDomainMask, appropriateFor: FileManager.default.homeDirectoryForCurrentUser, create: true)
+                        self.filesToDelete.append(tempURL!)
+                    }
+                    destinationURL = tempURL!
                 } catch let e {
-                    handleFileAddError(e)
+                    self.handleFileAddError(e)
                     return
                 }
-                items.append(.loading(promise: promise, url: destinationURL))
-                promise.receivePromisedFiles(atDestination: destinationURL, options: [:], operationQueue: filePromiseQueue) { (fileURL, error) in
+                self.items.append(.loading(promise: promise))
+                promise.receivePromisedFiles(atDestination: destinationURL.absoluteURL, options: [:], operationQueue: self.filePromiseQueue) { (fileURL, error) in
                     OperationQueue.main.addOperation { [weak self] in
                         guard let self = self else { return }
                         
                         if let index = self.items.firstIndex(where: { item in
-                            if case .loading(let itemPromise, _) = item {
+                            if case .loading(let itemPromise) = item {
                                 return itemPromise == promise
                             } else {
                                 return false
@@ -195,38 +206,32 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
                                     throw error
                                 }
                                 try self.verifyFile(at: fileURL)
-                                self.items.replaceSubrange(index...index, with: [.url(url: fileURL, isTemporary: true)])
+                                self.items.replaceSubrange(index...index, with: [.url(url: fileURL)])
                             } catch let e {
-                                self.cleanup(item: self.items[index])
                                 self.items.remove(at: index)
                                 self.handleFileAddError(e)
                             }
                         }
                     }
                 }
-            }
-            return true
-        } else {
-            let urls = (pasteboard.readObjects(forClasses: [NSURL.self], options: nil) ?? []).compactMap { $0 as? URL }
-            if !urls.isEmpty && !urls.contains(where: { url in
+            case let url as URL:
                 var isDirectory: ObjCBool = false
-                if !FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) {
-                    return true
-                }
-                return isDirectory.boolValue
-            }) {
-                urls.forEach { url in
-                    do {
-                        try self.verifyFile(at: url)
-                        self.items.append(.url(url: url, isTemporary: false))
-                    } catch let e {
-                        self.handleFileAddError(e)
+                if FileManager.default.fileExists(atPath: url.path, isDirectory: &isDirectory) {
+                    if !isDirectory.boolValue {
+                        do {
+                            try self.verifyFile(at: url)
+                            self.items.append(.url(url: url))
+                        } catch let e {
+                            self.handleFileAddError(e)
+                        }
                     }
                 }
-                return true
+            default:
+                break
             }
         }
-        return false
+        
+        return true
     }
     
     // MARK: Table View
@@ -251,13 +256,13 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         }
         
         switch items[row] {
-        case .loading(_, _):
+        case .loading(_):
             let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("LoadingCell"), owner: nil) as? UploadTableCellView
             view?.subviews.lazy.compactMap { $0 as? NSProgressIndicator }.first?.startAnimation(self)
             view?.index = row
             view?.controller = self
             return view
-        case .url(let url, _):
+        case .url(let url):
             if let view = tableView.makeView(withIdentifier: NSUserInterfaceItemIdentifier("URLCell"), owner: nil) as? UploadTableCellView {
                 view.index = row
                 view.controller = self
@@ -281,16 +286,13 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     // MARK: Editing
     
     func remove(itemAt index: Int) {
-        cleanup(item: items.remove(at: index))
+        items.remove(at: index)
     }
     
     override func keyDown(with event: NSEvent) {
         if let tableView = tableView, view.window?.firstResponder == tableView {
             if event.specialKey.map({ [NSEvent.SpecialKey.backspace, .delete].contains($0) }) ?? false {
                 let rows = tableView.selectedRowIndexes.intersection(IndexSet(integersIn: items.indices))
-                for row in rows {
-                    cleanup(item: items[row])
-                }
                 if tableView.selectedRowIndexes.contains(numberOfRows(in: tableView) - 1) {
                     comment = nil
                 }
@@ -376,7 +378,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     func uploadAndSubmit() {
         let comment = self.comment
         var urls = items.map { item -> URL in
-            if case .url(let url, _) = item {
+            if case .url(let url) = item {
                 return url
             } else {
                 fatalError("Attempt to submit non-URL item")
@@ -403,7 +405,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
         var filename = name + "." + ext
         var i = 1
         while items.contains(where: { item in
-            if case .url(let url, _) = item {
+            if case .url(let url) = item {
                 return url.lastPathComponent == filename
             }
             return false
@@ -420,22 +422,25 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
             case .some(.pdf):
                 guard let data = pasteboard.data(forType: .pdf) else { return false }
                 let url = try self.url(for: "Scanned Document", with: "pdf")
+                filesToDelete.append(url)
                 try data.write(to: url)
-                items.append(.url(url: url, isTemporary: true))
+                items.append(.url(url: url))
                 return true
             case .some(.png):
                 guard let data = pasteboard.data(forType: .png) else { return false }
                 let url = try self.url(for: "Image", with: "png")
+                filesToDelete.append(url)
                 try data.write(to: url)
-                items.append(.url(url: url, isTemporary: true))
+                items.append(.url(url: url))
                 return true
             default:
                 guard pasteboard.canReadItem(withDataConformingToTypes: NSImage.imageTypes) else { return false }
                 guard let image = NSImage(pasteboard: pasteboard) else { return false }
                 guard let data = NSBitmapImageRep.representationOfImageReps(in: image.representations, using: .jpeg, properties: [:]) else { return false }
                 let url = try self.url(for: "Photo", with: "jpg")
+                filesToDelete.append(url)
                 try data.write(to: url)
-                items.append(.url(url: url, isTemporary: true))
+                items.append(.url(url: url))
                 return true
             }
         } catch let e {
@@ -478,7 +483,7 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
             items.append(contentsOf: dialog.urls.compactMap { url in
                 do {
                     try self.verifyFile(at: url)
-                    return UploadItem.url(url: url, isTemporary: false)
+                    return UploadItem.url(url: url)
                 } catch let e {
                     self.handleFileAddError(e)
                     return nil
@@ -516,27 +521,17 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     
     // MARK: Cleanup
     
-    func cleanup(item: UploadItem) {
-        let temporaryURL: URL
-        if case .url(let url, let temp) = item, temp {
-            temporaryURL = url
-        } else if case .loading(_, let url) = item {
-            temporaryURL = url
-        } else {
-            return
-        }
-        
-        do {
-            print("Removing temporary file at \(temporaryURL.absoluteString)")
-            try FileManager.default.removeItem(at: temporaryURL)
-        } catch let e {
-            print("Error removing temporary file: \(e)")
-        }
-    }
-    
     func cleanup() {
         filePromiseQueue.cancelAllOperations()
-        items.forEach { cleanup(item: $0) }
+        filesToDelete.forEach { temporaryURL in
+            do {
+                print("Removing temporary file at \(temporaryURL.absoluteString)")
+                try FileManager.default.removeItem(at: temporaryURL)
+            } catch let e {
+                print("Error removing temporary file: \(e)")
+            }
+        }
+        filesToDelete = []
     }
     
     func clearItems() {
@@ -556,8 +551,8 @@ class UploadContainerView: NSView {
     weak var uploadController: UploadViewController?
     
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
-        let pasteboard = sender.draggingPasteboard
-        if pasteboard.readObjects(forClasses: [NSFilePromiseReceiver.self], options: nil)?.compactMap({ $0 as? NSFilePromiseReceiver }).isEmpty == false {
+        // let pasteboard = sender.draggingPasteboard
+        /* if pasteboard.readObjects(forClasses: [NSFilePromiseReceiver.self], options: nil)?.compactMap({ $0 as? NSFilePromiseReceiver }).isEmpty == false {
             return .copy
         } else {
             let urls = (pasteboard.readObjects(forClasses: [NSURL.self], options: nil) ?? []).compactMap { $0 as? URL }
@@ -572,7 +567,8 @@ class UploadContainerView: NSView {
             } else {
                 return []
             }
-        }
+        } */
+        return .copy
     }
     
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
@@ -622,9 +618,72 @@ class AddCommentTableCellView: NSTableCellView {
 
 private struct InternalUploadView: NSViewControllerRepresentable {
     var destination: SubmissionAccepting
-    @Binding var uploadProgress: UploadProgress?
     @Binding var uploadConfirmation: UploadConfirmation?
-    @Binding var uploadTextInput: UploadTextInput?
+    var uploadProgress: UploadProgress? {
+        get {
+            if case .progress(let progress) = sheet {
+                return progress
+            } else {
+                return nil
+            }
+        }
+        set {
+            if let progress = newValue {
+                sheet = .progress(progress)
+            } else {
+                sheet = nil
+            }
+        }
+    }
+    var uploadTextInput: UploadTextInput? {
+        get {
+            if case .textInput(let input) = sheet {
+                return input
+            } else {
+                return nil
+            }
+        }
+        set {
+            if let input = newValue {
+                sheet = .textInput(input)
+            } else {
+                sheet = nil
+            }
+        }
+    }
+    
+    enum Sheet: Identifiable {
+        case progress(UploadProgress)
+        case textInput(UploadTextInput)
+        
+        var id: UUID {
+            switch self {
+            case .progress(let progress):
+                return progress.id
+            case .textInput(let input):
+                return input.id
+            }
+        }
+        
+        var isCanceling: Bool {
+            get {
+                switch self {
+                case .progress(let progress):
+                    return progress.isCanceling
+                default:
+                    return false
+                }
+            }
+            set {
+                if case .progress(var progress) = self {
+                    progress.isCanceling = newValue
+                    self = .progress(progress)
+                }
+            }
+        }
+    }
+    
+    @Binding var sheet: Sheet?
     
     func makeNSViewController(context: Context) -> UploadViewController {
         let controller = UploadViewController(destination: destination)
@@ -648,46 +707,48 @@ private struct InternalUploadView: NSViewControllerRepresentable {
 
 struct UploadView: View {
     var destination: SubmissionAccepting
-    @State var uploadProgress: UploadProgress?
+    @State private var sheet: InternalUploadView.Sheet?
     @State var uploadConfirmation: UploadConfirmation?
-    @State var uploadTextInput: UploadTextInput?
     
     var body: some View {
-        InternalUploadView(destination: destination, uploadProgress: $uploadProgress, uploadConfirmation: $uploadConfirmation, uploadTextInput: $uploadTextInput).sheet(item: $uploadProgress, content: { uploadProgress in
-            VStack(alignment: .leading) {
-                Text("Submitting \(uploadProgress.fileCount) file(s)...").font(.headline)
-                if uploadProgress.isCanceling {
-                    Text("Canceling...")
-                } else {
-                    switch uploadProgress.status {
-                    case .fetchingDetails:
-                        Text("Preparing to submit...")
-                    case .uploading(let uploaded, let current):
-                        Text("Uploading \(uploaded + 1) of \(uploadProgress.fileCount) (\(current))...")
-                    case .submitting:
-                        Text("Finalizing submission...")
-                    case .complete:
-                        Text("Done!")
+        InternalUploadView(destination: destination, uploadConfirmation: $uploadConfirmation, sheet: $sheet).sheet(item: $sheet, content: { sheet -> AnyView in
+            switch sheet {
+            case .progress(let uploadProgress):
+                return AnyView(VStack(alignment: .leading) {
+                    Text("Submitting \(uploadProgress.fileCount) file(s)...").font(.headline)
+                    if uploadProgress.isCanceling {
+                        Text("Canceling...")
+                    } else {
+                        switch uploadProgress.status {
+                        case .fetchingDetails:
+                            Text("Preparing to submit...")
+                        case .uploading(let uploaded, let current):
+                            Text("Uploading \(uploaded + 1) of \(uploadProgress.fileCount) (\(current))...")
+                        case .submitting:
+                            Text("Finalizing submission...")
+                        case .complete:
+                            Text("Done!")
+                        }
                     }
-                }
-                if let error = uploadProgress.error {
-                    Text(error.localizedDescription).foregroundColor(.red).lineLimit(nil).fixedSize(horizontal: false, vertical: true)
-                }
-                if #available(macOS 11.0, *) {
-                    ProgressView(value: uploadProgress.progress).progressViewStyle(LinearProgressViewStyle())
-                }
-                if uploadProgress.error != nil {
-                    Button("OK") {
-                        self.uploadProgress = nil
-                    }.frame(maxWidth: .infinity, alignment: .trailing)
-                } else {
-                    Button("Cancel") {
-                        self.uploadProgress?.isCanceling = true
-                    }.frame(maxWidth: .infinity, alignment: .trailing).disabled(!uploadProgress.canCancel)
-                }
-            }.padding().frame(width: 300)
-        }).sheet(item: $uploadTextInput, content: { textInput in
-            TextInputDialog(id: UUID(), title: textInput.title, initialText: textInput.initialText, cancel: textInput.cancel, save: textInput.save).frame(width: 600, height: 400)
+                    if let error = uploadProgress.error {
+                        Text(error.localizedDescription).foregroundColor(.red).lineLimit(nil).fixedSize(horizontal: false, vertical: true)
+                    }
+                    if #available(macOS 11.0, *) {
+                        ProgressView(value: uploadProgress.progress).progressViewStyle(LinearProgressViewStyle())
+                    }
+                    if uploadProgress.error != nil {
+                        Button("OK") {
+                            self.sheet = nil
+                        }.frame(maxWidth: .infinity, alignment: .trailing)
+                    } else {
+                        Button("Cancel") {
+                            self.sheet?.isCanceling = true
+                        }.frame(maxWidth: .infinity, alignment: .trailing).disabled(!uploadProgress.canCancel)
+                    }
+                }.padding().frame(width: 400))
+            case .textInput(let textInput):
+                return AnyView(TextInputDialog(id: UUID(), title: textInput.title, initialText: textInput.initialText, cancel: textInput.cancel, save: textInput.save).frame(width: 600, height: 400))
+            }
         }).alert(item: $uploadConfirmation, content: { $0.alert })
     }
 }
