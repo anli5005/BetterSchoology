@@ -223,13 +223,16 @@ struct AssignmentFetcher: MaterialDetailFetcher {
     func fetch(material: Material, using client: SchoologyClient) -> AnyPublisher<MaterialDetail, Error> {
         return material.urlPublisher(prefix: client.prefix).flatMap { client.session.dataTaskPublisher(for: $0).castingToError() }.toString(encoding: .utf8).tryMap { str in
             let document = try SwiftSoup.parse(str)
+            let submissionButton = try document.select(".submit-assignment > a").first()
             return AssignmentMaterialDetail(
                 material: material,
                 fullName: try document.select(".page-title").text(),
                 content: try document.select(".info-body").html(),
                 files: try document.select(".attachments-file").map { try extractFile(from: $0, prefix: client.prefix) }
                     + document.select(".attachments-file-image").map { try extractImage(from: $0) }
-                    + document.select(".attachments-link").map { try extractFileLink(from: $0, prefix: URL(string: client.prefix)!) }
+                    + document.select(".attachments-link").map { try extractFileLink(from: $0, prefix: URL(string: client.prefix)!) },
+                submitURLSuffix: try submissionButton?.attr("href"),
+                isSubmitted: try submissionButton?.text().contains("Re-submit") ?? false
             )
         }.eraseToAnyPublisher()
     }
@@ -312,12 +315,14 @@ func extractCsrf<TDecoder: TopLevelDecoder>(document: Element, using decoder: TD
     return nil
 }
 
-func extractReplyDetails(document: Element) throws -> [String: String] {
-    let keys = ["nid", "nid2", "node_realm", "node_realm2", "node_realm_id", "node_realm_id2", "form_id", "sid", "op", "form_token"]
-    
-    return [String: String](uniqueKeysWithValues: try keys.map {
+func extractFormFields(from document: Element, names: [String]) throws -> [String: String] {
+    [String: String](try names.map {
         ($0, try document.select("input[name='\($0)']").first()?.val())
-    }.filter { $0.1 != nil }.map { ($0.0, $0.1!) })
+    }.filter { $0.1 != nil }.map { ($0.0, $0.1!) }, uniquingKeysWith: { (a, b) in b })
+}
+
+func extractReplyDetails(document: Element) throws -> [String: String] {
+    try extractFormFields(from: document, names: ["nid", "nid2", "node_realm", "node_realm2", "node_realm_id", "node_realm_id2", "form_id", "sid", "op", "form_token"])
 }
 
 struct DiscussionFetcher: MaterialDetailFetcher {

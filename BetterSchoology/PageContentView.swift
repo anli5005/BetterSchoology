@@ -9,7 +9,7 @@
 import SwiftUI
 
 func attributedString(pageContent: String) -> NSAttributedString? {
-    if let str = NSMutableAttributedString(html: Data(("<span style='font-family: system-ui;'>" + pageContent + "</style>").utf8), options: [.characterEncoding: String.Encoding.utf8.rawValue], documentAttributes: nil) {
+    if let str = NSMutableAttributedString(html: Data(("<span style='font-family: system-ui;'>" + pageContent + "</span>").utf8), options: [.characterEncoding: String.Encoding.utf8.rawValue], documentAttributes: nil) {
         str.addAttribute(.foregroundColor, value: NSColor.textColor, range: NSMakeRange(0, str.length))
         str.addAttribute(.backgroundColor, value: NSColor.clear, range: NSMakeRange(0, str.length))
         return str

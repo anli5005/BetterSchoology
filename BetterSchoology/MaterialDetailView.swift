@@ -114,15 +114,10 @@ extension AssignmentMaterialDetail: MaterialDetailViewRepresentable, HasContentA
             }
             Divider()
             ContentAndFilesView(contentAndFiles: self)
-            Divider()
-            VStack {
-                Text("To submit or view more details, open this assignment in your web browser.").multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
-                Button(action: {
-                    NSWorkspace.shared.open(url!)
-                }) {
-                    Text("Open in Web Browser")
-                }.disabled(url == nil)
-            }.frame(maxWidth: .infinity, alignment: .center).padding()
+            if acceptsSubmissions {
+                Divider()
+                UploadView(destination: self).frame(maxWidth: .infinity, alignment: .center)
+            }
         })
     }
 }

@@ -30,13 +30,20 @@
 		4A2AA125241C4F11005C3C27 /* CourseListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2AA124241C4F11005C3C27 /* CourseListItemView.swift */; };
 		4A2AA127241C7A25005C3C27 /* CourseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2AA126241C7A25005C3C27 /* CourseDetailView.swift */; };
 		4A2AA129241D3444005C3C27 /* MaterialsOutlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */; };
+		4A533B2325A8D3EB00FFFC3F /* Submission.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4A533B2225A8D3EB00FFFC3F /* Submission.txt */; };
 		4A53FE4924213E74005C3C27 /* PageContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A53FE4824213E74005C3C27 /* PageContentView.swift */; };
+		4A62174C25ADF58D0090D4F5 /* SubmittedQuotes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4A62174B25ADF58D0090D4F5 /* SubmittedQuotes.txt */; };
+		4A6ECE3325AB9BA500852A8B /* TextInputViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A6ECE3225AB9BA500852A8B /* TextInputViewController.xib */; };
+		4A6ECE3725AB9D1100852A8B /* TextInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A6ECE3625AB9D1100852A8B /* TextInputViewController.swift */; };
 		4A79E2BE24267457005C3C27 /* DiscussionTableCellView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A79E2BD24267457005C3C27 /* DiscussionTableCellView.xib */; };
 		4A79E2C024267504005C3C27 /* DiscussionTableCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A79E2BF24267504005C3C27 /* DiscussionTableCellView.swift */; };
 		4A84ECD524229F81005C3C27 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 4A84ECD424229F81005C3C27 /* SQLite */; };
 		4A84ECD72422A02B005C3C27 /* FilesDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */; };
 		4A84ECD92423D968005C3C27 /* FileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84ECD82423D968005C3C27 /* FileView.swift */; };
 		4A84ECDB24242101005C3C27 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84ECDA24242101005C3C27 /* DownloadManager.swift */; };
+		4AAB48AB259F872C00362CEC /* UploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AAB48AA259F872C00362CEC /* UploadViewController.swift */; };
+		4AAB48AE259F895200362CEC /* UploadViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4AAB48AD259F895200362CEC /* UploadViewController.xib */; };
+		4AC62B6D244628EF005C3C27 /* SerialInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC62B6C244628EF005C3C27 /* SerialInputStream.swift */; };
 		4ADF57A5241EAA03005C3C27 /* MaterialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */; };
 		89E652C124DFA12A0047416A /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E652C024DFA12A0047416A /* main.swift */; };
 		89E652C324DFA1EF0047416A /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E652C224DFA1EF0047416A /* App.swift */; };
@@ -69,12 +76,19 @@
 		4A2AA124241C4F11005C3C27 /* CourseListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseListItemView.swift; sourceTree = "<group>"; };
 		4A2AA126241C7A25005C3C27 /* CourseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDetailView.swift; sourceTree = "<group>"; };
 		4A2AA128241D3444005C3C27 /* MaterialsOutlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialsOutlineView.swift; sourceTree = "<group>"; };
+		4A533B2225A8D3EB00FFFC3F /* Submission.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Submission.txt; sourceTree = "<group>"; };
 		4A53FE4824213E74005C3C27 /* PageContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageContentView.swift; sourceTree = "<group>"; };
+		4A62174B25ADF58D0090D4F5 /* SubmittedQuotes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = SubmittedQuotes.txt; sourceTree = "<group>"; };
+		4A6ECE3225AB9BA500852A8B /* TextInputViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextInputViewController.xib; sourceTree = "<group>"; };
+		4A6ECE3625AB9D1100852A8B /* TextInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextInputViewController.swift; sourceTree = "<group>"; };
 		4A79E2BD24267457005C3C27 /* DiscussionTableCellView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DiscussionTableCellView.xib; sourceTree = "<group>"; };
 		4A79E2BF24267504005C3C27 /* DiscussionTableCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscussionTableCellView.swift; sourceTree = "<group>"; };
 		4A84ECD62422A02B005C3C27 /* FilesDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesDatabase.swift; sourceTree = "<group>"; };
 		4A84ECD82423D968005C3C27 /* FileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileView.swift; sourceTree = "<group>"; };
 		4A84ECDA24242101005C3C27 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
+		4AAB48AA259F872C00362CEC /* UploadViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadViewController.swift; sourceTree = "<group>"; };
+		4AAB48AD259F895200362CEC /* UploadViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UploadViewController.xib; sourceTree = "<group>"; };
+		4AC62B6C244628EF005C3C27 /* SerialInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInputStream.swift; sourceTree = "<group>"; };
 		4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDetailView.swift; sourceTree = "<group>"; };
 		89E652C024DFA12A0047416A /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		89E652C224DFA1EF0047416A /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
@@ -101,6 +115,10 @@
 			children = (
 				4A0DA97324286886005C3C27 /* ChatWindowController.swift */,
 				4A0DA9762428F435005C3C27 /* ChatViewController.swift */,
+				4AAB48AA259F872C00362CEC /* UploadViewController.swift */,
+				4AAB48AD259F895200362CEC /* UploadViewController.xib */,
+				4A6ECE3625AB9D1100852A8B /* TextInputViewController.swift */,
+				4A6ECE3225AB9BA500852A8B /* TextInputViewController.xib */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -134,6 +152,8 @@
 				4A176DC3241BE262005C3C27 /* Chat.storyboard */,
 				89E652C624DFB2550047416A /* Main.xib */,
 				4A176DC6241BE262005C3C27 /* Info.plist */,
+				4A533B2225A8D3EB00FFFC3F /* Submission.txt */,
+				4A62174B25ADF58D0090D4F5 /* SubmittedQuotes.txt */,
 				4A176DC7241BE262005C3C27 /* BetterSchoology.entitlements */,
 				4A176DC0241BE262005C3C27 /* Preview Content */,
 			);
@@ -156,6 +176,7 @@
 				4A176DDE241C24D7005C3C27 /* Models.swift */,
 				4A1A9311241F2277005C3C27 /* MaterialDetailFetcher.swift */,
 				4A176DD6241C0D44005C3C27 /* SchoologyCredentials.swift */,
+				4AC62B6B244628D5005C3C27 /* SerialInputStream */,
 			);
 			path = SchoologyAPI;
 			sourceTree = "<group>";
@@ -199,6 +220,14 @@
 				89E652C424DFA8280047416A /* RefreshButton.swift */,
 			);
 			name = "Utility Views";
+			sourceTree = "<group>";
+		};
+		4AC62B6B244628D5005C3C27 /* SerialInputStream */ = {
+			isa = PBXGroup;
+			children = (
+				4AC62B6C244628EF005C3C27 /* SerialInputStream.swift */,
+			);
+			path = SerialInputStream;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -269,10 +298,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A6ECE3325AB9BA500852A8B /* TextInputViewController.xib in Resources */,
 				4A176DC5241BE262005C3C27 /* Chat.storyboard in Resources */,
+				4AAB48AE259F895200362CEC /* UploadViewController.xib in Resources */,
 				89E652C724DFB2550047416A /* Main.xib in Resources */,
+				4A533B2325A8D3EB00FFFC3F /* Submission.txt in Resources */,
 				4A176DC2241BE262005C3C27 /* Preview Assets.xcassets in Resources */,
 				4A176DBF241BE262005C3C27 /* Assets.xcassets in Resources */,
+				4A62174C25ADF58D0090D4F5 /* SubmittedQuotes.txt in Resources */,
 				4A79E2BE24267457005C3C27 /* DiscussionTableCellView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -288,9 +321,11 @@
 				89E652C524DFA8280047416A /* RefreshButton.swift in Sources */,
 				4A0DA97424286886005C3C27 /* ChatWindowController.swift in Sources */,
 				4A84ECDB24242101005C3C27 /* DownloadManager.swift in Sources */,
+				4A6ECE3725AB9D1100852A8B /* TextInputViewController.swift in Sources */,
 				4A176DDB241C17AB005C3C27 /* AuthView.swift in Sources */,
 				4ADF57A5241EAA03005C3C27 /* MaterialDetailView.swift in Sources */,
 				4A176DBD241BE25F005C3C27 /* ContentView.swift in Sources */,
+				4AAB48AB259F872C00362CEC /* UploadViewController.swift in Sources */,
 				4A176DBB241BE25F005C3C27 /* AppDelegate.swift in Sources */,
 				4A1A931424200273005C3C27 /* DoubleClick.swift in Sources */,
 				4A176DCF241BFF85005C3C27 /* SchoologyClient.swift in Sources */,
@@ -311,6 +346,7 @@
 				4A0DA9772428F435005C3C27 /* ChatViewController.swift in Sources */,
 				4A84ECD72422A02B005C3C27 /* FilesDatabase.swift in Sources */,
 				4A176DD7241C0D44005C3C27 /* SchoologyCredentials.swift in Sources */,
+				4AC62B6D244628EF005C3C27 /* SerialInputStream.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,7 +489,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 37;
+				CURRENT_PROJECT_VERSION = 42;
 				DEVELOPMENT_ASSET_PATHS = "\"BetterSchoology/Preview Content\"";
 				DEVELOPMENT_TEAM = 9G475R3MEF;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -464,7 +500,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 0.7.4;
+				MARKETING_VERSION = 0.8;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.anli.BetterSchoology;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -479,7 +515,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 37;
+				CURRENT_PROJECT_VERSION = 42;
 				DEVELOPMENT_ASSET_PATHS = "\"BetterSchoology/Preview Content\"";
 				DEVELOPMENT_TEAM = 9G475R3MEF;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -490,7 +526,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 0.7.4;
+				MARKETING_VERSION = 0.8;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.anli.BetterSchoology;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
