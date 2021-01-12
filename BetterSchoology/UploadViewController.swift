@@ -254,12 +254,16 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
             if let detail = destination as? SubmissionStatusProviding, detail.isSubmitted {
                 if #available(macOS 11.0, *) {
                     view?.imageView?.image = NSImage(systemSymbolName: "checkmark.circle.fill", accessibilityDescription: "Submitted")
+                } else {
+                    view?.imageView?.image = NSImage(named: "checkmark.circle.fill")
                 }
                 view?.titleLabel?.stringValue = submittedQuote
                 view?.textField?.stringValue = "Drag and drop files to resubmit. Past submissions will be visible."
             } else {
                 if #available(macOS 11.0, *) {
                     view?.imageView?.image = NSImage(systemSymbolName: "square.and.arrow.down", accessibilityDescription: nil)
+                } else {
+                    view?.imageView?.image = NSImage(named: "square.and.arrow.down")
                 }
                 view?.titleLabel?.stringValue = "Drop a file"
                 view?.textField?.stringValue = "Or use the + button to add a file.\nClick Submit once you're ready."
