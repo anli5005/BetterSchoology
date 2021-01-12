@@ -551,8 +551,8 @@ class UploadContainerView: NSView {
     weak var uploadController: UploadViewController?
     
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
-        // let pasteboard = sender.draggingPasteboard
-        /* if pasteboard.readObjects(forClasses: [NSFilePromiseReceiver.self], options: nil)?.compactMap({ $0 as? NSFilePromiseReceiver }).isEmpty == false {
+        let pasteboard = sender.draggingPasteboard
+        if pasteboard.readObjects(forClasses: [NSFilePromiseReceiver.self], options: nil)?.compactMap({ $0 as? NSFilePromiseReceiver }).isEmpty == false {
             return .copy
         } else {
             let urls = (pasteboard.readObjects(forClasses: [NSURL.self], options: nil) ?? []).compactMap { $0 as? URL }
@@ -567,8 +567,7 @@ class UploadContainerView: NSView {
             } else {
                 return []
             }
-        } */
-        return .copy
+        }
     }
     
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
