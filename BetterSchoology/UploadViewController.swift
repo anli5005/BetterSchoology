@@ -331,6 +331,9 @@ class UploadViewController: NSViewController, NSTableViewDelegate, NSTableViewDa
     // MARK: Submission
     
     @IBAction func submit(sender: Any?) {
+        if coordinator?.parent.uploadConfirmation != nil || coordinator?.parent.uploadProgress != nil || coordinator?.parent.uploadTextInput != nil {
+            return
+        }
         let confirmationText: String
         if items.isEmpty {
             confirmationText = "A blank text file will be created for you. This action can't be undone."

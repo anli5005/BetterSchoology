@@ -274,11 +274,11 @@
                 </scrollView>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="g7Q-ZO-1H7">
                     <rect key="frame" x="5" y="5" width="470" height="32"/>
-                    <buttonCell key="cell" type="push" title="Submit (⌥⌘S)" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="wtb-kE-T0A">
+                    <buttonCell key="cell" type="push" title="Submit (⇧⌘U)" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="wtb-kE-T0A">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                         <font key="font" metaFont="system"/>
-                        <string key="keyEquivalent">s</string>
-                        <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                        <string key="keyEquivalent">U</string>
+                        <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                     </buttonCell>
                     <connections>
                         <action selector="submitWithSender:" target="-2" id="lm1-yw-Fi1"/>
