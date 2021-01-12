@@ -73,6 +73,22 @@ class TextInputViewController: NSViewController {
     }
 }
 
+// TODO: Combine with ChatReplyTextView
+class TextInputTextView: NSTextView {
+    @IBOutlet weak var controller: TextInputViewController?
+    
+    override func keyDown(with event: NSEvent) {
+        if [36, 76].contains(event.keyCode) {
+            if event.modifierFlags.contains(.option) {
+                controller?.save(sender: self)
+                return
+            }
+        }
+        
+        super.keyDown(with: event)
+    }
+}
+
 struct TextInputDialog: NSViewControllerRepresentable {
     var id: UUID
     var title: String
