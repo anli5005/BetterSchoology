@@ -115,7 +115,7 @@ class SchoologyClient {
                 }
                 
                 let document = try SwiftSoup.parse(string)
-                let rows = try document.select("table#folder-contents-table tr")
+                let rows = try document.select("table#folder-contents-table > tbody > tr")
                 
                 if try rows.isEmpty() && document.select(".materials-top").isEmpty() {
                     throw SchoologyParseError.unexpectedHtmlError
