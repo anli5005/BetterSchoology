@@ -47,6 +47,7 @@ struct Material: Identifiable {
     var kind: Kind
     var available: Date?
     var due: Date?
+    var dueTime: Bool?
     var meta: Any?
     var urlSuffix: String
     

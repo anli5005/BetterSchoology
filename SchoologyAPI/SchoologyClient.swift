@@ -12,13 +12,23 @@ import SwiftSoup
 
 let schoologyAllowed = CharacterSet.urlQueryAllowed.subtracting(CharacterSet(charactersIn: "+?&"))
 
-let dueDateFormatter: DateFormatter = {
+let dueDateTimeFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.timeZone = TimeZone(identifier: "America/New_York")
     formatter.locale = Locale(identifier: "en-US")
     formatter.calendar = Calendar(identifier: .gregorian)
     formatter.dateFormat = "EEEE, MMMM d, y 'at' h:mm a"
     formatter.defaultDate = Date()
+    return formatter
+}()
+
+let dueDateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.timeZone = TimeZone(identifier: "America/New_York")
+    formatter.locale = Locale(identifier: "en-US")
+    formatter.calendar = Calendar(identifier: .gregorian)
+    formatter.dateFormat = "EEEE, MMMM d, y"
+    formatter.defaultDate = Date(timeIntervalSince1970: 0)
     return formatter
 }()
 
@@ -173,8 +183,19 @@ class SchoologyClient {
                     }
                     
                     var due: Date?
+                    var dueTime: Bool?
                     if let text = try row.select(".item-subtitle > span").first()?.text(), text.starts(with: "Due ") {
-                        due = dueDateFormatter.date(from: String(text.suffix(text.count - 4)))
+                        if text.contains("at") {
+                            due = dueDateTimeFormatter.date(from: String(text.suffix(text.count - 4)))
+                            if due != nil {
+                                dueTime = true
+                            }
+                        } else {
+                            due = dueDateFormatter.date(from: String(text.suffix(text.count - 4)))
+                            if due != nil {
+                                dueTime = false
+                            }
+                        }
                     }
                     
                     return Material(
@@ -183,6 +204,7 @@ class SchoologyClient {
                         kind: kind,
                         available: nil,
                         due: due,
+                        dueTime: dueTime,
                         meta: meta,
                         urlSuffix: try a.attr("href")
                     )

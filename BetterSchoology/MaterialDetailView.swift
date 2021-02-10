@@ -110,7 +110,7 @@ extension AssignmentMaterialDetail: MaterialDetailViewRepresentable, HasContentA
     func makeView(url: URL?) -> AnyView {
         return AnyView(VStack(alignment: .leading, spacing: 0) {
             if material.due != nil {
-                Text("Due: \(material.due!, formatter: userDateFormatter)").fontWeight(.bold).padding([.bottom, .horizontal]).lineLimit(1)
+                Text("Due: \(material.due!, formatter: material.dueTime == true ? userDateFormatter : userDateOnlyFormatter)").fontWeight(.bold).padding([.bottom, .horizontal]).lineLimit(1)
             }
             Divider()
             ContentAndFilesView(contentAndFiles: self)
@@ -160,7 +160,7 @@ extension DiscussionMaterialDetail: MaterialDetailViewRepresentable, HasContentA
     func makeView(url: URL?) -> AnyView {
         AnyView(VStack(alignment: .leading, spacing: 0) {
             if material.due != nil {
-                Text("Due: \(material.due!, formatter: userDateFormatter)").fontWeight(.bold).padding([.bottom, .horizontal]).lineLimit(1)
+                Text("Due: \(material.due!, formatter: material.dueTime == true ? userDateFormatter : userDateOnlyFormatter)").fontWeight(.bold).padding([.bottom, .horizontal]).lineLimit(1)
             }
             Divider()
             OpenChatButton(detail: self).padding()

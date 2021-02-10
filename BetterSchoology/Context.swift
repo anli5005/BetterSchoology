@@ -72,4 +72,12 @@ let userDateFormatter: DateFormatter = {
     return formatter
 }()
 
+let userDateOnlyFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateStyle = .medium
+    formatter.timeStyle = .none
+    formatter.doesRelativeDateFormatting = true
+    return formatter
+}()
+
 let sharedQuickLook = QuickLookContext()
