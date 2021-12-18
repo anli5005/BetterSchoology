@@ -9,28 +9,14 @@
 import SwiftUI
 
 struct MainView: View {
+    @State var selectedItem: CourseListView.Item? = CourseListView.Item.upcoming
+    
     var body: some View {
-        if #available(OSX 11.0, *) {
-            AnyView(NavigationView {
-                CourseListView().frame(minWidth: 200, maxWidth: 400, maxHeight: .infinity)
-                Text("Select a course to get started.").padding().frame(maxWidth: .infinity, maxHeight: .infinity).toolbar {
-                    ToolbarItem(placement: .navigation) {
-                        Button(action: {
-                            NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
-                        }, label: {
-                            Label("Sidebar", systemImage: "sidebar.leading")
-                        })
-                    }
-                    ToolbarItem(placement: .primaryAction) {
-                        Spacer()
-                    }
-                }
-            })
-        } else {
-            AnyView(NavigationView {
-                CourseListView().frame(minWidth: 200, maxWidth: 400, maxHeight: .infinity)
-                Text("Select a course to get started.").padding().frame(maxWidth: .infinity, maxHeight: .infinity)
-            })
+        NavigationView {
+            CourseListView(selectedItem: $selectedItem).frame(minWidth: 200, maxWidth: 400, maxHeight: .infinity)
+            if #available(macOS 11.0, *) {
+                EmptyView().toolbar {}
+            }
         }
     }
 }
