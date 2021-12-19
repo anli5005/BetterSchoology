@@ -104,7 +104,7 @@ class ChatViewController: NSViewController, NSTableViewDelegate, NSTableViewData
         }
     }
     var sortedMessages = [(Message, NSAttributedString)]()
-    var store: CourseMaterialsStore? {
+    var store: SchoologyStore? {
         didSet {
             store?.$materialDetails.sink { [weak self] details in
                 if let id = self?.discussion?.material.id {

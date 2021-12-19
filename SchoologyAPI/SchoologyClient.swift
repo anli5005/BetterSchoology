@@ -32,6 +32,16 @@ let dueDateFormatter: DateFormatter = {
     return formatter
 }()
 
+let dueTimeFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.timeZone = TimeZone(identifier: "America/New_York")
+    formatter.locale = Locale(identifier: "en-US")
+    formatter.calendar = Calendar(identifier: .gregorian)
+    formatter.dateFormat = "h:mm a"
+    formatter.defaultDate = Date(timeIntervalSince1970: 0)
+    return formatter
+}()
+
 class SchoologyClient {
     let session: URLSession
     let prefix: String
@@ -212,6 +222,30 @@ class SchoologyClient {
             }
     }
     
+    struct UpcomingMaterialsResponse: Decodable {
+        var html: String
+    }
+    
+    func overdueMaterials() -> AnyPublisher<[UpcomingMaterial], Error> {
+        return session.dataTaskPublisher(for: URL(string: "\(prefix)/home/overdue_submissions_ajax")!).map { $0.data }.decode(type: UpcomingMaterialsResponse.self, decoder: decoder).tryMap { result in
+            let document = try SwiftSoup.parse(result.html)
+            guard let list = try document.select(".upcoming-list").first() else {
+                throw SchoologyParseError.unexpectedHtmlError
+            }
+            return try parseUpcomingList(in: list)
+        }.eraseToAnyPublisher()
+    }
+    
+    func upcomingMaterials() -> AnyPublisher<[UpcomingMaterial], Error> {
+        return session.dataTaskPublisher(for: URL(string: "\(prefix)/home/upcoming_ajax")!).map { $0.data }.decode(type: UpcomingMaterialsResponse.self, decoder: decoder).tryMap { result in
+            let document = try SwiftSoup.parse(result.html)
+            guard let list = try document.select(".upcoming-list").first() else {
+                throw SchoologyParseError.unexpectedHtmlError
+            }
+            return try parseUpcomingList(in: list)
+        }.eraseToAnyPublisher()
+    }
+        
     func detailFetcher(for material: Material) -> MaterialDetailFetcher? {
         materialDetailFetchers.first(where: { $0.canFetch(material: material) })
     }
@@ -519,4 +553,72 @@ extension SubmissionToken {
 
 func generateMultipartBoundary() -> String {
     return "----BetterSchoologyFormBoundary\(Data((0..<18).map { _ in UInt8.random(in: UInt8.min...UInt8.max) }).base64EncodedString())".replacingOccurrences(of: "/", with: "-")
+}
+
+func parseUpcomingList(in list: Element) throws -> [UpcomingMaterial] {
+    let calendar = Calendar(identifier: .gregorian)
+    var currentDate: Date?
+    var materials = [UpcomingMaterial]()
+    for element in list.children() {
+        if element.hasClass("date-header") {
+            currentDate = try dueDateFormatter.date(from: element.text())
+        } else if element.hasClass("upcoming-event") {
+            guard let currentDate = currentDate else {
+                throw SchoologyParseError.unexpectedHtmlError
+            }
+            
+            guard let infotip = try element.select(".infotip").first() else {
+                throw SchoologyParseError.unexpectedHtmlError
+            }
+            
+            guard let infotipContent = try infotip.select(".infotip-content > *").first() else {
+                throw SchoologyParseError.unexpectedHtmlError
+            }
+            
+            let infotipText = try infotipContent.text().trimmingCharacters(in: .whitespacesAndNewlines)
+            let realm: UpcomingMaterial.Realm
+            if infotipContent.hasClass("realm-title-school") {
+                realm = .school(name: infotipText)
+            } else if try !infotipContent.select(".realm-title-course").isEmpty() {
+                realm = .course(description: infotipText)
+            } else {
+                realm = .unknown(description: infotipText)
+            }
+            
+            var kind = Material.Kind.other
+            if let icon = try infotip.select(".mini-icon").first() {
+                if icon.hasClass("grade-item-icon") {
+                    kind = .assignment
+                } else if icon.hasClass("assessment-icon") {
+                    kind = .quiz
+                }
+            } else if try !infotip.select(".mini-event-icon").isEmpty() {
+                kind = .event
+            }
+            
+            guard let a = try infotip.children().first(where: { try $0.iS("a") }) else {
+                throw SchoologyParseError.unexpectedHtmlError
+            }
+            
+            let url = try a.attr("href")
+            guard let id = url.split(separator: "/").filter({ !$0.isEmpty && $0.allSatisfy { $0.isNumber } }).last.map({ String($0) }) else {
+                throw SchoologyParseError.unexpectedHtmlError
+            }
+            
+            var due = currentDate
+            var dueTime = false
+            if let upcomingTime = try infotip.select(".upcoming-time").first() {
+                if let time = try dueTimeFormatter.date(from: upcomingTime.text()), let newDate = calendar.date(bySettingHour: calendar.component(.hour, from: time), minute: calendar.component(.minute, from: time), second: calendar.component(.second, from: time), of: currentDate) {
+                    due = newDate
+                    dueTime = true
+                }
+            }
+            
+            try materials.append(UpcomingMaterial(
+                realm: realm,
+                material: Material(id: id, name: a.text(), kind: kind, available: nil, due: due, dueTime: dueTime, meta: nil, urlSuffix: url)
+            ))
+        }
+    }
+    return materials
 }

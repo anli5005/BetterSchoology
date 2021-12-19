@@ -29,8 +29,8 @@ struct CourseDetailView: View {
         }
                 
         if let material = selectedMaterial {
-            materialsStore.requestMaterialDetails(material: material)
-            switch materialsStore.materialDetails[material.id] {
+            store.requestMaterialDetails(material: material)
+            switch store.materialDetails[material.id] {
             case .none, .some(.loading):
                 detail = nil
                 detailError = nil
@@ -54,7 +54,7 @@ struct CourseDetailView: View {
                     Text(course.courseTitle).font(.largeTitle).fontWeight(.bold).padding().multilineTextAlignment(.center)
                     Button(action: {
                         self.materialsStore.materials = [:]
-                        self.materialsStore.materialDetails = [:]
+                        self.store.materialDetails = [:]
                         self.materialsStore.reloadPublisher.send()
                         self.materialsStore.requestFolder(id: nil)
                     }) {
@@ -91,17 +91,11 @@ struct CourseDetailView: View {
         
         if #available(macOS 11.0, iOS 14.0, *) {
             let view = stack.toolbar {
-                ToolbarItem(placement: .navigation) {
-                    Button(action: {
-                        NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
-                    }, label: {
-                        Label("Sidebar", systemImage: "sidebar.leading")
-                    })
-                }
+                SidebarButton()
                 ToolbarItem(placement: .primaryAction) {
                     RefreshButton(action: {
                         self.materialsStore.materials = [:]
-                        self.materialsStore.materialDetails = [:]
+                        self.store.materialDetails = [:]
                         self.materialsStore.reloadPublisher.send()
                         self.materialsStore.requestFolder(id: nil)
                     })
