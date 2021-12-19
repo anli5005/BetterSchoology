@@ -197,7 +197,7 @@ struct UpcomingView: View {
                             Image(systemName: "arrow.up.right")
                         }
                     }
-                }.buttonStyle(LinkButtonStyle())
+                }.foregroundColor(.accentColor).buttonStyle(LinkButtonStyle())
             }.frame(maxWidth: .infinity, alignment: .center).padding(.top, 32).padding(.bottom, 36)
         }
     }
