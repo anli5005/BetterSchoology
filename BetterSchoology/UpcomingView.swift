@@ -160,7 +160,9 @@ struct UpcomingView: View {
         return Group {
             switch store.overdueMaterials {
             case .some(.done(.success(let materials))):
-                UpcomingViewHeading(text: Text("Overdue")).foregroundColor(.red)
+                if !materials.isEmpty {
+                    UpcomingViewHeading(text: Text("Overdue")).foregroundColor(.red)
+                }
                 ForEach(materials) { material in
                     UpcomingMaterialView(material: material, isOverdue: true, selectedMaterial: $selectedMaterial)
                 }
