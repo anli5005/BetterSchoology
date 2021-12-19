@@ -15,7 +15,9 @@ struct MainView: View {
         NavigationView {
             CourseListView(selectedItem: $selectedItem).frame(minWidth: 200, maxWidth: 400, maxHeight: .infinity)
             if #available(macOS 11.0, *) {
-                EmptyView().toolbar {}
+                EmptyView().toolbar {
+                    SidebarButton()
+                }
             }
         }
     }

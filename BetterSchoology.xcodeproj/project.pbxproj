@@ -46,6 +46,7 @@
 		4AC62B6D244628EF005C3C27 /* SerialInputStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC62B6C244628EF005C3C27 /* SerialInputStream.swift */; };
 		4ADF57A5241EAA03005C3C27 /* MaterialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */; };
 		8956F5E3276E64E300BEB99F /* UpcomingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8956F5E2276E64E300BEB99F /* UpcomingView.swift */; };
+		898D62B0276EB36600E964C4 /* SidebarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898D62AF276EB36600E964C4 /* SidebarButton.swift */; };
 		89E652C124DFA12A0047416A /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E652C024DFA12A0047416A /* main.swift */; };
 		89E652C324DFA1EF0047416A /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E652C224DFA1EF0047416A /* App.swift */; };
 		89E652C524DFA8280047416A /* RefreshButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E652C424DFA8280047416A /* RefreshButton.swift */; };
@@ -92,6 +93,7 @@
 		4AC62B6C244628EF005C3C27 /* SerialInputStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SerialInputStream.swift; sourceTree = "<group>"; };
 		4ADF57A4241EAA03005C3C27 /* MaterialDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialDetailView.swift; sourceTree = "<group>"; };
 		8956F5E2276E64E300BEB99F /* UpcomingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingView.swift; sourceTree = "<group>"; };
+		898D62AF276EB36600E964C4 /* SidebarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarButton.swift; sourceTree = "<group>"; };
 		89E652C024DFA12A0047416A /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		89E652C224DFA1EF0047416A /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		89E652C424DFA8280047416A /* RefreshButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshButton.swift; sourceTree = "<group>"; };
@@ -221,6 +223,7 @@
 				4A79E2BD24267457005C3C27 /* DiscussionTableCellView.xib */,
 				4A79E2BF24267504005C3C27 /* DiscussionTableCellView.swift */,
 				89E652C424DFA8280047416A /* RefreshButton.swift */,
+				898D62AF276EB36600E964C4 /* SidebarButton.swift */,
 			);
 			name = "Utility Views";
 			sourceTree = "<group>";
@@ -324,6 +327,7 @@
 				89E652C524DFA8280047416A /* RefreshButton.swift in Sources */,
 				4A0DA97424286886005C3C27 /* ChatWindowController.swift in Sources */,
 				4A84ECDB24242101005C3C27 /* DownloadManager.swift in Sources */,
+				898D62B0276EB36600E964C4 /* SidebarButton.swift in Sources */,
 				4A6ECE3725AB9D1100852A8B /* TextInputViewController.swift in Sources */,
 				4A176DDB241C17AB005C3C27 /* AuthView.swift in Sources */,
 				4ADF57A5241EAA03005C3C27 /* MaterialDetailView.swift in Sources */,

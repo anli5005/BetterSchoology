@@ -17,22 +17,22 @@ struct CourseListView: View {
     @EnvironmentObject var store: SchoologyStore
     
     @Binding var selectedItem: Item?
-        
+    
     var body: some View {
         store.requestCourses()
         
-        if case .some(.done(let result)) = store.courses {
-            switch result {
-            case .success(let courses):
-                return AnyView(List {
-                    NavigationLink(destination: UpcomingView(), tag: Item.upcoming, selection: $selectedItem) {
-                        if #available(macOS 11.0, *) {
-                            Label("Upcoming", systemImage: "calendar.badge.clock")
-                        } else {
-                            Text("Upcoming").fontWeight(.bold).padding(.vertical, 8)
-                        }
-                    }
-                    Section {
+        return List {
+            NavigationLink(destination: UpcomingView().environmentObject(self.store), tag: Item.upcoming, selection: $selectedItem) {
+                if #available(macOS 11.0, *) {
+                    Label("Upcoming", systemImage: "calendar.badge.clock")
+                } else {
+                    Text("Upcoming").fontWeight(.bold).padding(.vertical, 8)
+                }
+            }
+            Section {
+                if case .some(.done(let result)) = store.courses {
+                    switch result {
+                    case .success(let courses):
                         ForEach(courses) { course in
                             NavigationLink(destination: CourseDetailView(course: course, materialsStore: self.store.courseMaterialsStore(for: course.id)).environmentObject(self.store), tag: Item.course(nid: course.nid), selection: $selectedItem) {
                                 if #available(macOS 11.0, *) {
@@ -45,23 +45,22 @@ struct CourseListView: View {
                                     NSWorkspace.shared.open(URL(string: "\(self.store.client.prefix)/course/\(course.nid)")!)
                                 }) {
                                     Text("Open in Web Browser")
-                                    #if os(iOS)
+#if os(iOS)
                                     Image(systemName: "safari")
-                                    #endif
+#endif
                                 }
                             }
                         }
-                    } header: {
-                        Text("Courses")
+                    case .failure(_):
+                        Text("Error loading courses.")
                     }
+                } else {
+                    Text("Loading courses...")
                 }
-                .listStyle(SidebarListStyle()))
-            case .failure(_):
-                return AnyView(Text("Error loading courses."))
+            } header: {
+                Text("Courses")
             }
-        } else {
-            return AnyView(Text("Loading courses..."))
-        }
+        }.listStyle(SidebarListStyle())
     }
 }
 

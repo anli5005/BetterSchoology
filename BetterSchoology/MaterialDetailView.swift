@@ -138,7 +138,7 @@ extension QuizMaterialDetail: MaterialDetailViewRepresentable {
 extension DiscussionMaterialDetail: MaterialDetailViewRepresentable, HasContentAndFiles {
     struct OpenChatButton: View {
         var detail: DiscussionMaterialDetail
-        @EnvironmentObject var store: CourseMaterialsStore
+        @EnvironmentObject var store: SchoologyStore
         @available(macOS 10.16, *) @EnvironmentObject var appDelegate: AppDelegate
         
         var body: some View {
@@ -150,7 +150,7 @@ extension DiscussionMaterialDetail: MaterialDetailViewRepresentable, HasContentA
             }
             
             return Button(action: {
-                self.detail.openChatWindow(courseMaterialsStore: self.store, delegate: delegate)
+                self.detail.openChatWindow(store: self.store, delegate: delegate)
             }) {
                 Text("Open Chat Window")
             }
@@ -169,7 +169,7 @@ extension DiscussionMaterialDetail: MaterialDetailViewRepresentable, HasContentA
         })
     }
     
-    func openChatWindow(courseMaterialsStore: CourseMaterialsStore, delegate: AppDelegate) {
+    func openChatWindow(store: SchoologyStore, delegate: AppDelegate) {
         if let window = delegate.chatWindows[AnyHashable(material.id)] {
             window.makeKeyAndOrderFront(nil)
         } else {
@@ -179,7 +179,7 @@ extension DiscussionMaterialDetail: MaterialDetailViewRepresentable, HasContentA
             delegate.chatWindows[AnyHashable(material.id)] = controller.window
             if let chat = controller.contentViewController as? ChatViewController {
                 chat.discussion = self
-                chat.store = courseMaterialsStore
+                chat.store = store
             }
             delegate.windowControllers.insert(controller)
         }

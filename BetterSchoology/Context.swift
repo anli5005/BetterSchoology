@@ -80,4 +80,20 @@ let userDateOnlyFormatter: DateFormatter = {
     return formatter
 }()
 
+let userLongDateOnlyFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateStyle = .full
+    formatter.timeStyle = .none
+    formatter.doesRelativeDateFormatting = true
+    return formatter
+}()
+
+let userTimeOnlyFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateStyle = .none
+    formatter.timeStyle = .short
+    formatter.doesRelativeDateFormatting = true
+    return formatter
+}()
+
 let sharedQuickLook = QuickLookContext()

@@ -756,7 +756,7 @@ struct UploadView: View {
     var destination: SubmissionAccepting
     @State private var sheet: InternalUploadView.Sheet?
     @State var uploadConfirmation: UploadConfirmation?
-    @EnvironmentObject var store: CourseMaterialsStore
+    @EnvironmentObject var store: SchoologyStore
     
     var body: some View {
         InternalUploadView(destination: destination, uploadConfirmation: $uploadConfirmation, sheet: $sheet, onSubmission: {

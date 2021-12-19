@@ -176,7 +176,7 @@ struct MaterialsOutlineView: NSViewRepresentable {
                 } else {
                     delegate = NSApp.delegate as! AppDelegate
                 }
-                clickable!.handleDoubleClick(courseMaterialsStore: parent.store, delegate: delegate)
+                clickable!.handleDoubleClick(schoologyStore: parent.globalStore, courseMaterialsStore: parent.store, delegate: delegate)
             } else if let url = URL(string: parent.globalStore.client.prefix + material.urlSuffix) {
                 NSWorkspace.shared.open(url)
             } else {
@@ -189,12 +189,12 @@ struct MaterialsOutlineView: NSViewRepresentable {
                 let material = parent.store.materialsById[id]!
                 if let type = parent.globalStore.client.detailFetcher(for: material)?.type(for: material), type is DoubleClickable.Type {
                     if doubleClickCancellables[id] == nil {
-                        let loadable = parent.store.materialDetails[id]
+                        let loadable = parent.globalStore.materialDetails[id]
                         if case .some(.done(.success(let detail))) = loadable {
                             doubleClick(material: material, with: (detail as! DoubleClickable))
                         } else {
-                            parent.store.requestMaterialDetails(material: material)
-                            doubleClickCancellables[id] = parent.store.materialDetailsPublishers[id]!.sink(receiveCompletion: { _ in }, receiveValue: { detail in
+                            parent.globalStore.requestMaterialDetails(material: material)
+                            doubleClickCancellables[id] = parent.globalStore.materialDetailsPublishers[id]!.sink(receiveCompletion: { _ in }, receiveValue: { detail in
                                 self.doubleClick(material: material, with: (detail as! DoubleClickable))
                                 self.doubleClickCancellables[id] = nil
                             })
@@ -223,22 +223,30 @@ extension MaterialsOutlineView.Column {
         case .name:
             return material.name
         case .kind:
-            switch material.kind {
-            case .file:
-                return "File"
-            case .link:
-                return "Link"
-            case .assignment:
-                return "Assignment"
-            case .page:
-                return "Page"
-            case .discussion:
-                return "Discussion"
-            case .quiz:
-                return "Assessment"
-            default:
-                return nil
-            }
+            return material.kind.userVisibleName
+        }
+    }
+}
+
+extension Material.Kind {
+    var userVisibleName: String? {
+        switch self {
+        case .file:
+            return "File"
+        case .link:
+            return "Link"
+        case .assignment:
+            return "Assignment"
+        case .page:
+            return "Page"
+        case .discussion:
+            return "Discussion"
+        case .quiz:
+            return "Assessment"
+        case .event:
+            return "Event"
+        default:
+            return nil
         }
     }
 }

@@ -59,8 +59,31 @@ struct Material: Identifiable {
         case page
         case link
         case discussion
+        case event
         case other
     }
+}
+
+struct UpcomingMaterial: Identifiable {
+    enum Realm {
+        case school(name: String)
+        case course(description: String)
+        case unknown(description: String)
+        
+        func isIn(course: Course) -> Bool {
+            switch self {
+            case .course(let description):
+                return description == "\(course.courseTitle) : \(course.sectionTitle)"
+            default:
+                return false
+            }
+        }
+    }
+    
+    var realm: Realm
+    var material: Material
+    
+    var id: String { material.id }
 }
 
 struct FolderMeta {
